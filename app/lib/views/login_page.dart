@@ -1,26 +1,26 @@
-// lib/login_page.dart
-
+// lib/views/login_page.dart
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/auth_controller.dart';
 
-class LoginPage extends StatefulWidget {
-  final Function(String) onLogin;
-  const LoginPage({super.key, required this.onLogin});
+// Diubah menjadi StatelessWidget karena state dikelola GetX
+class LoginPage extends StatelessWidget {
+  LoginPage({super.key});
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
+  // Ambil instance AuthController yang sudah di-register di main.dart
+  final AuthController authController = Get.find<AuthController>();
   final TextEditingController _controller = TextEditingController();
 
   void _submit() {
     if (_controller.text.isNotEmpty) {
-      widget.onLogin(_controller.text);
+      // Panggil fungsi login dari controller
+      authController.login(_controller.text);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // UI tetap sama seperti kode Anda
     return Scaffold(
       backgroundColor: const Color(0xFF2380c4),
       body: Center(
@@ -29,7 +29,11 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Fishllet', style: TextStyle(fontSize: 36, color: Colors.white, fontWeight: FontWeight.bold)),
+              const Text('Fishllet',
+                  style: TextStyle(
+                      fontSize: 36,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold)),
               const SizedBox(height: 32),
               TextField(
                 controller: _controller,
@@ -37,7 +41,8 @@ class _LoginPageState extends State<LoginPage> {
                   hintText: 'Masukkan nama pengguna',
                   filled: true,
                   fillColor: Colors.white,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
               ),
               const SizedBox(height: 16),

@@ -1,24 +1,24 @@
-// lib/cart_page.dart
-
+// lib/views/cart_page.dart
 import 'package:flutter/material.dart';
-import 'product.dart';
-import 'checkout_page.dart';
+import 'package:get/get.dart';
+import '../controllers/cart_controller.dart';
+import 'checkout_page.dart'; // <-- Pastikan Anda punya file ini & sudah di-refactor
 
 class CartPage extends StatelessWidget {
-  final List<Product> cart;
-  final VoidCallback checkout;
-  final VoidCallback clearCart;
+  // --- PERBAIKAN ---
+  // Constructor kosong, tidak menerima parameter
+  CartPage({super.key});
 
-  const CartPage({super.key, required this.cart, required this.checkout, required this.clearCart});
+  // Ambil CartController menggunakan Get.find()
+  final CartController cartController = Get.find<CartController>();
+  // --- BATAS PERBAIKAN ---
 
   void openCheckout(BuildContext context) {
+    // Panggil CheckoutPage() tanpa argumen
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CheckoutPage(
-          cart: cart,
-          checkout: checkout,
-        ),
+        builder: (context) => CheckoutPage(),
       ),
     );
   }
@@ -30,15 +30,16 @@ class CartPage extends StatelessWidget {
         title: const Text('Keranjang'),
         backgroundColor: const Color(0xFF2380c4),
       ),
-      body: cart.isEmpty
+      // Gunakan Obx untuk mendengarkan perubahan data keranjang
+      body: Obx(() => cartController.cart.isEmpty
           ? const Center(child: Text('Keranjang kosong'))
           : Column(
               children: [
                 Expanded(
                   child: ListView.builder(
-                    itemCount: cart.length,
+                    itemCount: cartController.cart.length,
                     itemBuilder: (context, idx) {
-                      final product = cart[idx];
+                      final product = cartController.cart[idx];
                       return ListTile(
                         title: Text(product.name),
                         subtitle: Text(product.price),
@@ -67,7 +68,8 @@ class CartPage extends StatelessWidget {
                             backgroundColor: Colors.grey,
                             foregroundColor: Colors.white,
                           ),
-                          onPressed: clearCart,
+                          // Panggil fungsi dari controller
+                          onPressed: cartController.clearCart,
                           child: const Text('Kosongkan'),
                         ),
                       ),
@@ -75,7 +77,7 @@ class CartPage extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
+            )),
     );
   }
 }

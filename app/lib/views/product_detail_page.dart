@@ -1,13 +1,17 @@
-// lib/product_detail_page.dart
-
+// lib/views/product_detail_page.dart
 import 'package:flutter/material.dart';
-import 'product.dart';
+import 'package:get/get.dart';
+import '../models/product.dart'; // <-- Pastikan import dari '/models/'
+import '../controllers/cart_controller.dart';
 
 class ProductDetailPage extends StatelessWidget {
+  // Ambil CartController
+  final CartController cartController = Get.find<CartController>();
+  
+  // HANYA terima 'product'. 'onAddToCart' dihapus.
   final Product product;
-  final VoidCallback onAddToCart;
 
-  const ProductDetailPage({super.key, required this.product, required this.onAddToCart});
+  ProductDetailPage({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +25,16 @@ class ProductDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(product.name, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF2380c4))),
+            Text(product.name,
+                style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2380c4))),
             const SizedBox(height: 12),
             Text(product.price, style: const TextStyle(fontSize: 20)),
             const SizedBox(height: 24),
-            Text(product.description),
+            // Tampilkan deskripsi dari API (jika ada)
+            Text(product.description ?? 'Tidak ada deskripsi.'),
             const Spacer(),
             SizedBox(
               width: double.infinity,
@@ -38,14 +47,9 @@ class ProductDetailPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 onPressed: () {
-                  onAddToCart();
-                  // Tampilkan Snackbar
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${product.name} ditambahkan ke keranjang!'),
-                      duration: const Duration(seconds: 1),
-                    ),
-                  );
+                  // Panggil fungsi dari controller
+                  cartController.addToCart(product);
+                  // (Snackbar akan di-handle oleh controller)
                   Navigator.pop(context); // Kembali ke halaman produk
                 },
               ),

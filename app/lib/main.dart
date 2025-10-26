@@ -1,84 +1,41 @@
 // lib/main.dart
-
 import 'package:flutter/material.dart';
-import 'product.dart'; // Import Product model dan list
-import 'login_page.dart'; // Import LoginPage
-import 'product_list_page.dart'; // Import ProductListPage
+import 'package:get/get.dart';
+import 'controllers/auth_controller.dart';
+import 'utils/app__bindings.dart';
+import 'views/login_page.dart';
+import 'views/product_list_page.dart';
 
 void main() {
+  // Inisialisasi semua controller saat aplikasi dimulai
+  AppBindings().dependencies();
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  bool loggedIn = false;
-  String username = '';
-  List<Product> cart = [];
-  List<List<Product>> orders = [];
-
-  void login(String user) {
-    setState(() {
-      loggedIn = true;
-      username = user;
-    });
-  }
-
-  void logout() {
-    setState(() {
-      loggedIn = false;
-      username = '';
-      cart.clear();
-      orders.clear(); // Opsional: Hapus riwayat pesanan saat logout
-    });
-  }
-
-  void addToCart(Product product) {
-    setState(() {
-      cart.add(product);
-    });
-  }
-
-  void clearCart() {
-    setState(() {
-      cart.clear();
-    });
-  }
-
-  void checkout() {
-    setState(() {
-      orders.add(List<Product>.from(cart)); // Salin keranjang ke orders
-      cart.clear(); // Kosongkan keranjang
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fishllet',
+    // Gunakan GetMaterialApp untuk mengaktifkan GetX
+    return GetMaterialApp(
+      title: 'Fishllet (Refactored)',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2380c4)),
         useMaterial3: true,
         appBarTheme: const AppBarTheme(
-          foregroundColor: Colors.white, // Agar ikon dan teks di AppBar berwarna putih
+          foregroundColor: Colors.white,
         ),
       ),
-      home: loggedIn
-          ? ProductListPage(
-              username: username,
-              cart: cart,
-              orders: orders,
-              addToCart: addToCart,
-              logout: logout,
-              checkout: checkout,
-              clearCart: clearCart,
-            )
-          : LoginPage(onLogin: login),
+      // Gunakan Obx untuk bereaksi terhadap perubahan state login
+      home: Obx(() {
+        // Cari AuthController yang sudah di-inisialisasi
+        final authController = Get.find<AuthController>();
+        // Tampilkan halaman yang sesuai berdasarkan status login
+        return authController.isLoggedIn.value
+            ? ProductListPage()
+            : LoginPage();
+      }),
     );
   }
 }
