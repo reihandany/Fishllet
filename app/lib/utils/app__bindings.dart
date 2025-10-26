@@ -12,7 +12,7 @@ class AppBindings extends Bindings {
     // Inisialisasi service dan controller
     Get.lazyPut(() => ApiService());
     Get.lazyPut(() => AuthController());
-    Get.lazyPut(() => ProductController(apiService: Get.find()));
+    Get.put(ProductController());
     Get.lazyPut(() => CartController());
   }
 }
