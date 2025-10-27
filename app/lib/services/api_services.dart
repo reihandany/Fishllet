@@ -7,14 +7,11 @@ import '../models/product.dart';
 class ApiService {
   final String _baseUrl = "https://www.themealdb.com/api/json/v1/1";
 
-  // --- PERBAIKAN DI SINI ---
-  // Kita atur baseUrl saat membuat instance Dio menggunakan BaseOptions.
   final Dio _dio = Dio(BaseOptions(
     baseUrl: "https://www.themealdb.com/api/json/v1/1",
   ));
-  // -------------------------
 
-  // 1. Implementasi menggunakan library 'http' (Tidak Berubah)
+  // 1. Implementasi menggunakan library 'http'
   Future<List<Product>> fetchProductsWithHttp() async {
     final response = await http.get(Uri.parse('$_baseUrl/filter.php?c=Seafood'));
 
@@ -28,10 +25,7 @@ class ApiService {
 
   // 2. Implementasi menggunakan library 'Dio'
   Future<List<Product>> fetchProductsWithDio() async {
-    // --- PERBAIKAN DI SINI ---
-    // Hapus parameter 'options' karena baseUrl sudah diatur di instance _dio
     final response = await _dio.get('/filter.php?c=Seafood');
-    // -------------------------
 
     final List meals = response.data['meals'];
     return meals.map((meal) => Product.fromJsonList(meal)).toList();
