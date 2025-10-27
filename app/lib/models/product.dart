@@ -4,7 +4,8 @@ class Product {
   final String name;
   final String imageUrl;
   final String? description; // Deskripsi dari API detail
-  final String price;        // Harga dummy untuk UI
+  final String price; // Harga dummy untuk UI
+  int quantity; // Quantity untuk cart (mutable)
 
   Product({
     required this.id,
@@ -12,6 +13,7 @@ class Product {
     required this.imageUrl,
     this.description,
     this.price = "Rp 45.000",
+    this.quantity = 1, // Default quantity = 1
   });
 
   // ✅ Factory untuk parsing data dari list API (misalnya list meal)
