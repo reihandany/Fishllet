@@ -6,6 +6,8 @@ import 'controllers/auth_controller.dart';
 import 'utils/app__bindings.dart';
 import 'views/login_page.dart';
 import 'views/product_list_page.dart';
+import 'controllers/theme_controller.dart';
+
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// MAIN ENTRY POINT
@@ -38,6 +40,8 @@ void main() async {
   try {
     AppBindings().dependencies();
     debugPrint('✅ AppBindings initialized successfully');
+    // Load saved theme from SharedPreferences
+    await Get.find<ThemeController>().loadTheme();
   } catch (e, stackTrace) {
     debugPrint('❌ Error initializing AppBindings: $e');
     debugPrint('Stack trace: $stackTrace');
@@ -62,33 +66,38 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      // ─────────────────────────────────────────────────────────────────────
-      // APP CONFIGURATION
-      // ─────────────────────────────────────────────────────────────────────
-      title: 'Fishllet - Fresh Seafood',
-      debugShowCheckedModeBanner: false, // Hide debug banner
-      // ─────────────────────────────────────────────────────────────────────
-      // THEME CONFIGURATION
-      // ─────────────────────────────────────────────────────────────────────
-      theme: _buildLightTheme(),
-      darkTheme: _buildDarkTheme(),
-      themeMode: ThemeMode.light, // Default theme mode
-      // ─────────────────────────────────────────────────────────────────────
-      // GETX CONFIGURATION
-      // ─────────────────────────────────────────────────────────────────────
-      defaultTransition: Transition.fadeIn, // Smooth page transitions
-      transitionDuration: const Duration(milliseconds: 300),
+@override
+Widget build(BuildContext context) {
+  final themeCtrl = Get.find<ThemeController>();
 
-      // ─────────────────────────────────────────────────────────────────────
-      // INITIAL ROUTE - REACTIVE NAVIGATION
-      // ─────────────────────────────────────────────────────────────────────
-      // Menggunakan Obx untuk reactive navigation berdasarkan login status
-      home: _buildHomeWithErrorHandling(),
-    );
-  }
+  return Obx(() => GetMaterialApp(
+        // ─────────────────────────────────────────────────────────────────────
+        // APP CONFIGURATION
+        // ─────────────────────────────────────────────────────────────────────
+        title: 'Fishllet - Fresh Seafood',
+        debugShowCheckedModeBanner: false,
+
+        // ─────────────────────────────────────────────────────────────────────
+        // THEME CONFIGURATION
+        // ─────────────────────────────────────────────────────────────────────
+        theme: _buildLightTheme(),
+        darkTheme: _buildDarkTheme(),
+        themeMode: themeCtrl.isDark.value
+            ? ThemeMode.dark
+            : ThemeMode.light, // ← DI SINI PERUBAHANNYA
+
+        // ─────────────────────────────────────────────────────────────────────
+        // GETX CONFIGURATION
+        // ─────────────────────────────────────────────────────────────────────
+        defaultTransition: Transition.fadeIn,
+        transitionDuration: const Duration(milliseconds: 300),
+
+        // ─────────────────────────────────────────────────────────────────────
+        // INITIAL ROUTE
+        // ─────────────────────────────────────────────────────────────────────
+        home: _buildHomeWithErrorHandling(),
+      ));
+}
 
   /// ═════════════════════════════════════════════════════════════════════════
   /// BUILD HOME WITH ERROR HANDLING

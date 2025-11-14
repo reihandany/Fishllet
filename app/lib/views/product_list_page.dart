@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/cart_controller.dart';
 import '../controllers/product_controller.dart';
+import '../controllers/theme_controller.dart';
 
 // Models
 import '../models/product.dart';
@@ -164,8 +165,8 @@ class _ProductListPageState extends State<ProductListPage> {
         title: const Text('Fishllet'),
         backgroundColor: const Color(0xFF2380c4),
         actions: [
-          // Cart icon with badge
-          Obx(() {
+        Builder(builder: (_) {
+          return Obx(() {
             final itemCount = cart.totalItems;
             return Stack(
               children: [
@@ -201,12 +202,25 @@ class _ProductListPageState extends State<ProductListPage> {
                   ),
               ],
             );
+          });
           }),
           IconButton(
             icon: const Icon(Icons.analytics),
             tooltip: 'Halaman Analisis Modul 3',
             onPressed: openAnalysis,
           ),
+            Builder(builder: (_) {
+              return Obx(() {
+            final themeCtrl = Get.find<ThemeController>();
+            return IconButton(
+              icon: Icon(
+                themeCtrl.isDark.value ? Icons.dark_mode : Icons.light_mode,
+              ),
+              tooltip: 'Toggle Theme',
+              onPressed: () => themeCtrl.toggleTheme(),
+            );
+              });
+          }),
         ],
       ),
       body: Column(

@@ -5,6 +5,8 @@ import '../controllers/cart_controller.dart';
 import '../controllers/product_controller.dart';
 import '../controllers/checkout_controller.dart';
 import '../controllers/orders_controller.dart';
+import '../controllers/theme_controller.dart';
+
 import '../services/api_services.dart';
 import '../services/http_api_services.dart';
 import '../services/dio_api_services.dart';
@@ -34,6 +36,8 @@ class AppBindings extends Bindings {
     // Menggunakan put() agar langsung ter-inisialisasi (eager loading)
     // Karena product list dibutuhkan segera setelah login
     Get.put<ProductController>(ProductController(), permanent: true);
+    Get.put<ThemeController>(ThemeController(), permanent: true);
+
 
     // 3. CartController - Shopping cart management
     // Menggunakan lazyPut dengan fenix:true agar bisa recreate setelah logout

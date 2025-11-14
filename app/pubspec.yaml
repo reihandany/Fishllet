@@ -32,7 +32,9 @@ dependencies:
     sdk: flutter
   get: ^4.6.5   # Untuk State Management (Wajib)
   http: ^0.13.5 # Untuk eksperimen API
-  dio: ^5.0.0   # Untuk eksperimen API
+  dio: ^5.0.0
+  shared_preferences: ^2.1.2
+  # Untuk eksperimen API
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8

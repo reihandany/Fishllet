@@ -21,13 +21,11 @@ class DioApiService {
     );
   }
 
-  // ✅ Ambil daftar ikan (list)
+  // Ambil daftar ikan (list)
   Future<List<Product>> fetchProducts() async {
     final stopwatch = Stopwatch()..start();
     try {
       final response = await dio.get('search.php?s=salmon');
-
-
       print('⏱ Dio response time: ${stopwatch.elapsedMilliseconds} ms');
 
       if (response.statusCode == 200) {
@@ -44,7 +42,7 @@ class DioApiService {
     }
   }
 
-  // ✅ Ambil detail ikan berdasarkan ID (untuk eksperimen async atau detail view)
+  // Ambil detail ikan berdasarkan ID (untuk eksperimen async atau detail view)
   Future<Product> fetchProductDetail(String idMeal) async {
     try {
       final response = await dio.get('lookup.php?i=$idMeal');
