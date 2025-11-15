@@ -1,11 +1,26 @@
-// lib/models/product.dart
+import 'package:hive/hive.dart';
+
+part 'product.g.dart';
+
+@HiveType(typeId: 1)
 class Product {
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String name;
+
+  @HiveField(2)
   final String imageUrl;
-  final String? description; // Deskripsi dari API detail
-  final String price; // Harga dummy untuk UI
-  int quantity; // Quantity untuk cart (mutable)
+
+  @HiveField(3)
+  final String? description;
+
+  @HiveField(4)
+  final String price;
+
+  @HiveField(5)
+  int quantity;
 
   Product({
     required this.id,
@@ -13,10 +28,9 @@ class Product {
     required this.imageUrl,
     this.description,
     this.price = "Rp 45.000",
-    this.quantity = 1, // Default quantity = 1
+    this.quantity = 1,
   });
 
-  // ✅ Factory untuk parsing data dari list API (misalnya list meal)
   factory Product.fromJsonList(Map<String, dynamic> json) {
     return Product(
       id: json['idMeal'] ?? '',
@@ -25,7 +39,6 @@ class Product {
     );
   }
 
-  // ✅ Factory untuk parsing data dari detail API
   factory Product.fromJsonDetail(Map<String, dynamic> json) {
     return Product(
       id: json['idMeal'] ?? '',
@@ -35,7 +48,6 @@ class Product {
     );
   }
 
-  // ✅ Tambahan alias agar kompatibel dengan Product.fromJson()
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product.fromJsonList(json);
   }

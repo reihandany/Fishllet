@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'controllers/auth_controller.dart';
-import 'utils/app__bindings.dart';
+import 'utils/app_bindings.dart';
 import 'views/login_page.dart';
 import 'views/product_list_page.dart';
 import 'controllers/theme_controller.dart';
+import 'controllers/product_controller.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'models/product.dart';
+
 
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -16,16 +20,15 @@ import 'controllers/theme_controller.dart';
 /// Entry point aplikasi Fishllet.
 /// Menginisialisasi bindings, error handling, dan konfigurasi global.
 void main() async {
-  // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Set preferred orientations (portrait only)
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  await Hive.initFlutter();
+  Hive.registerAdapter(ProductAdapter());
 
-  // Set system UI overlay style (status bar & navigation bar)
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -34,20 +37,27 @@ void main() async {
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
-
-  // Initialize all controllers and services via GetX Bindings
-  // This ensures dependency injection is ready before app starts
+  
   try {
     AppBindings().dependencies();
     debugPrint('✅ AppBindings initialized successfully');
-    // Load saved theme from SharedPreferences
+
+    // Load theme
     await Get.find<ThemeController>().loadTheme();
+
+    // ⭐ NEW: load products on startup (tanpa tombol apapun)
+    try {
+      await Get.find<ProductController>().loadProducts();
+      debugPrint('✅ Products loaded on startup');
+    } catch (e) {
+      debugPrint('❌ Error loading products on startup: $e');
+    }
+
   } catch (e, stackTrace) {
     debugPrint('❌ Error initializing AppBindings: $e');
     debugPrint('Stack trace: $stackTrace');
   }
 
-  // Error handling untuk uncaught exceptions
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
     debugPrint('❌ Flutter Error: ${details.exception}');
@@ -56,6 +66,7 @@ void main() async {
 
   runApp(const MyApp());
 }
+
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// MY APP - ROOT WIDGET
