@@ -1,7 +1,8 @@
 // lib/controllers/auth_controller.dart
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/cart_controller.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// AUTH CONTROLLER
@@ -36,28 +37,50 @@ class AuthController extends GetxController {
   /// Login user
   /// @param user - username yang diinput
   void login(String user) {
-    if (user.isNotEmpty) {
-      username.value = user;
-      isLoggedIn.value = true;
-    }
+    username.value = user;
+    isLoggedIn.value = true;
   }
 
   /// Logout user
   /// - Clear username
   /// - Set isLoggedIn = false
   /// - Clear cart & orders
-  void logout() {
-    username.value = '';
-    isLoggedIn.value = false;
-    isLoading.value = false;
-
-    // Clear cart saat logout
+  Future<void> logout() async {
     try {
-      Get.find<CartController>().cart.clear();
-      Get.find<CartController>().orders.clear();
+      isLoading.value = true;
+
+      // Sign out dari Supabase
+      await Supabase.instance.client.auth.signOut();
+
+      // Reset state
+      username.value = '';
+      isLoggedIn.value = false;
+      isLoading.value = false;
+
+      // Navigate ke login page
+      Get.offAllNamed('/login');
+
+      // Show success message
+      Get.snackbar(
+        'Logout Berhasil',
+        'Anda telah keluar dari aplikasi',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        icon: const Icon(Icons.check_circle, color: Colors.white),
+        duration: const Duration(seconds: 2),
+      );
     } catch (e) {
-      // CartController belum ada, skip
-      debugPrint('CartController not found: $e');
+      isLoading.value = false;
+      Get.snackbar(
+        'Logout Gagal',
+        'Terjadi kesalahan: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        icon: const Icon(Icons.error, color: Colors.white),
+        duration: const Duration(seconds: 2),
+      );
     }
   }
 
