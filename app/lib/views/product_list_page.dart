@@ -6,13 +6,10 @@ import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/cart_controller.dart';
 import '../controllers/product_controller.dart';
-import '../controllers/theme_controller.dart';
 
 // Models
 import '../models/product.dart';
 
-// Views (Halaman Lain)
-import 'analysis_page.dart';
 import 'cart_page.dart';
 import 'product_detail_page.dart';
 import 'orders_page.dart';
@@ -98,15 +95,6 @@ class _ProductListPageState extends State<ProductListPage> {
       () => OrdersPage(),
       transition: Transition.downToUp,
       duration: const Duration(milliseconds: 350),
-    );
-  }
-
-  /// Navigate to Analysis with zoom transition
-  void openAnalysis() {
-    Get.to(
-      () => AnalysisPage(),
-      transition: Transition.zoom,
-      duration: const Duration(milliseconds: 300),
     );
   }
 
@@ -204,23 +192,6 @@ class _ProductListPageState extends State<ProductListPage> {
             );
           });
           }),
-          IconButton(
-            icon: const Icon(Icons.analytics),
-            tooltip: 'Halaman Analisis Modul 3',
-            onPressed: openAnalysis,
-          ),
-            Builder(builder: (_) {
-              return Obx(() {
-            final themeCtrl = Get.find<ThemeController>();
-            return IconButton(
-              icon: Icon(
-                themeCtrl.isDark.value ? Icons.dark_mode : Icons.light_mode,
-              ),
-              tooltip: 'Toggle Theme',
-              onPressed: () => themeCtrl.toggleTheme(),
-            );
-              });
-          }),
         ],
       ),
       body: Column(
@@ -286,13 +257,14 @@ class _ProductListPageState extends State<ProductListPage> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'Please run the experiment in "Analysis Page"\n(tap the 📊 icon in the top right)',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
+                        'No products available.\nCheck your internet connection.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                            ),
                           ),
-                        ),
+
                       ],
                     ),
                   ),
