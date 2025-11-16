@@ -1,5 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
+import Register from './pages/Register';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 const products = [
   { id: '1', name: 'Udang Kupas', price: 'Harga menyusul' },
@@ -8,21 +11,17 @@ const products = [
   { id: '4', name: 'Ikan Dori', price: 'Harga menyusul' },
 ];
 
+const Stack = createStackNavigator();
+
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Fishllet</Text>
-      <FlatList
-        data={products}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.productName}>{item.name}</Text>
-            <Text style={styles.productPrice}>{item.price}</Text>
-          </View>
-        )}
-      />
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Home" component={App} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
