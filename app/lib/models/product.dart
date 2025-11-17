@@ -48,6 +48,29 @@ class Product {
     );
   }
 
+  /// Factory untuk data dari Supabase
+  factory Product.fromSupabase(Map<String, dynamic> json) {
+    // Format price dari numeric ke string Rupiah
+    String formattedPrice = 'Rp 45.000';
+    if (json['price'] != null) {
+      final price = json['price'];
+      // Format angka dengan pemisah ribuan
+      final priceStr = price.toStringAsFixed(0).replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (Match m) => '${m[1]}.',
+      );
+      formattedPrice = 'Rp $priceStr';
+    }
+    
+    return Product(
+      id: json['id'].toString(),
+      name: json['name'] ?? 'Tanpa nama',
+      imageUrl: json['image_url'] ?? '',
+      description: json['description'],
+      price: formattedPrice,
+    );
+  }
+
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product.fromJsonList(json);
   }

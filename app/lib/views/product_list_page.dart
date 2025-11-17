@@ -12,6 +12,7 @@ import '../models/product.dart';
 
 import 'cart_page.dart';
 import 'product_detail_page.dart';
+import 'add_product_page.dart';
 import 'orders_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -153,6 +154,11 @@ class _ProductListPageState extends State<ProductListPage> {
         title: const Text('Fishllet'),
         backgroundColor: const Color(0xFF2380c4),
         actions: [
+        IconButton(
+          icon: const Icon(Icons.add),
+          tooltip: 'Add Product',
+          onPressed: () => Get.to(() => const AddProductPage()),
+        ),
         Builder(builder: (_) {
           return Obx(() {
             final itemCount = cart.totalItems;
@@ -302,8 +308,8 @@ class _ProductListPageState extends State<ProductListPage> {
                           Icons.add_shopping_cart,
                           color: Color(0xFF2380c4),
                         ),
-                        onPressed: () {
-                          cart.addToCart(p);
+                        onPressed: () async {
+                          await cart.addToCart(p);
                         },
                       ),
                       onTap: () => openDetail(p),

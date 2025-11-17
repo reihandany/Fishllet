@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../repositories/profile_repository.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -16,6 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
+  final ProfileRepository _profiles = ProfileRepository();
 
   void _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
@@ -32,6 +34,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'display_name': _usernameController.text.trim(),
         },
       );
+
+      // Upsert ke tabel profiles jika user berhasil dibuat
+      if (response.user != null) {
+        await _profiles.upsertProfile(
+          id: response.user!.id,
+          username: _usernameController.text.trim(),
+          email: _emailController.text.trim(),
+        );
+      }
 
       setState(() => _isLoading = false);
 

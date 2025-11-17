@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/product.dart';
+import '../repositories/cart_repository.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// CART CONTROLLER
@@ -25,6 +26,38 @@ class CartController extends GetxController {
 
   /// Loading state untuk async operations
   var isLoading = false.obs;
+
+  /// Cart repository untuk Supabase
+  final CartRepository _cartRepo = CartRepository();
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadCartFromSupabase();
+  }
+
+  /// Load cart dari Supabase saat init
+  Future<void> loadCartFromSupabase() async {
+    try {
+      final items = await _cartRepo.getCartItems();
+      cart.clear();
+      for (final item in items) {
+        final productData = item['products'] as Map<String, dynamic>?;
+        if (productData != null) {
+          final product = Product(
+            id: productData['id'].toString(),
+            name: productData['name'] ?? '',
+            price: productData['price']?.toString() ?? '0',
+            imageUrl: productData['image_url'] ?? '',
+            quantity: item['quantity'] ?? 1,
+          );
+          cart.add(product);
+        }
+      }
+    } catch (e) {
+      // Ignore error saat load (user mungkin belum login)
+    }
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // COMPUTED PROPERTIES
@@ -58,7 +91,7 @@ class CartController extends GetxController {
   /// - Check if product already exists
   /// - If exists, increase quantity
   /// - If not, add new product with quantity = 1
-  void addToCart(Product product) {
+  Future<void> addToCart(Product product) async {
     // Check if product already in cart
     final existingIndex = cart.indexWhere((p) => p.id == product.id);
 
@@ -93,6 +126,37 @@ class CartController extends GetxController {
         duration: const Duration(seconds: 2),
         margin: const EdgeInsets.all(16),
         borderRadius: 12,
+      );
+    }
+
+    // Sync ke Supabase (background, jangan block UI)
+    _syncToSupabase(product);
+  }
+
+  /// Sync cart ke Supabase di background
+  Future<void> _syncToSupabase(Product product) async {
+    try {
+      final productId = int.tryParse(product.id);
+      if (productId == null) {
+        print('❌ Product ID tidak valid: ${product.id}');
+        return;
+      }
+      
+      print('🔄 Syncing to Supabase: productId=$productId, name=${product.name}');
+      await _cartRepo.addToCart(productId: productId, quantity: 1);
+      print('✅ Sync berhasil: ${product.name}');
+    } catch (e, stackTrace) {
+      // Tampilkan error untuk debugging
+      print('❌ Cart sync failed: $e');
+      print('Stack trace: $stackTrace');
+      
+      Get.snackbar(
+        'Warning',
+        'Produk tersimpan di local, tapi gagal sync ke database: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
       );
     }
   }
@@ -140,7 +204,7 @@ class CartController extends GetxController {
   }
 
   /// Clear all items from cart
-  void clearCart() {
+  Future<void> clearCart() async {
     if (cart.isEmpty) {
       Get.snackbar(
         'Cart Empty',
@@ -157,14 +221,26 @@ class CartController extends GetxController {
       textConfirm: 'Yes',
       textCancel: 'No',
       confirmTextColor: Colors.white,
-      onConfirm: () {
-        cart.clear();
-        Get.back(); // Close dialog
-        Get.snackbar(
-          'Cart Cleared',
-          'All items removed from cart',
-          snackPosition: SnackPosition.BOTTOM,
-        );
+      onConfirm: () async {
+        try {
+          await _cartRepo.clearCart();
+          cart.clear();
+          Get.back(); // Close dialog
+          Get.snackbar(
+            'Cart Cleared',
+            'All items removed from cart',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        } catch (e) {
+          Get.back();
+          Get.snackbar(
+            'Error',
+            'Gagal clear cart: $e',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
       },
     );
   }

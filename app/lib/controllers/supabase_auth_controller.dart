@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../config/supabase_config.dart';
 import '../services/supabase_auth_service.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -89,10 +88,7 @@ class SupabaseAuthController extends GetxController {
       final user = await _authService.signUp(
         email: email,
         password: password,
-        data: {
-          'full_name': fullName,
-          'created_at': DateTime.now().toIso8601String(),
-        },
+        fullName: fullName,
       );
 
       if (user != null) {
