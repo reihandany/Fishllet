@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/cart_controller.dart';
 import '../controllers/product_controller.dart';
+import '../controllers/theme_controller.dart';
 
 // Models
 import '../models/product.dart';
@@ -149,11 +150,20 @@ class _ProductListPageState extends State<ProductListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeController themeController = Get.find();
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Fishllet'),
         backgroundColor: const Color(0xFF2380c4),
         actions: [
+        Obx(() => IconButton(
+          icon: Icon(
+            themeController.isDark.value ? Icons.light_mode : Icons.dark_mode,
+          ),
+          tooltip: themeController.isDark.value ? 'Light Mode' : 'Dark Mode',
+          onPressed: () => themeController.toggleTheme(),
+        )),
         IconButton(
           icon: const Icon(Icons.add),
           tooltip: 'Add Product',
