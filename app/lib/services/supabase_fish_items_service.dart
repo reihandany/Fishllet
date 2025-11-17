@@ -33,7 +33,7 @@ class SupabaseFishItemsService {
           .select()
           .single();
 
-      final newItem = FishItem.fromJson(response as Map<String, dynamic>);
+      final newItem = FishItem.fromJson(response);
       print('✅ Fish item added successfully: ${newItem.name}');
       return newItem;
     } on PostgrestException catch (e) {
@@ -86,7 +86,7 @@ class SupabaseFishItemsService {
           .eq('id', itemId)
           .single();
 
-      final item = FishItem.fromJson(response as Map<String, dynamic>);
+      final item = FishItem.fromJson(response);
       print('✅ Fetched fish item: ${item.name}');
       return item;
     } on PostgrestException catch (e) {
@@ -124,7 +124,7 @@ class SupabaseFishItemsService {
           .select()
           .single();
 
-      final updatedItem = FishItem.fromJson(response as Map<String, dynamic>);
+      final updatedItem = FishItem.fromJson(response);
       print('✅ Fish item updated successfully: ${updatedItem.name}');
       return updatedItem;
     } on PostgrestException catch (e) {
@@ -178,12 +178,9 @@ class SupabaseFishItemsService {
   Stream<List<FishItem>> getFishItemsStream(String userId) {
     return _client
         .from(_tableName)
-        .stream(primaryKey: ['id'])
-        .eq('user_id', userId)
-        .eq('is_active', true)
-        .order('created_at')
-        .map((response) {
+        .stream(primaryKey: ['id']).map((response) {
           return (response as List)
+              .where((e) => e['user_id'] == userId && e['is_active'] == true)
               .map((e) => FishItem.fromJson(e as Map<String, dynamic>))
               .toList();
         });

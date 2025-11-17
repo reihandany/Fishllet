@@ -1,6 +1,7 @@
 // lib/services/api_services.dart
 import 'package:dio/dio.dart';
 import '../models/product.dart';
+import '../repositories/product_repository.dart';
 
 class ApiService {
   final Dio _dio = Dio(BaseOptions(
@@ -9,11 +10,32 @@ class ApiService {
     receiveTimeout: Duration(seconds: 6),
   ));
 
-  // FETCH LIST
+  final ProductRepository _supabaseRepo = ProductRepository();
+
+  // FETCH LIST - Gabungan dari API eksternal + Supabase
   Future<List<Product>> fetchProductsWithDio() async {
-    final response = await _dio.get('/filter.php?c=Seafood');
-    final List meals = response.data['meals'];
-    return meals.map((e) => Product.fromJsonList(e)).toList();
+    List<Product> allProducts = [];
+
+    // 1. Ambil dari API eksternal (themealdb)
+    try {
+      final response = await _dio.get('/filter.php?c=Seafood');
+      final List meals = response.data['meals'];
+      allProducts.addAll(meals.map((e) => Product.fromJsonList(e)).toList());
+    } catch (e) {
+      print('⚠️ Error fetching from external API: $e');
+    }
+
+    // 2. Ambil dari Supabase (produk custom)
+    try {
+      final supabaseProducts = await _supabaseRepo.listProducts();
+      allProducts.addAll(
+        supabaseProducts.map((e) => Product.fromSupabase(e)).toList(),
+      );
+    } catch (e) {
+      print('⚠️ Error fetching from Supabase: $e');
+    }
+
+    return allProducts;
   }
 
   // DETAIL

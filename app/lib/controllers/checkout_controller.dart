@@ -2,7 +2,7 @@
 import 'package:get/get.dart';
 import '../models/product.dart';
 import 'cart_controller.dart';
-import 'orders_controller.dart';
+import '../repositories/order_repository.dart';
 
 class CheckoutController extends GetxController {
   // Loading state
@@ -24,6 +24,9 @@ class CheckoutController extends GetxController {
 
   // Get cart controller untuk akses data cart
   final CartController cartController = Get.find<CartController>();
+
+  // Order repository
+  final OrderRepository _orderRepo = OrderRepository();
 
   // Calculate total price
   double get totalPrice {
@@ -83,24 +86,20 @@ class CheckoutController extends GetxController {
 
       isLoading.value = true;
 
-      // Simulasi proses checkout ke server (2 detik)
-      await Future.delayed(const Duration(seconds: 2));
+      // Convert Product to Map for OrderRepository
+      final itemsForOrder = cartItems.map((product) {
+        final priceStr = product.price.replaceAll(RegExp(r'[^0-9.]'), '');
+        final price = double.tryParse(priceStr) ?? 0.0;
+        return {
+          'id': int.tryParse(product.id) ?? 0,
+          'name': product.name,
+          'price': price,
+          'qty': product.quantity, // Gunakan quantity dari Product
+        };
+      }).toList();
 
-      // Create order object
-      final order = {
-        'orderId': 'ORD-${DateTime.now().millisecondsSinceEpoch}',
-        'customerName': customerName.value,
-        'customerAddress': customerAddress.value,
-        'paymentMethod': paymentMethod.value,
-        'items': cartItems,
-        'totalPrice': totalPrice,
-        'orderDate': DateTime.now(),
-        'status': 'Pending',
-      };
-
-      // Save to orders controller
-      final ordersController = Get.find<OrdersController>();
-      ordersController.addOrder(order);
+      // Insert ke Supabase via OrderRepository
+      final orderId = await _orderRepo.createOrder(items: itemsForOrder);
 
       // Clear cart
       cartController.clearCart();
@@ -114,8 +113,9 @@ class CheckoutController extends GetxController {
 
       Get.snackbar(
         'Berhasil',
-        'Pesanan berhasil dibuat!',
+        'Order #$orderId berhasil dibuat! Total: Rp ${totalPrice.toStringAsFixed(2)}',
         snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 3),
       );
 
       return true;

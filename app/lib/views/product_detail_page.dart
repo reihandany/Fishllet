@@ -28,8 +28,8 @@ class ProductDetailPage extends StatelessWidget {
   // ─────────────────────────────────────────────────────────────────────────
 
   /// Add to cart and navigate back with result
-  void addToCartAndGoBack() {
-    cartController.addToCart(product);
+  Future<void> addToCartAndGoBack() async {
+    await cartController.addToCart(product);
     // Navigate back dengan result (untuk feedback)
     Get.back(result: true);
   }
