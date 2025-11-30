@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import '../controllers/orders_controller.dart';
-import 'location_tracking_page.dart';
+import 'delivery_tracking_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// MY ORDERS PAGE (PENDING/CHECKOUT ORDERS)
@@ -172,9 +172,10 @@ class MyOrdersPage extends StatelessWidget {
                       );
                       
                       Get.to(
-                        () => LocationTrackingPage(
+                        () => DeliveryTrackingPage(
                           orderId: order['orderId'],
-                          deliveryAddress: deliveryLatLng,
+                          customerLocation: deliveryLatLng,
+                          customerAddress: order['deliveryAddress'],
                         ),
                         transition: Transition.rightToLeft,
                         duration: const Duration(milliseconds: 300),
@@ -507,9 +508,10 @@ class MyOrdersPage extends StatelessWidget {
                               );
                               
                               Get.to(
-                                () => LocationTrackingPage(
+                                () => DeliveryTrackingPage(
                                   orderId: order['orderId'],
-                                  deliveryAddress: deliveryLatLng,
+                                  customerLocation: deliveryLatLng,
+                                  customerAddress: order['deliveryAddress'],
                                 ),
                                 transition: Transition.rightToLeft,
                                 duration: const Duration(milliseconds: 300),
