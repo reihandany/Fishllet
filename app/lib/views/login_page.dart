@@ -33,6 +33,9 @@ class LoginPage extends StatelessWidget {
   // Form key untuk validation
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  // Password visibility toggle
+  final RxBool _obscurePassword = true.obs;
+
   // ─────────────────────────────────────────────────────────────────────────
   // VALIDATION METHODS
   // ─────────────────────────────────────────────────────────────────────────
@@ -233,18 +236,24 @@ class LoginPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   // Password input
-                  TextFormField(
+                  Obx(() => TextFormField(
                     controller: _passwordController,
                     validator: _validatePassword,
-                    obscureText: true,
+                    obscureText: _obscurePassword.value,
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
                       labelText: 'Password',
                       hintText: 'Masukkan password Anda',
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.visibility_outlined),
-                        onPressed: () {}, // Dummy, implement show/hide jika perlu
+                        icon: Icon(
+                          _obscurePassword.value
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                        ),
+                        onPressed: () {
+                          _obscurePassword.value = !_obscurePassword.value;
+                        },
                       ),
                       filled: true,
                       fillColor: Colors.white,
@@ -274,7 +283,7 @@ class LoginPage extends StatelessWidget {
                         fontSize: 12,
                       ),
                     ),
-                  ),
+                  )),
                   const SizedBox(height: 32),
                   // Tombol Login
                   Obx(() {

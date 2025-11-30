@@ -10,9 +10,7 @@ import 'controllers/checkout_controller.dart';
 import 'utils/app__bindings.dart';
 import 'views/login_page.dart';
 import 'views/product_list_page.dart';
-import 'views/add_product_page.dart';
 import 'views/checkout_page.dart';
-import 'views/bulk_upload_products_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'models/product.dart';
 
@@ -124,7 +122,6 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/login', page: () => LoginPage()),
         GetPage(name: '/products', page: () => const ProductListPage()),
-        GetPage(name: '/add-product', page: () => const AddProductPage()),
         GetPage(
           name: '/checkout',
           page: () => CheckoutPage(),
@@ -132,7 +129,6 @@ class MyApp extends StatelessWidget {
             Get.lazyPut<CheckoutController>(() => CheckoutController());
           }),
         ),
-        GetPage(name: '/bulk-upload', page: () => const BulkUploadProductsPage()),
       ],
     ));
   }

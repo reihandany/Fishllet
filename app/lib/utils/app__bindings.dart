@@ -31,10 +31,10 @@ class AppBindings extends Bindings {
     // Cart Controller
     Get.lazyPut<CartController>(() => CartController(), fenix: true);
 
+    // Orders Controller - Initialize before CheckoutController
+    Get.put<OrdersController>(OrdersController(), permanent: true);
+
     // Checkout Controller
     Get.lazyPut<CheckoutController>(() => CheckoutController(), fenix: true);
-
-    // Orders Controller
-    Get.lazyPut<OrdersController>(() => OrdersController(), fenix: true);
   }
 }

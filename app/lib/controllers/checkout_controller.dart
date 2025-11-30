@@ -2,6 +2,7 @@
 import 'package:get/get.dart';
 import '../models/product.dart';
 import 'cart_controller.dart';
+import 'orders_controller.dart';
 import '../repositories/order_repository.dart';
 
 class CheckoutController extends GetxController {
@@ -101,8 +102,25 @@ class CheckoutController extends GetxController {
       // Insert ke Supabase via OrderRepository
       final orderId = await _orderRepo.createOrder(items: itemsForOrder);
 
-      // Clear cart
-      cartController.clearCart();
+      // Save order to OrdersController
+      final ordersController = Get.find<OrdersController>();
+      ordersController.addOrder({
+        'orderId': orderId.toString(),
+        'orderDate': DateTime.now(),
+        'status': 'Pending',
+        'customerName': customerName.value,
+        'deliveryAddress': customerAddress.value,
+        'paymentMethod': paymentMethod.value,
+        'totalPrice': totalPrice,
+        'items': itemsForOrder.map((item) => {
+          'name': item['name'],
+          'quantity': item['qty'],
+          'price': item['price'],
+        }).toList(),
+      });
+
+      // Clear cart setelah order berhasil (tanpa confirmation dialog)
+      cartController.clearCart(skipConfirmation: true);
 
       // Reset form
       customerName.value = '';
@@ -110,13 +128,6 @@ class CheckoutController extends GetxController {
       paymentMethod.value = 'Cash';
 
       isLoading.value = false;
-
-      Get.snackbar(
-        'Berhasil',
-        'Order #$orderId berhasil dibuat! Total: Rp ${totalPrice.toStringAsFixed(2)}',
-        snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 3),
-      );
 
       return true;
     } catch (e) {

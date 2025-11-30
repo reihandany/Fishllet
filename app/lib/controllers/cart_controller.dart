@@ -204,17 +204,33 @@ class CartController extends GetxController {
   }
 
   /// Clear all items from cart
-  Future<void> clearCart() async {
+  /// skipConfirmation: true untuk bypass dialog (saat checkout)
+  Future<void> clearCart({bool skipConfirmation = false}) async {
     if (cart.isEmpty) {
-      Get.snackbar(
-        'Cart Empty',
-        'Your cart is already empty',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (!skipConfirmation) {
+        Get.snackbar(
+          'Cart Empty',
+          'Your cart is already empty',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
       return;
     }
 
-    // Show confirmation dialog
+    // Skip confirmation jika dipanggil dari checkout
+    if (skipConfirmation) {
+      try {
+        await _cartRepo.clearCart();
+        cart.clear();
+        debugPrint('✅ Cart cleared successfully');
+      } catch (e) {
+        debugPrint('❌ Error clearing cart: $e');
+        // Silent error saat checkout
+      }
+      return;
+    }
+
+    // Show confirmation dialog untuk manual clear
     Get.defaultDialog(
       title: 'Clear Cart',
       middleText: 'Are you sure you want to clear all items?',

@@ -13,8 +13,9 @@ import '../models/product.dart';
 
 import 'cart_page.dart';
 import 'product_detail_page.dart';
-import 'add_product_page.dart';
-import 'orders_page.dart';
+import 'my_orders_page.dart';
+import 'history_page.dart';
+import 'account_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// PRODUCT LIST PAGE
@@ -27,7 +28,9 @@ import 'orders_page.dart';
 /// - ProductListPage → OrdersPage (Get.to dengan slide transition)
 /// - ProductListPage → AnalysisPage (Get.to)
 class ProductListPage extends StatefulWidget {
-  const ProductListPage({super.key});
+  final int initialIndex;
+  
+  const ProductListPage({super.key, this.initialIndex = 0});
 
   @override
   State<ProductListPage> createState() => _ProductListPageState();
@@ -41,10 +44,14 @@ class _ProductListPageState extends State<ProductListPage> {
   // Scroll controller for FAB
   final ScrollController _scrollController = ScrollController();
   final RxBool _showFAB = false.obs;
+  final RxInt _selectedIndex = 0.obs;
 
   @override
   void initState() {
     super.initState();
+    // Set initial selected index dari parameter
+    _selectedIndex.value = widget.initialIndex;
+    
     _scrollController.addListener(() {
       if (_scrollController.offset > 200) {
         _showFAB.value = true;
@@ -91,13 +98,9 @@ class _ProductListPageState extends State<ProductListPage> {
     );
   }
 
-  /// Navigate to Orders with downToUp transition
-  void openOrders() {
-    Get.to(
-      () => OrdersPage(),
-      transition: Transition.downToUp,
-      duration: const Duration(milliseconds: 350),
-    );
+  /// Navigate to bottom nav items
+  void _onBottomNavTap(int index) {
+    _selectedIndex.value = index;
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -148,70 +151,145 @@ class _ProductListPageState extends State<ProductListPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  // ═════════════════════════════════════════════════════════════════════════
+  // DRAWER MENU
+  // ═════════════════════════════════════════════════════════════════════════
+
+  Widget _buildDrawer() {
     final ThemeController themeController = Get.find();
     
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: const BoxDecoration(
+              color: Color(0xFF2380c4),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.white,
+                  child: Obx(() {
+                    final username = auth.username.value;
+                    final initial = username.isNotEmpty 
+                        ? username[0].toUpperCase() 
+                        : 'U';
+                    return Text(
+                      initial,
+                      style: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2380c4),
+                      ),
+                    );
+                  }),
+                ),
+                const SizedBox(height: 12),
+                Obx(() => Text(
+                      auth.username.value,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.person, color: Color(0xFF2380c4)),
+            title: const Text('Profil Saya'),
+            onTap: () {
+              Get.back();
+              _selectedIndex.value = 4; // Navigate to Account
+            },
+          ),
+          ListTile(
+            leading: Obx(() => Icon(
+                  themeController.isDark.value ? Icons.light_mode : Icons.dark_mode,
+                  color: const Color(0xFF2380c4),
+                )),
+            title: Obx(() => Text(
+                  themeController.isDark.value ? 'Light Mode' : 'Dark Mode',
+                )),
+            onTap: () {
+              themeController.toggleTheme();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings, color: Color(0xFF2380c4)),
+            title: const Text('Pengaturan'),
+            onTap: () {
+              Get.back();
+              Get.snackbar(
+                'Coming Soon',
+                'Settings feature will be available soon',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: const Color(0xFF2380c4),
+                colorText: Colors.white,
+                margin: const EdgeInsets.all(16),
+                borderRadius: 12,
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.help, color: Color(0xFF2380c4)),
+            title: const Text('Bantuan'),
+            onTap: () {
+              Get.back();
+              Get.snackbar(
+                'Bantuan',
+                'Hubungi customer service untuk bantuan',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: const Color(0xFF2380c4),
+                colorText: Colors.white,
+                margin: const EdgeInsets.all(16),
+                borderRadius: 12,
+              );
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.red),
+            ),
+            onTap: () {
+              Get.back();
+              showLogoutConfirmation();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Fishllet'),
         backgroundColor: const Color(0xFF2380c4),
-        actions: [
-        Obx(() => IconButton(
-          icon: Icon(
-            themeController.isDark.value ? Icons.light_mode : Icons.dark_mode,
-          ),
-          tooltip: themeController.isDark.value ? 'Light Mode' : 'Dark Mode',
-          onPressed: () => themeController.toggleTheme(),
-        )),
-        IconButton(
-          icon: const Icon(Icons.add),
-          tooltip: 'Add Product',
-          onPressed: () => Get.to(() => const AddProductPage()),
-        ),
-        Builder(builder: (_) {
-          return Obx(() {
-            final itemCount = cart.totalItems;
-            return Stack(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.shopping_cart),
-                  tooltip: 'Shopping Cart',
-                  onPressed: openCart,
-                ),
-                if (itemCount > 0)
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 20,
-                        minHeight: 20,
-                      ),
-                      child: Text(
-                        itemCount > 99 ? '99+' : '$itemCount',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-              ],
-            );
-          });
-          }),
-        ],
+        foregroundColor: Colors.white,
       ),
-      body: Column(
+      drawer: _buildDrawer(),
+      
+      body: Obx(() {
+        // Show different pages based on selected index
+        if (_selectedIndex.value == 1) return CartPage();
+        if (_selectedIndex.value == 2) return MyOrdersPage();
+        if (_selectedIndex.value == 3) return HistoryPage();
+        if (_selectedIndex.value == 4) return AccountPage();
+
+        // Default: Home page
+        return Column(
         children: [
+          // Welcome Banner
           Container(
             width: double.infinity,
             color: const Color(0xFF2380c4),
@@ -223,6 +301,108 @@ class _ProductListPageState extends State<ProductListPage> {
               ),
             ),
           ),
+          
+          // Search Bar
+          Container(
+            padding: const EdgeInsets.all(16),
+            child: TextField(
+              onChanged: (value) => product.setSearchQuery(value),
+              decoration: InputDecoration(
+                hintText: 'Cari produk...',
+                prefixIcon: const Icon(Icons.search, color: Color(0xFF2380c4)),
+                suffixIcon: Obx(() => product.searchQuery.value.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () => product.setSearchQuery(''),
+                    )
+                  : const SizedBox.shrink()),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFF2380c4)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Color(0xFF2380c4), width: 2),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+          ),
+          
+          // Category Chips
+          Container(
+            height: 50,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            child: Obx(() => ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: product.categories.length,
+              itemBuilder: (context, index) {
+                final category = product.categories[index];
+                final isSelected = product.selectedCategory.value == category;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: FilterChip(
+                    label: Text(category),
+                    selected: isSelected,
+                    onSelected: (selected) => product.setCategory(category),
+                    backgroundColor: Colors.grey[200],
+                    selectedColor: const Color(0xFF2380c4),
+                    labelStyle: TextStyle(
+                      color: isSelected ? Colors.white : Colors.black,
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
+                );
+              },
+            )),
+          ),
+          
+          // Sort & Filter Row
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Obx(() => Text(
+                  '${product.filteredProducts.length} Produk',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2380c4),
+                  ),
+                )),
+                PopupMenuButton<String>(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFF2380c4)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.sort, size: 18, color: Color(0xFF2380c4)),
+                        const SizedBox(width: 4),
+                        Obx(() => Text(
+                          product.selectedSort.value,
+                          style: const TextStyle(fontSize: 12, color: Color(0xFF2380c4)),
+                        )),
+                      ],
+                    ),
+                  ),
+                  onSelected: (value) => product.setSort(value),
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(value: 'Nama A-Z', child: Text('Nama A-Z')),
+                    const PopupMenuItem(value: 'Nama Z-A', child: Text('Nama Z-A')),
+                    const PopupMenuItem(value: 'Harga Terendah', child: Text('Harga Terendah')),
+                    const PopupMenuItem(value: 'Harga Tertinggi', child: Text('Harga Tertinggi')),
+                    const PopupMenuItem(value: 'Rating Tertinggi', child: Text('Rating Tertinggi')),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          
           Expanded(
             child: Obx(() {
               // Loading state dengan styling
@@ -250,7 +430,7 @@ class _ProductListPageState extends State<ProductListPage> {
               }
 
               // Empty state
-              if (product.products.isEmpty) {
+              if (product.filteredProducts.isEmpty) {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -258,13 +438,15 @@ class _ProductListPageState extends State<ProductListPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          Icons.shopping_bag_outlined,
+                          Icons.search_off,
                           size: 100,
                           color: Colors.grey.shade300,
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          'No products available',
+                          product.searchQuery.value.isNotEmpty 
+                            ? 'Produk tidak ditemukan' 
+                            : 'No products available',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -273,14 +455,15 @@ class _ProductListPageState extends State<ProductListPage> {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                        'No products available.\nCheck your internet connection.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade600,
-                            ),
+                          product.searchQuery.value.isNotEmpty
+                            ? 'Coba kata kunci lain'
+                            : 'Check your internet connection.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
                           ),
-
+                        ),
                       ],
                     ),
                   ),
@@ -290,39 +473,124 @@ class _ProductListPageState extends State<ProductListPage> {
               // Products list with scroll controller
               return ListView.builder(
                 controller: _scrollController,
-                itemCount: product.products.length,
+                itemCount: product.filteredProducts.length,
                 itemBuilder: (context, idx) {
-                  final p = product.products[idx];
+                  final p = product.filteredProducts[idx];
                   return Card(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 8,
                     ),
-                    child: ListTile(
-                      leading: Image.network(
-                        p.imageUrl,
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      ),
-                      title: Text(
-                        p.name,
-                        style: const TextStyle(
-                          color: Color(0xFF2380c4),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(p.price),
-                      trailing: IconButton(
-                        icon: const Icon(
-                          Icons.add_shopping_cart,
-                          color: Color(0xFF2380c4),
-                        ),
-                        onPressed: () async {
-                          await cart.addToCart(p);
-                        },
-                      ),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: InkWell(
                       onTap: () => openDetail(p),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Product Image
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                p.imageUrl,
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: 80,
+                                    height: 80,
+                                    color: Colors.grey[300],
+                                    child: const Icon(Icons.image_not_supported),
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            // Product Info
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    p.name,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF2380c4),
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  // Category chip
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF2380c4).withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      p.category,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFF2380c4),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  // Rating
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.star,
+                                        size: 16,
+                                        color: Colors.amber,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        p.rating.toStringAsFixed(1),
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    p.price,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF2380c4),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // Add to cart button
+                            IconButton(
+                              icon: const Icon(
+                                Icons.add_shopping_cart,
+                                color: Color(0xFF2380c4),
+                              ),
+                              onPressed: () async {
+                                await cart.addToCart(p);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   );
                 },
@@ -330,7 +598,9 @@ class _ProductListPageState extends State<ProductListPage> {
             }),
           ),
         ],
-      ),
+      );
+      }),
+      
       // Floating Action Button for scroll to top
       floatingActionButton: Obx(
         () => AnimatedScale(
@@ -344,46 +614,35 @@ class _ProductListPageState extends State<ProductListPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: const Color(0xFF2380c4),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Obx(
-                () => ElevatedButton.icon(
-                  icon: const Icon(Icons.shopping_cart),
-                  label: Text('Keranjang (${cart.cart.length})'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF2380c4),
-                  ),
-                  onPressed: openCart,
-                ),
-              ),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.history),
-                label: const Text('Riwayat'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF2380c4),
-                ),
-                onPressed: openOrders,
-              ),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.logout),
-                label: const Text('Logout'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF2380c4),
-                ),
-                onPressed: showLogoutConfirmation,
-              ),
-            ],
+      bottomNavigationBar: Obx(() => BottomNavigationBar(
+        currentIndex: _selectedIndex.value,
+        onTap: _onBottomNavTap,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color(0xFF2380c4),
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
-        ),
-      ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Keranjang',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inventory_2),
+            label: 'Pesanan Saya',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'Riwayat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Akun',
+          ),
+        ],
+      )),
     );
   }
 }

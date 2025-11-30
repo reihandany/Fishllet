@@ -22,6 +22,15 @@ class Product {
   @HiveField(5)
   int quantity;
 
+  @HiveField(6)
+  final String category;
+
+  @HiveField(7)
+  final double rating;
+
+  @HiveField(8)
+  final double numericPrice;
+
   Product({
     required this.id,
     required this.name,
@@ -29,6 +38,9 @@ class Product {
     this.description,
     this.price = "Rp 45.000",
     this.quantity = 1,
+    this.category = "Ikan Segar",
+    this.rating = 4.5,
+    this.numericPrice = 45000,
   });
 
   factory Product.fromJsonList(Map<String, dynamic> json) {
@@ -36,6 +48,8 @@ class Product {
       id: json['idMeal'] ?? '',
       name: json['strMeal'] ?? 'Tanpa nama',
       imageUrl: json['strMealThumb'] ?? '',
+      category: json['strCategory'] ?? 'Ikan Segar',
+      rating: 4.0 + (json['idMeal'].hashCode % 10) / 10, // Random rating 4.0-4.9
     );
   }
 
@@ -45,6 +59,8 @@ class Product {
       name: json['strMeal'] ?? 'Tanpa nama',
       imageUrl: json['strMealThumb'] ?? '',
       description: json['strInstructions'] ?? 'Deskripsi tidak tersedia.',
+      category: json['strCategory'] ?? 'Ikan Segar',
+      rating: 4.0 + (json['idMeal'].hashCode % 10) / 10,
     );
   }
 
@@ -52,8 +68,10 @@ class Product {
   factory Product.fromSupabase(Map<String, dynamic> json) {
     // Format price dari numeric ke string Rupiah
     String formattedPrice = 'Rp 45.000';
+    double numPrice = 45000;
     if (json['price'] != null) {
       final price = json['price'];
+      numPrice = price.toDouble();
       // Format angka dengan pemisah ribuan
       final priceStr = price.toStringAsFixed(0).replaceAllMapped(
         RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
@@ -68,6 +86,9 @@ class Product {
       imageUrl: json['image_url'] ?? '',
       description: json['description'],
       price: formattedPrice,
+      category: json['category'] ?? 'Ikan Segar',
+      rating: json['rating']?.toDouble() ?? 4.5,
+      numericPrice: numPrice,
     );
   }
 
