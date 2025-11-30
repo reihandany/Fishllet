@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/cart_controller.dart';
 import '../controllers/checkout_controller.dart';
-import 'orders_page.dart';
+import 'product_list_page.dart';
+import 'payment_method_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// CHECKOUT PAGE
@@ -83,11 +84,11 @@ class CheckoutPage extends StatelessWidget {
             style: TextStyle(fontSize: 16),
           ),
           actions: [
-            // View Orders button
+            // View Orders button - Navigate to Pesanan Saya tab
             TextButton(
               onPressed: () {
                 Get.back(); // Close dialog
-                Get.off(() => OrdersPage()); // Navigate to Orders
+                Get.offAll(() => const ProductListPage(initialIndex: 2)); // Navigate to Pesanan Saya tab (index 2)
               },
               child: const Text(
                 'View Orders',
@@ -95,12 +96,11 @@ class CheckoutPage extends StatelessWidget {
               ),
             ),
 
-            // Continue Shopping button
+            // Continue Shopping button - Back to home
             ElevatedButton(
               onPressed: () {
                 Get.back(); // Close dialog
-                Get.back(); // Back to ProductList (from Checkout)
-                Get.back(); // Back to ProductList (from Cart)
+                Get.offAll(() => const ProductListPage(initialIndex: 0)); // Back to home tab
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2380c4),
@@ -353,12 +353,24 @@ class CheckoutPage extends StatelessWidget {
     );
   }
 
-  /// Payment method selector - opens bottom sheet
+  /// Payment method selector - Navigates to PaymentMethodPage
   Widget _buildPaymentMethod() {
     return Obx(() {
       // Get icon for current payment method
       IconData getPaymentIcon(String method) {
         switch (method) {
+          case 'gopay':
+            return Icons.account_balance_wallet;
+          case 'ovo':
+            return Icons.account_balance_wallet;
+          case 'dana':
+            return Icons.account_balance_wallet;
+          case 'bank_transfer':
+            return Icons.account_balance;
+          case 'cod':
+            return Icons.money;
+          case 'credit_card':
+            return Icons.credit_card;
           case 'Cash':
             return Icons.money;
           case 'Credit Card':
@@ -374,8 +386,50 @@ class CheckoutPage extends StatelessWidget {
         }
       }
 
+      // Get display name
+      String getDisplayName(String method) {
+        switch (method) {
+          case 'gopay':
+            return 'GoPay';
+          case 'ovo':
+            return 'OVO';
+          case 'dana':
+            return 'DANA';
+          case 'bank_transfer':
+            return 'Transfer Bank';
+          case 'cod':
+            return 'Cash on Delivery (COD)';
+          case 'credit_card':
+            return 'Kartu Kredit/Debit';
+          default:
+            return method;
+        }
+      }
+
       return InkWell(
-        onTap: () => _showPaymentMethodBottomSheet(),
+        onTap: () async {
+          // Navigate to PaymentMethodPage
+          final result = await Get.to(
+            () => PaymentMethodPage(totalAmount: checkoutController.totalPrice),
+            transition: Transition.rightToLeft,
+            duration: const Duration(milliseconds: 300),
+          );
+
+          if (result != null) {
+            checkoutController.updatePaymentMethod(result);
+            Get.snackbar(
+              'Metode Pembayaran Dipilih',
+              'Anda memilih: ${getDisplayName(result)}',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: const Color(0xFF2380c4),
+              colorText: Colors.white,
+              icon: Icon(getPaymentIcon(result), color: Colors.white),
+              duration: const Duration(seconds: 2),
+              margin: const EdgeInsets.all(16),
+              borderRadius: 12,
+            );
+          }
+        },
         borderRadius: BorderRadius.circular(12),
         child: Container(
           decoration: BoxDecoration(
@@ -394,142 +448,16 @@ class CheckoutPage extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  checkoutController.paymentMethod.value,
+                  getDisplayName(checkoutController.paymentMethod.value),
                   style: const TextStyle(fontSize: 16),
                 ),
               ),
-              const Icon(Icons.arrow_drop_down, color: Colors.grey),
+              const Icon(Icons.chevron_right, color: Colors.grey),
             ],
           ),
         ),
       );
     });
-  }
-
-  /// Show payment method bottom sheet
-  void _showPaymentMethodBottomSheet() {
-    Get.bottomSheet(
-      Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Handle bar
-            Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 20),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-
-            // Title
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                'Select Payment Method',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Divider(height: 1),
-
-            // Payment options
-            Flexible(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: checkoutController.paymentMethods.length,
-                itemBuilder: (context, index) {
-                  final method = checkoutController.paymentMethods[index];
-                  final isSelected =
-                      checkoutController.paymentMethod.value == method;
-
-                  IconData icon;
-                  switch (method) {
-                    case 'Cash':
-                      icon = Icons.money;
-                      break;
-                    case 'Credit Card':
-                      icon = Icons.credit_card;
-                      break;
-                    case 'Debit Card':
-                      icon = Icons.credit_card;
-                      break;
-                    case 'E-Wallet':
-                      icon = Icons.account_balance_wallet;
-                      break;
-                    case 'Bank Transfer':
-                      icon = Icons.account_balance;
-                      break;
-                    default:
-                      icon = Icons.payment;
-                  }
-
-                  return ListTile(
-                    leading: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? const Color(0xFF2380c4).withOpacity(0.1)
-                            : Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        icon,
-                        color: isSelected
-                            ? const Color(0xFF2380c4)
-                            : Colors.grey.shade700,
-                      ),
-                    ),
-                    title: Text(
-                      method,
-                      style: TextStyle(
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                        color: isSelected
-                            ? const Color(0xFF2380c4)
-                            : Colors.black,
-                      ),
-                    ),
-                    trailing: isSelected
-                        ? const Icon(
-                            Icons.check_circle,
-                            color: Color(0xFF2380c4),
-                          )
-                        : null,
-                    onTap: () {
-                      checkoutController.updatePaymentMethod(method);
-                      Get.back();
-                      Get.snackbar(
-                        'Payment Method Updated',
-                        'Selected: $method',
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: const Color(0xFF2380c4),
-                        colorText: Colors.white,
-                        icon: Icon(icon, color: Colors.white),
-                        duration: const Duration(seconds: 2),
-                        margin: const EdgeInsets.all(16),
-                        borderRadius: 12,
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      isDismissible: true,
-      enableDrag: true,
-      isScrollControlled: false,
-    );
   }
 
   /// Total price display

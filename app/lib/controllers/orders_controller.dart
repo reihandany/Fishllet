@@ -1,7 +1,9 @@
 // lib/controllers/orders_controller.dart
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 
 class OrdersController extends GetxController {
+  late Box ordersBox;
   // List of all orders
   var orders = <Map<String, dynamic>>[].obs;
 
@@ -12,22 +14,26 @@ class OrdersController extends GetxController {
   var sortBy = 'date_desc'.obs; // date_desc, date_asc, price_desc, price_asc
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    // Load orders from local storage or API (simulasi)
+    // Open Hive box
+    ordersBox = await Hive.openBox('orders');
+    // Load orders from Hive
     loadOrders();
   }
 
-  // Load orders (simulasi - bisa diganti dengan API call)
+  // Load orders from Hive
   Future<void> loadOrders() async {
     try {
       isLoading.value = true;
 
-      // Simulasi loading dari server (1 detik)
-      await Future.delayed(const Duration(seconds: 1));
-
-      // Data akan diisi dari checkout
-      // orders sudah terisi dari addOrder()
+      // Load from Hive
+      final savedOrders = ordersBox.get('ordersList', defaultValue: []);
+      if (savedOrders is List) {
+        orders.value = List<Map<String, dynamic>>.from(
+          savedOrders.map((order) => Map<String, dynamic>.from(order)),
+        );
+      }
 
       isLoading.value = false;
     } catch (e) {
@@ -41,8 +47,11 @@ class OrdersController extends GetxController {
   }
 
   // Add new order
-  void addOrder(Map<String, dynamic> order) {
+  Future<void> addOrder(Map<String, dynamic> order) async {
     orders.insert(0, order); // Tambah di paling atas (order terbaru)
+    
+    // Save to Hive
+    await ordersBox.put('ordersList', orders.toList());
   }
 
   // Get total orders count
@@ -98,11 +107,14 @@ class OrdersController extends GetxController {
   }
 
   // Update order status
-  void updateOrderStatus(String orderId, String newStatus) {
+  Future<void> updateOrderStatus(String orderId, String newStatus) async {
     final index = orders.indexWhere((order) => order['orderId'] == orderId);
     if (index != -1) {
       orders[index]['status'] = newStatus;
       orders.refresh(); // Trigger UI update
+      
+      // Save to Hive
+      await ordersBox.put('ordersList', orders.toList());
 
       Get.snackbar(
         'Status Updated',
@@ -113,11 +125,14 @@ class OrdersController extends GetxController {
   }
 
   // Cancel order
-  void cancelOrder(String orderId) {
+  Future<void> cancelOrder(String orderId) async {
     final index = orders.indexWhere((order) => order['orderId'] == orderId);
     if (index != -1) {
       orders[index]['status'] = 'Cancelled';
       orders.refresh();
+      
+      // Save to Hive
+      await ordersBox.put('ordersList', orders.toList());
 
       Get.snackbar(
         'Order Cancelled',
@@ -128,8 +143,11 @@ class OrdersController extends GetxController {
   }
 
   // Delete order from list
-  void deleteOrder(String orderId) {
+  Future<void> deleteOrder(String orderId) async {
     orders.removeWhere((order) => order['orderId'] == orderId);
+    
+    // Save to Hive
+    await ordersBox.put('ordersList', orders.toList());
 
     Get.snackbar(
       'Deleted',

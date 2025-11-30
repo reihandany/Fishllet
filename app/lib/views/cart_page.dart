@@ -211,8 +211,10 @@ class CartPage extends StatelessWidget {
                   child: Opacity(
                     opacity: value,
                     child: ElevatedButton.icon(
-                      onPressed: () => Get.back(),
-                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Get.back(); // Navigate back to product list
+                      },
+                      icon: const Icon(Icons.shopping_bag),
                       label: const Text('Continue Shopping'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2380c4),

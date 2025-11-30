@@ -4,17 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'controllers/auth_controller.dart';
 import 'controllers/product_controller.dart';
-import 'controllers/cart_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'controllers/checkout_controller.dart';
 import 'utils/app__bindings.dart';
 import 'views/login_page.dart';
 import 'views/product_list_page.dart';
-import 'views/add_product_page.dart';
 import 'views/checkout_page.dart';
-import 'views/bulk_upload_products_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'models/product.dart';
 
@@ -50,11 +46,16 @@ void main() async {
   );
   
   try {
-    AppBindings().dependencies();
-    debugPrint('✅ AppBindings initialized successfully');
-
+    // Initialize ThemeController first (before AppBindings)
+    Get.put<ThemeController>(ThemeController(), permanent: true);
+    debugPrint('✅ ThemeController initialized');
+    
     // Load theme
     await Get.find<ThemeController>().loadTheme();
+    debugPrint('✅ Theme loaded');
+    
+    AppBindings().dependencies();
+    debugPrint('✅ AppBindings initialized successfully');
 
     // ⭐ NEW: load products on startup (tanpa tombol apapun)
     try {
@@ -90,17 +91,30 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize GetX controllers
-    Get.put(AuthController());
-    Get.put(ProductController());
-    Get.put(CartController());
+    // Get existing controllers (already initialized in AppBindings)
+    final themeController = Get.find<ThemeController>();
 
-    return GetMaterialApp(
+    return Obx(() => GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Fishllet',
+      themeMode: themeController.isDark.value ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         useMaterial3: true,
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.light,
+        ),
+      ),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          brightness: Brightness.dark,
+        ),
       ),
       // Set initial route
       initialRoute: '/login',
@@ -108,7 +122,6 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/login', page: () => LoginPage()),
         GetPage(name: '/products', page: () => const ProductListPage()),
-        GetPage(name: '/add-product', page: () => const AddProductPage()),
         GetPage(
           name: '/checkout',
           page: () => CheckoutPage(),
@@ -116,9 +129,8 @@ class MyApp extends StatelessWidget {
             Get.lazyPut<CheckoutController>(() => CheckoutController());
           }),
         ),
-        GetPage(name: '/bulk-upload', page: () => const BulkUploadProductsPage()),
       ],
-    );
+    ));
   }
 }
 
