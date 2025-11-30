@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/cart_controller.dart';
 import '../controllers/checkout_controller.dart';
+import '../controllers/location_controller.dart';
 import 'product_list_page.dart';
 import 'payment_method_page.dart';
 
@@ -25,6 +26,7 @@ class CheckoutPage extends StatelessWidget {
   // Controllers
   final CartController cartController = Get.find<CartController>();
   final CheckoutController checkoutController = Get.find<CheckoutController>();
+  final LocationController locationController = Get.put(LocationController());
 
   // Form key untuk validation
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -349,6 +351,108 @@ class CheckoutPage extends StatelessWidget {
             fillColor: Colors.white,
           ),
         ),
+        const SizedBox(height: 12),
+        
+        // Get Location Button
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  await locationController.getUserLocation();
+                  if (locationController.userLocation.value != null) {
+                    final loc = locationController.userLocation.value!;
+                    
+                    Get.snackbar(
+                      'Location Captured',
+                      'Lat: ${loc.latitude.toStringAsFixed(6)}, Long: ${loc.longitude.toStringAsFixed(6)}',
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.green,
+                      colorText: Colors.white,
+                      icon: const Icon(Icons.check_circle, color: Colors.white),
+                      duration: const Duration(seconds: 3),
+                    );
+                  }
+                },
+                icon: Obx(() => locationController.isLoading.value
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.my_location)),
+                label: Obx(() => Text(
+                  locationController.userLocation.value == null
+                      ? 'Get My Location (GPS/Network)'
+                      : 'Location Saved ✓',
+                )),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: locationController.userLocation.value == null
+                      ? const Color(0xFF2380c4)
+                      : Colors.green,
+                  side: BorderSide(
+                    color: locationController.userLocation.value == null
+                        ? const Color(0xFF2380c4)
+                        : Colors.green,
+                    width: 1.5,
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        
+        // Location info if available
+        Obx(() {
+          if (locationController.userLocation.value == null) {
+            return const SizedBox.shrink();
+          }
+          
+          final loc = locationController.userLocation.value!;
+          
+          return Container(
+            margin: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.green.shade200),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: const [
+                    Icon(Icons.location_on, size: 16, color: Colors.green),
+                    SizedBox(width: 6),
+                    Text(
+                      'Delivery Location',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Lat: ${loc.latitude.toStringAsFixed(6)}, Long: ${loc.longitude.toStringAsFixed(6)}',
+                  style: const TextStyle(fontSize: 11, fontFamily: 'monospace'),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Source: GPS/Network Location',
+                  style: TextStyle(fontSize: 10, color: Colors.grey),
+                ),
+              ],
+            ),
+          );
+        }),
       ],
     );
   }

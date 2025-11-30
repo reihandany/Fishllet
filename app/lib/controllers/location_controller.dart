@@ -159,6 +159,11 @@ class LocationController extends GetxController {
       userLocation.value = const LatLng(-6.2088, 106.8456);
     }
   }
+  
+  /// Public method to get user location
+  Future<void> getUserLocation() async {
+    await _getUserLocation();
+  }
 
   /// Simulate courier movement (in real app, get from backend)
   void _simulateCourierLocation(LatLng deliveryAddress) {
