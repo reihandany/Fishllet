@@ -134,7 +134,11 @@ class LocationTrackingPage extends StatelessWidget {
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.fishllet.app',
-            maxNativeZoom: 19,
+            maxZoom: 19,
+            // Add additional headers to comply with OSM tile usage policy
+            additionalOptions: const {
+              'attribution': '© OpenStreetMap contributors',
+            },
           ),
           
           // Polyline Layer

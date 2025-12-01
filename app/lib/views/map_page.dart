@@ -14,11 +14,31 @@ import '../controllers/location_controller.dart';
 /// - Single marker (user location)
 /// - OpenStreetMap integration
 /// - Location source indicator (GPS vs Network)
-class MapPage extends StatelessWidget {
-  MapPage({super.key});
+class MapPage extends StatefulWidget {
+  const MapPage({super.key});
 
+  @override
+  State<MapPage> createState() => _MapPageState();
+}
+
+class _MapPageState extends State<MapPage> {
   final LocationController locationController = Get.put(LocationController());
   final MapController mapController = MapController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Automatically get user location when page opens
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await locationController.getUserLocation();
+      if (locationController.userLocation.value != null) {
+        mapController.move(
+          locationController.userLocation.value!,
+          15.0,
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +87,12 @@ class MapPage extends StatelessWidget {
                 // OpenStreetMap Tile Layer
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.app',
+                  userAgentPackageName: 'com.fishllet.app',
+                  maxZoom: 19,
+                  // Add additional headers to comply with OSM tile usage policy
+                  additionalOptions: const {
+                    'attribution': '© OpenStreetMap contributors',
+                  },
                 ),
                 
                 // Marker Layer - Single Marker (User Location)

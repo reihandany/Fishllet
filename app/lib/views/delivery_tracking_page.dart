@@ -106,7 +106,12 @@ class DeliveryTrackingPage extends StatelessWidget {
                 // OpenStreetMap Tile Layer
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.app',
+                  userAgentPackageName: 'com.fishllet.app',
+                  maxZoom: 19,
+                  // Add additional headers to comply with OSM tile usage policy
+                  additionalOptions: const {
+                    'attribution': '© OpenStreetMap contributors',
+                  },
                 ),
                 
                 // Marker Layer - 2 Markers
