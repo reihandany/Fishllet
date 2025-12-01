@@ -32,10 +32,7 @@ class _MapPageState extends State<MapPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await locationController.getUserLocation();
       if (locationController.userLocation.value != null) {
-        mapController.move(
-          locationController.userLocation.value!,
-          15.0,
-        );
+        mapController.move(locationController.userLocation.value!, 15.0);
       }
     });
   }
@@ -71,10 +68,10 @@ class _MapPageState extends State<MapPage> {
           // ═══════════════════════════════════════════════════════════════
           Obx(() {
             final userPos = locationController.userLocation.value;
-            
+
             // Default center (Jakarta)
             final centerPos = userPos ?? const LatLng(-6.2088, 106.8456);
-            
+
             return FlutterMap(
               mapController: mapController,
               options: MapOptions(
@@ -94,7 +91,7 @@ class _MapPageState extends State<MapPage> {
                     'attribution': '© OpenStreetMap contributors',
                   },
                 ),
-                
+
                 // Marker Layer - Single Marker (User Location)
                 if (userPos != null)
                   MarkerLayer(
@@ -128,10 +125,7 @@ class _MapPageState extends State<MapPage> {
                               color: Color(0xFF2380c4),
                               size: 45,
                               shadows: [
-                                Shadow(
-                                  blurRadius: 4,
-                                  color: Colors.black26,
-                                ),
+                                Shadow(blurRadius: 4, color: Colors.black26),
                               ],
                             ),
                           ],
@@ -142,7 +136,7 @@ class _MapPageState extends State<MapPage> {
               ],
             );
           }),
-          
+
           // ═══════════════════════════════════════════════════════════════
           // LOCATION INFO CARD (Bottom)
           // ═══════════════════════════════════════════════════════════════
@@ -152,7 +146,7 @@ class _MapPageState extends State<MapPage> {
             right: 20,
             child: Obx(() {
               final userPos = locationController.userLocation.value;
-              
+
               if (userPos == null) {
                 return Card(
                   elevation: 4,
@@ -188,7 +182,7 @@ class _MapPageState extends State<MapPage> {
                   ),
                 );
               }
-              
+
               return Card(
                 elevation: 4,
                 shape: RoundedRectangleBorder(
@@ -276,7 +270,7 @@ class _MapPageState extends State<MapPage> {
           ),
         ],
       ),
-      
+
       // ═════════════════════════════════════════════════════════════════════
       // FLOATING ACTION BUTTONS
       // ═════════════════════════════════════════════════════════════════════
@@ -293,7 +287,7 @@ class _MapPageState extends State<MapPage> {
                   locationController.userLocation.value!,
                   15.0,
                 );
-                
+
                 Get.snackbar(
                   'Location Updated',
                   'Your current location has been updated',
@@ -313,13 +307,13 @@ class _MapPageState extends State<MapPage> {
             ),
           ),
           const SizedBox(height: 10),
-          
+
           // Center Map Button
           Obx(() {
             if (locationController.userLocation.value == null) {
               return const SizedBox.shrink();
             }
-            
+
             return FloatingActionButton.small(
               heroTag: 'center',
               onPressed: () {

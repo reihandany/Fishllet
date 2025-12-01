@@ -22,7 +22,7 @@ class DeliveryTrackingPage extends StatelessWidget {
   final String orderId;
   final LatLng customerLocation;
   final String customerAddress;
-  
+
   DeliveryTrackingPage({
     super.key,
     required this.orderId,
@@ -37,7 +37,7 @@ class DeliveryTrackingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Setup destination saat page dibuka
     deliveryController.setDestination(customerLocation, orderId);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -47,10 +47,15 @@ class DeliveryTrackingPage extends StatelessWidget {
               'Live Delivery Tracking',
               style: TextStyle(fontSize: 18),
             ),
-            Obx(() => Text(
-              'Order #${deliveryController.orderId.value}',
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
-            )),
+            Obx(
+              () => Text(
+                'Order #${deliveryController.orderId.value}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
           ],
         ),
         backgroundColor: const Color(0xFF2380c4),
@@ -63,8 +68,8 @@ class DeliveryTrackingPage extends StatelessWidget {
                 deliveryController.isTracking.value
                     ? Icons.gps_fixed
                     : Icons.gps_not_fixed,
-                color: deliveryController.isTracking.value 
-                    ? Colors.greenAccent 
+                color: deliveryController.isTracking.value
+                    ? Colors.greenAccent
                     : Colors.white,
               ),
               onPressed: () {
@@ -74,14 +79,14 @@ class DeliveryTrackingPage extends StatelessWidget {
                   deliveryController.startTracking();
                 }
               },
-              tooltip: deliveryController.isTracking.value 
-                  ? 'Stop Tracking' 
+              tooltip: deliveryController.isTracking.value
+                  ? 'Stop Tracking'
                   : 'Start Tracking',
             );
           }),
         ],
       ),
-      
+
       body: Stack(
         children: [
           // ═══════════════════════════════════════════════════════════════
@@ -90,10 +95,11 @@ class DeliveryTrackingPage extends StatelessWidget {
           Obx(() {
             final courierPos = deliveryController.courierLocation.value;
             final customerPos = deliveryController.destinationLocation.value;
-            
+
             // Kalau courier position belum ada, tampilkan customer location
-            final centerPos = courierPos ?? customerPos ?? const LatLng(-6.2088, 106.8456);
-            
+            final centerPos =
+                courierPos ?? customerPos ?? const LatLng(-6.2088, 106.8456);
+
             return FlutterMap(
               mapController: mapController,
               options: MapOptions(
@@ -113,7 +119,7 @@ class DeliveryTrackingPage extends StatelessWidget {
                     'attribution': '© OpenStreetMap contributors',
                   },
                 ),
-                
+
                 // Marker Layer - 2 Markers
                 MarkerLayer(
                   markers: [
@@ -148,16 +154,13 @@ class DeliveryTrackingPage extends StatelessWidget {
                               color: Colors.red,
                               size: 45,
                               shadows: [
-                                Shadow(
-                                  blurRadius: 4,
-                                  color: Colors.black26,
-                                ),
+                                Shadow(blurRadius: 4, color: Colors.black26),
                               ],
                             ),
                           ],
                         ),
                       ),
-                    
+
                     // MARKER 2: Courier (Live Update - Blue)
                     if (courierPos != null)
                       Marker(
@@ -175,24 +178,23 @@ class DeliveryTrackingPage extends StatelessWidget {
                                 color: const Color(0xFF2380c4),
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Obx(() => Text(
-                                deliveryController.locationSource.value,
-                                style: const TextStyle(
-                                  fontSize: 9,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                              child: Obx(
+                                () => Text(
+                                  deliveryController.locationSource.value,
+                                  style: const TextStyle(
+                                    fontSize: 9,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              )),
+                              ),
                             ),
                             const Icon(
                               Icons.delivery_dining,
                               color: Color(0xFF2380c4),
                               size: 45,
                               shadows: [
-                                Shadow(
-                                  blurRadius: 4,
-                                  color: Colors.black26,
-                                ),
+                                Shadow(blurRadius: 4, color: Colors.black26),
                               ],
                             ),
                           ],
@@ -200,7 +202,7 @@ class DeliveryTrackingPage extends StatelessWidget {
                       ),
                   ],
                 ),
-                
+
                 // Polyline Layer - Route line (optional)
                 if (courierPos != null && customerPos != null)
                   PolylineLayer(
@@ -216,7 +218,7 @@ class DeliveryTrackingPage extends StatelessWidget {
               ],
             );
           }),
-          
+
           // ═══════════════════════════════════════════════════════════════
           // DELIVERY INFO CARD (Bottom)
           // ═══════════════════════════════════════════════════════════════
@@ -242,7 +244,7 @@ class DeliveryTrackingPage extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: Obx(() {
                 final courierPos = deliveryController.courierLocation.value;
-                
+
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -278,9 +280,9 @@ class DeliveryTrackingPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     // Distance & ETA
                     if (courierPos != null) ...[
                       Row(
@@ -307,9 +309,9 @@ class DeliveryTrackingPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // Location Details
                       Container(
                         padding: const EdgeInsets.all(12),
@@ -369,9 +371,7 @@ class DeliveryTrackingPage extends StatelessWidget {
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           children: const [
-                            CircularProgressIndicator(
-                              color: Color(0xFF2380c4),
-                            ),
+                            CircularProgressIndicator(color: Color(0xFF2380c4)),
                             SizedBox(height: 12),
                             Text(
                               'Menunggu lokasi kurir...',
@@ -386,55 +386,60 @@ class DeliveryTrackingPage extends StatelessWidget {
               }),
             ),
           ),
-          
+
           // ═══════════════════════════════════════════════════════════════
           // TRACKING STATUS BADGE (Top Left)
           // ═══════════════════════════════════════════════════════════════
           Positioned(
             top: 16,
             left: 16,
-            child: Obx(() => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: deliveryController.isTracking.value
-                    ? Colors.green
-                    : Colors.orange,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 4,
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    deliveryController.isTracking.value
-                        ? Icons.radio_button_checked
-                        : Icons.radio_button_unchecked,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    deliveryController.isTracking.value
-                        ? 'Live Tracking'
-                        : 'Tracking Off',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+            child: Obx(
+              () => Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: deliveryController.isTracking.value
+                      ? Colors.green
+                      : Colors.orange,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 4,
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      deliveryController.isTracking.value
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      deliveryController.isTracking.value
+                          ? 'Live Tracking'
+                          : 'Tracking Off',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            )),
+            ),
           ),
         ],
       ),
-      
+
       // ═════════════════════════════════════════════════════════════════════
       // FLOATING ACTION BUTTONS
       // ═════════════════════════════════════════════════════════════════════
@@ -456,35 +461,35 @@ class DeliveryTrackingPage extends StatelessWidget {
             child: const Icon(Icons.delivery_dining, color: Colors.white),
           ),
           const SizedBox(height: 10),
-          
+
           // Show both markers
           FloatingActionButton.small(
             heroTag: 'fit_bounds',
             onPressed: () {
               final courierPos = deliveryController.courierLocation.value;
               final customerPos = deliveryController.destinationLocation.value;
-              
+
               if (courierPos != null && customerPos != null) {
                 // Calculate bounds
                 final bounds = LatLngBounds(
                   LatLng(
-                    courierPos.latitude < customerPos.latitude 
-                        ? courierPos.latitude 
+                    courierPos.latitude < customerPos.latitude
+                        ? courierPos.latitude
                         : customerPos.latitude,
-                    courierPos.longitude < customerPos.longitude 
-                        ? courierPos.longitude 
+                    courierPos.longitude < customerPos.longitude
+                        ? courierPos.longitude
                         : customerPos.longitude,
                   ),
                   LatLng(
-                    courierPos.latitude > customerPos.latitude 
-                        ? courierPos.latitude 
+                    courierPos.latitude > customerPos.latitude
+                        ? courierPos.latitude
                         : customerPos.latitude,
-                    courierPos.longitude > customerPos.longitude 
-                        ? courierPos.longitude 
+                    courierPos.longitude > customerPos.longitude
+                        ? courierPos.longitude
                         : customerPos.longitude,
                   ),
                 );
-                
+
                 mapController.fitCamera(
                   CameraFit.bounds(
                     bounds: bounds,
@@ -496,9 +501,9 @@ class DeliveryTrackingPage extends StatelessWidget {
             backgroundColor: Colors.white,
             child: const Icon(Icons.zoom_out_map, color: Color(0xFF2380c4)),
           ),
-          
+
           const SizedBox(height: 10),
-          
+
           // Simulate courier movement (for testing)
           if (!deliveryController.isTracking.value)
             FloatingActionButton.small(
@@ -511,9 +516,9 @@ class DeliveryTrackingPage extends StatelessWidget {
                   destLat + 0.005, // ~500m utara
                   destLng + 0.005, // ~500m timur
                 );
-                
+
                 deliveryController.simulateCourierMovement(simulatedPos);
-                
+
                 Get.snackbar(
                   'Simulation Mode',
                   'Kurir disimulasikan ~700m dari tujuan',
@@ -530,11 +535,11 @@ class DeliveryTrackingPage extends StatelessWidget {
       ),
     );
   }
-  
+
   // ═══════════════════════════════════════════════════════════════════════════
   // HELPER WIDGETS
   // ═══════════════════════════════════════════════════════════════════════════
-  
+
   Widget _buildInfoCard({
     required IconData icon,
     required String label,
@@ -573,14 +578,14 @@ class DeliveryTrackingPage extends StatelessWidget {
       ),
     );
   }
-  
+
   Color _getStatusColor(String status) {
     if (status.contains('Hampir Sampai')) return Colors.green;
     if (status.contains('Dekat')) return Colors.orange;
     if (status.contains('Terkirim')) return Colors.blue;
     return const Color(0xFF2380c4);
   }
-  
+
   IconData _getStatusIcon(String status) {
     if (status.contains('Hampir Sampai')) return Icons.near_me;
     if (status.contains('Dekat')) return Icons.location_on;

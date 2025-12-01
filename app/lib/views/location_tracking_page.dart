@@ -60,11 +60,7 @@ class LocationTrackingPage extends StatelessWidget {
               ),
 
               // Map Controls (center, zoom)
-              Positioned(
-                right: 16,
-                bottom: 200,
-                child: _buildMapControls(),
-              ),
+              Positioned(right: 16, bottom: 200, child: _buildMapControls()),
             ],
           );
         }),
@@ -140,7 +136,7 @@ class LocationTrackingPage extends StatelessWidget {
               'attribution': '© OpenStreetMap contributors',
             },
           ),
-          
+
           // Polyline Layer
           PolylineLayer(
             polylines: [
@@ -153,11 +149,9 @@ class LocationTrackingPage extends StatelessWidget {
                 ),
             ],
           ),
-          
+
           // Markers Layer
-          MarkerLayer(
-            markers: locationController.markers,
-          ),
+          MarkerLayer(markers: locationController.markers),
         ],
       );
     });
@@ -239,11 +233,7 @@ class LocationTrackingPage extends StatelessWidget {
         ),
         child: Column(
           children: [
-            const Icon(
-              Icons.location_on,
-              color: Colors.white,
-              size: 32,
-            ),
+            const Icon(Icons.location_on, color: Colors.white, size: 32),
             const SizedBox(height: 8),
             Text(
               '${locationController.distance.value.toStringAsFixed(2)} km',
@@ -256,10 +246,7 @@ class LocationTrackingPage extends StatelessWidget {
             const SizedBox(height: 4),
             const Text(
               'Jarak',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white70,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.white70),
             ),
           ],
         ),
@@ -284,20 +271,13 @@ class LocationTrackingPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.orange,
-              Colors.orange.shade600,
-            ],
+            colors: [Colors.orange, Colors.orange.shade600],
           ),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           children: [
-            const Icon(
-              Icons.access_time,
-              color: Colors.white,
-              size: 32,
-            ),
+            const Icon(Icons.access_time, color: Colors.white, size: 32),
             const SizedBox(height: 8),
             Text(
               etaText,
@@ -310,10 +290,7 @@ class LocationTrackingPage extends StatelessWidget {
             const SizedBox(height: 4),
             const Text(
               'ETA',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white70,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.white70),
             ),
           ],
         ),
@@ -360,10 +337,7 @@ class LocationTrackingPage extends StatelessWidget {
                 SizedBox(height: 4),
                 Text(
                   'Pesanan Anda sedang diantar',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.black54,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.black54),
                 ),
               ],
             ),
