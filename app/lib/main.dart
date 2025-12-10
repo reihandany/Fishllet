@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'controllers/product_controller.dart';
 import 'controllers/theme_controller.dart';
@@ -13,6 +15,7 @@ import 'views/product_list_page.dart';
 import 'views/checkout_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'models/product.dart';
+import 'services/fcm_service.dart';
 
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -24,6 +27,15 @@ import 'models/product.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(); // Load .env
+  // Initialize Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Initialize FCM
+  await FCMService.initializeFCM();
+  FCMService.listenTokenRefresh();
+
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
