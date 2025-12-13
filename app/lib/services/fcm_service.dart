@@ -157,4 +157,13 @@ class FCMService {
     );
     debugPrint('✅ Local notification shown: $title');
   }
+
+  /// Public helper untuk menampilkan notifikasi lokal dari bagian lain aplikasi
+  static Future<void> showLocalNotification({
+    required String title,
+    required String body,
+    String? payload,
+  }) async {
+    await _showLocalNotification(title: title, body: body, payload: payload);
+  }
 }

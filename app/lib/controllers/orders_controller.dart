@@ -1,6 +1,8 @@
 // lib/controllers/orders_controller.dart
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:flutter/foundation.dart';
+import '../services/fcm_service.dart';
 
 class OrdersController extends GetxController {
   late Box ordersBox;
@@ -52,6 +54,18 @@ class OrdersController extends GetxController {
     
     // Save to Hive
     await ordersBox.put('ordersList', orders.toList());
+
+    // Tampilkan notifikasi lokal ketika pesanan berhasil ditambahkan
+    try {
+      await FCMService.showLocalNotification(
+        title: 'Pesanan Diterima',
+        body: 'Pesanan Anda berhasil dipesan.',
+        payload: order.toString(),
+      );
+    } catch (e) {
+      // Jika gagal menampilkan notifikasi, log saja
+      debugPrint('❌ Gagal menampilkan notifikasi: $e');
+    }
   }
 
   // Get total orders count
