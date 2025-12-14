@@ -205,6 +205,7 @@ class LoginPage extends StatelessWidget {
                       labelText: 'Email',
                       hintText: 'Masukkan email Anda',
                       prefixIcon: const Icon(Icons.email_outlined),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -232,9 +233,10 @@ class LoginPage extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                         fontSize: 12,
                       ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 32),
                   // Password input
                   Obx(() => TextFormField(
                     controller: _passwordController,
@@ -245,6 +247,7 @@ class LoginPage extends StatelessWidget {
                       labelText: 'Password',
                       hintText: 'Masukkan password Anda',
                       prefixIcon: const Icon(Icons.lock_outline),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword.value
@@ -282,9 +285,10 @@ class LoginPage extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                         fontSize: 12,
                       ),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                     ),
                   )),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 36),
                   // Tombol Login
                   Obx(() {
                     final isLoading = authController.isLoading.value;
@@ -371,7 +375,7 @@ class LoginPage extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(top: 8.0),
                     child: Text(
-                      'Demo: Email harus valid, Password minimal 6 karakter',
+                      'Email harus valid, Password minimal 6 karakter',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,

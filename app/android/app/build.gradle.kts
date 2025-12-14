@@ -16,6 +16,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -36,13 +37,6 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
-
-    // Enable Java 8 desugaring for flutter_local_notifications
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-        isCoreLibraryDesugaringEnabled = true
-    }
 }
 
 flutter {
@@ -51,6 +45,12 @@ flutter {
 
 dependencies {
     implementation("androidx.multidex:multidex:2.0.1")
-    // Java 8 desugaring library for flutter_local_notifications
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
+    
+    // Firebase products (when using BoM, don't specify versions)
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging")
 }

@@ -137,7 +137,7 @@ class AccountPage extends StatelessWidget {
               trailing: Obx(() => Switch(
                     value: themeController.isDark.value,
                     onChanged: (value) => themeController.toggleTheme(),
-                    activeColor: const Color(0xFF2380c4),
+                    activeThumbColor: const Color(0xFF2380c4),
                   )),
             ),
             _buildSettingsTile(
@@ -148,7 +148,7 @@ class AccountPage extends StatelessWidget {
                 onChanged: (value) {
                   // TODO: Implement notifications toggle
                 },
-                activeColor: const Color(0xFF2380c4),
+                activeThumbColor: const Color(0xFF2380c4),
               ),
             ),
             const Divider(),

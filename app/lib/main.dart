@@ -3,20 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'firebase_options.dart';
 import 'controllers/product_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'controllers/checkout_controller.dart';
+import 'services/fcm_service.dart';
 import 'utils/app__bindings.dart';
 import 'views/login_page.dart';
 import 'views/product_list_page.dart';
 import 'views/checkout_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'models/product.dart';
-import 'services/fcm_service.dart';
 
+/// Background message handler (HARUS di top-level, tidak boleh di dalam class)
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FCMService.backgroundMessageHandler(message);
+}
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// MAIN ENTRY POINT
@@ -27,14 +34,15 @@ import 'services/fcm_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(); // Load .env
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
-  // Initialize FCM
+  // Initialize Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Register background message handler (harus sebelum FCMService.initializeFCM)
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // Initialize FCM (Firebase Cloud Messaging)
   await FCMService.initializeFCM();
-  FCMService.listenTokenRefresh();
 
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
@@ -56,16 +64,16 @@ void main() async {
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
-  
+
   try {
     // Initialize ThemeController first (before AppBindings)
     Get.put<ThemeController>(ThemeController(), permanent: true);
     debugPrint('✅ ThemeController initialized');
-    
+
     // Load theme
     await Get.find<ThemeController>().loadTheme();
     debugPrint('✅ Theme loaded');
-    
+
     AppBindings().dependencies();
     debugPrint('✅ AppBindings initialized successfully');
 
@@ -76,7 +84,6 @@ void main() async {
     } catch (e) {
       debugPrint('❌ Error loading products on startup: $e');
     }
-
   } catch (e, stackTrace) {
     debugPrint('❌ Error initializing AppBindings: $e');
     debugPrint('Stack trace: $stackTrace');
@@ -90,7 +97,6 @@ void main() async {
 
   runApp(const MyApp());
 }
-
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// MY APP - ROOT WIDGET
@@ -106,43 +112,47 @@ class MyApp extends StatelessWidget {
     // Get existing controllers (already initialized in AppBindings)
     final themeController = Get.find<ThemeController>();
 
-    return Obx(() => GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Fishllet',
-      themeMode: themeController.isDark.value ? ThemeMode.dark : ThemeMode.light,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-        brightness: Brightness.light,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+    return Obx(
+      () => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Fishllet',
+        themeMode: themeController.isDark.value
+            ? ThemeMode.dark
+            : ThemeMode.light,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          useMaterial3: true,
           brightness: Brightness.light,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue,
+            brightness: Brightness.light,
+          ),
         ),
-      ),
-      darkTheme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+        darkTheme: ThemeData(
+          primarySwatch: Colors.blue,
+          useMaterial3: true,
           brightness: Brightness.dark,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue,
+            brightness: Brightness.dark,
+          ),
         ),
+        // Set initial route
+        initialRoute: '/login',
+        // Define named routes
+        getPages: [
+          GetPage(name: '/login', page: () => LoginPage()),
+          GetPage(name: '/products', page: () => const ProductListPage()),
+          GetPage(
+            name: '/checkout',
+            page: () => CheckoutPage(),
+            binding: BindingsBuilder(() {
+              Get.lazyPut<CheckoutController>(() => CheckoutController());
+            }),
+          ),
+        ],
       ),
-      // Set initial route
-      initialRoute: '/login',
-      // Define named routes
-      getPages: [
-        GetPage(name: '/login', page: () => LoginPage()),
-        GetPage(name: '/products', page: () => const ProductListPage()),
-        GetPage(
-          name: '/checkout',
-          page: () => CheckoutPage(),
-          binding: BindingsBuilder(() {
-            Get.lazyPut<CheckoutController>(() => CheckoutController());
-          }),
-        ),
-      ],
-    ));
+    );
   }
 }
 
