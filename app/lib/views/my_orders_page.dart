@@ -2,9 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:latlong2/latlong.dart';
 import '../controllers/orders_controller.dart';
-import 'delivery_tracking_page.dart';
+// Removed live tracking feature
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// MY ORDERS PAGE (PENDING/CHECKOUT ORDERS)
@@ -156,45 +155,7 @@ class MyOrdersPage extends StatelessWidget {
                   ),
                 ],
               ),
-              if (order['status'].toLowerCase() == 'pending') ...[
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Get.back(); // Close bottom sheet
-                      // Navigate to live tracking page
-                      // Use delivery address coordinates (simulate random location)
-                      final random = DateTime.now().millisecond / 1000;
-                      final deliveryLatLng = LatLng(
-                        -6.2088 + (random * 0.05), // Jakarta area
-                        106.8456 + (random * 0.05),
-                      );
-                      
-                      Get.to(
-                        () => DeliveryTrackingPage(
-                          orderId: order['orderId'],
-                          customerLocation: deliveryLatLng,
-                          customerAddress: order['deliveryAddress'],
-                        ),
-                        transition: Transition.rightToLeft,
-                        duration: const Duration(milliseconds: 300),
-                      );
-                    },
-                    icon: const Icon(Icons.location_on),
-                    label: const Text('Track Live Location'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2380c4),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-              ],
+              // Live location tracking removed
               if (order['status'].toLowerCase() == 'pending') ...[
                 const SizedBox(height: 24),
                 SizedBox(
@@ -493,46 +454,7 @@ class MyOrdersPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      // Add track location button for pending orders
-                      if (status.toLowerCase() == 'pending') ...[
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              // Navigate to live tracking page
-                              final random = DateTime.now().millisecond / 1000;
-                              final deliveryLatLng = LatLng(
-                                -6.2088 + (random * 0.05),
-                                106.8456 + (random * 0.05),
-                              );
-                              
-                              Get.to(
-                                () => DeliveryTrackingPage(
-                                  orderId: order['orderId'],
-                                  customerLocation: deliveryLatLng,
-                                  customerAddress: order['deliveryAddress'],
-                                ),
-                                transition: Transition.rightToLeft,
-                                duration: const Duration(milliseconds: 300),
-                              );
-                            },
-                            icon: const Icon(Icons.location_on, size: 18),
-                            label: const Text('Track Live Location'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: const Color(0xFF2380c4),
-                              side: const BorderSide(
-                                color: Color(0xFF2380c4),
-                                width: 1.5,
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      // Track live location button removed
                     ],
                   ),
                 ),

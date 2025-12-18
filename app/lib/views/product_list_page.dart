@@ -16,7 +16,6 @@ import 'product_detail_page.dart';
 import 'my_orders_page.dart';
 import 'history_page.dart';
 import 'account_page.dart';
-import 'map_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// PRODUCT LIST PAGE
@@ -207,18 +206,6 @@ class _ProductListPageState extends State<ProductListPage> {
             onTap: () {
               Get.back();
               _selectedIndex.value = 4; // Navigate to Account
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.map, color: Color(0xFF2380c4)),
-            title: const Text('View Map'),
-            subtitle: const Text('Lihat lokasi saya di peta'),
-            onTap: () {
-              Get.back();
-              Get.to(
-                () => MapPage(),
-                transition: Transition.rightToLeft,
-              );
             },
           ),
           ListTile(

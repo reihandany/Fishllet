@@ -46,4 +46,20 @@ class ProductRepository {
   Future<void> deleteProduct(int id) async {
     await _client.from('products').delete().eq('id', id);
   }
+
+  Future<Map<String, dynamic>?> getProductById(String id) async {
+    try {
+      final intId = int.parse(id);
+      final row = await _client
+          .from('products')
+          .select()
+          .eq('id', intId)
+          .maybeSingle();
+      if (row == null) return null;
+      return Map<String, dynamic>.from(row);
+    } catch (_) {
+      // If ID is not numeric or any other error occurs
+      return null;
+    }
+  }
 }

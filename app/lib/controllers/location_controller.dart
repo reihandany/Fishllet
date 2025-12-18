@@ -34,6 +34,7 @@ class LocationController extends GetxController {
   
   // Timer for periodic location updates
   Timer? _locationTimer;
+  StreamSubscription<Position>? _positionSub;
   
   // Average courier speed (km/h)
   final double averageCourierSpeed = 30.0;
@@ -47,6 +48,7 @@ class LocationController extends GetxController {
   @override
   void onClose() {
     _locationTimer?.cancel();
+    _positionSub?.cancel();
     super.onClose();
   }
 
@@ -163,6 +165,51 @@ class LocationController extends GetxController {
   /// Public method to get user location
   Future<void> getUserLocation() async {
     await _getUserLocation();
+  }
+
+  /// Start live tracking of the user's own location (for checkout map)
+  Future<void> startUserLiveTracking() async {
+    try {
+      isTrackingEnabled.value = true;
+      // Cancel previous subscription if any
+      await _positionSub?.cancel();
+
+      // Ensure permissions
+      await _checkPermissions();
+
+      // Initial fetch
+      await _getUserLocation();
+      _updateMarkers();
+      if (userLocation.value != null) {
+        mapController.move(userLocation.value!, 16);
+      }
+
+      // Subscribe to high-accuracy position stream
+      final settings = const LocationSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+        distanceFilter: 5,
+      );
+      _positionSub = Geolocator.getPositionStream(locationSettings: settings)
+          .listen((Position pos) {
+        userLocation.value = LatLng(pos.latitude, pos.longitude);
+        _updateMarkers();
+        mapController.move(userLocation.value!, 16);
+      });
+    } catch (e) {
+      Get.snackbar(
+        'Location Error',
+        'Cannot start live tracking: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  /// Stop user live tracking
+  Future<void> stopUserLiveTracking() async {
+    await _positionSub?.cancel();
+    isTrackingEnabled.value = false;
   }
 
   /// Simulate courier movement (in real app, get from backend)
