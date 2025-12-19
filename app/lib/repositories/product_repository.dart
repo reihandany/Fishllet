@@ -61,18 +61,12 @@ class ProductRepository {
 
       if (existing != null) {
         // Update jika sudah ada
-        await _client
-            .from('products')
-            .update(data)
-            .eq('id', id);
+        await _client.from('products').update(data).eq('id', id);
 
         print('✅ Updated product: $id');
       } else {
         // Insert jika belum ada
-        await _client.from('products').insert({
-          'id': id,
-          ...data,
-        });
+        await _client.from('products').insert({'id': id, ...data});
 
         print('✅ Inserted product: $id');
       }

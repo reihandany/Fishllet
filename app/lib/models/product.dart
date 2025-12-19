@@ -49,21 +49,26 @@ class Product {
     double numPrice = 45000;
     if (json['price'] != null) {
       final price = json['price'];
-      numPrice = price is int ? price.toDouble() : (price is double ? price : 45000.0);
+      numPrice = price is int
+          ? price.toDouble()
+          : (price is double ? price : 45000.0);
       // Format angka dengan pemisah ribuan
-      final priceStr = numPrice.toStringAsFixed(0).replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-        (Match m) => '${m[1]}.',
-      );
+      final priceStr = numPrice
+          .toStringAsFixed(0)
+          .replaceAllMapped(
+            RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+            (Match m) => '${m[1]}.',
+          );
       formattedPrice = 'Rp $priceStr';
     }
-    
+
     return Product(
       id: json['idMeal'] ?? json['id']?.toString() ?? '',
       name: json['strMeal'] ?? 'Tanpa nama',
       imageUrl: json['strMealThumb'] ?? '',
       category: json['strCategory'] ?? 'Ikan Segar',
-      rating: 4.0 + (json['idMeal'].hashCode % 10) / 10, // Random rating 4.0-4.9
+      rating:
+          4.0 + (json['idMeal'].hashCode % 10) / 10, // Random rating 4.0-4.9
       price: formattedPrice,
       numericPrice: numPrice,
     );
@@ -75,15 +80,19 @@ class Product {
     double numPrice = 45000;
     if (json['price'] != null) {
       final price = json['price'];
-      numPrice = price is int ? price.toDouble() : (price is double ? price : 45000.0);
+      numPrice = price is int
+          ? price.toDouble()
+          : (price is double ? price : 45000.0);
       // Format angka dengan pemisah ribuan
-      final priceStr = numPrice.toStringAsFixed(0).replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-        (Match m) => '${m[1]}.',
-      );
+      final priceStr = numPrice
+          .toStringAsFixed(0)
+          .replaceAllMapped(
+            RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+            (Match m) => '${m[1]}.',
+          );
       formattedPrice = 'Rp $priceStr';
     }
-    
+
     return Product(
       id: json['idMeal'] ?? json['id']?.toString() ?? '',
       name: json['strMeal'] ?? 'Tanpa nama',
@@ -105,13 +114,15 @@ class Product {
       final price = json['price'];
       numPrice = price.toDouble();
       // Format angka dengan pemisah ribuan
-      final priceStr = price.toStringAsFixed(0).replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-        (Match m) => '${m[1]}.',
-      );
+      final priceStr = price
+          .toStringAsFixed(0)
+          .replaceAllMapped(
+            RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+            (Match m) => '${m[1]}.',
+          );
       formattedPrice = 'Rp $priceStr';
     }
-    
+
     return Product(
       id: json['id'].toString(),
       name: json['name'] ?? 'Tanpa nama',

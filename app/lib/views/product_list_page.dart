@@ -31,7 +31,7 @@ import 'login_page.dart';
 /// - ProductListPage → AnalysisPage (Get.to)
 class ProductListPage extends StatefulWidget {
   final int initialIndex;
-  
+
   const ProductListPage({super.key, this.initialIndex = 0});
 
   @override
@@ -53,7 +53,7 @@ class _ProductListPageState extends State<ProductListPage> {
     super.initState();
     // Set initial selected index dari parameter
     _selectedIndex.value = widget.initialIndex;
-    
+
     _scrollController.addListener(() {
       if (_scrollController.offset > 200) {
         _showFAB.value = true;
@@ -108,7 +108,7 @@ class _ProductListPageState extends State<ProductListPage> {
       _showLoginRequiredDialog(index);
       return;
     }
-    
+
     _selectedIndex.value = index;
   }
 
@@ -132,9 +132,7 @@ class _ProductListPageState extends State<ProductListPage> {
 
     Get.dialog(
       AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: const [
             Icon(Icons.lock, color: Colors.orange),
@@ -158,10 +156,7 @@ class _ProductListPageState extends State<ProductListPage> {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Batal'),
-          ),
+          TextButton(onPressed: () => Get.back(), child: const Text('Batal')),
           ElevatedButton.icon(
             onPressed: () {
               Get.back(); // Close dialog
@@ -172,10 +167,7 @@ class _ProductListPageState extends State<ProductListPage> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF2380c4),
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 12,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -241,15 +233,13 @@ class _ProductListPageState extends State<ProductListPage> {
 
   Widget _buildDrawer() {
     final ThemeController themeController = Get.find();
-    
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Color(0xFF2380c4),
-            ),
+            decoration: const BoxDecoration(color: Color(0xFF2380c4)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -259,8 +249,8 @@ class _ProductListPageState extends State<ProductListPage> {
                   backgroundColor: Colors.white,
                   child: Obx(() {
                     final username = auth.username.value;
-                    final initial = username.isNotEmpty 
-                        ? username[0].toUpperCase() 
+                    final initial = username.isNotEmpty
+                        ? username[0].toUpperCase()
                         : 'U';
                     return Text(
                       initial,
@@ -273,14 +263,16 @@ class _ProductListPageState extends State<ProductListPage> {
                   }),
                 ),
                 const SizedBox(height: 12),
-                Obx(() => Text(
-                      auth.username.value,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )),
+                Obx(
+                  () => Text(
+                    auth.username.value,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -302,20 +294,23 @@ class _ProductListPageState extends State<ProductListPage> {
             subtitle: const Text('Lihat lokasi saya di peta'),
             onTap: () {
               Get.back();
-              Get.to(
-                () => MapPage(),
-                transition: Transition.rightToLeft,
-              );
+              Get.to(() => MapPage(), transition: Transition.rightToLeft);
             },
           ),
           ListTile(
-            leading: Obx(() => Icon(
-                  themeController.isDark.value ? Icons.light_mode : Icons.dark_mode,
-                  color: const Color(0xFF2380c4),
-                )),
-            title: Obx(() => Text(
-                  themeController.isDark.value ? 'Light Mode' : 'Dark Mode',
-                )),
+            leading: Obx(
+              () => Icon(
+                themeController.isDark.value
+                    ? Icons.light_mode
+                    : Icons.dark_mode,
+                color: const Color(0xFF2380c4),
+              ),
+            ),
+            title: Obx(
+              () => Text(
+                themeController.isDark.value ? 'Light Mode' : 'Dark Mode',
+              ),
+            ),
             onTap: () {
               themeController.toggleTheme();
             },
@@ -353,26 +348,32 @@ class _ProductListPageState extends State<ProductListPage> {
             },
           ),
           const Divider(),
-          Obx(() => ListTile(
-            leading: Icon(
-              auth.isGuest.value ? Icons.login : Icons.logout,
-              color: auth.isGuest.value ? const Color(0xFF2380c4) : Colors.red,
-            ),
-            title: Text(
-              auth.isGuest.value ? 'Login' : 'Logout',
-              style: TextStyle(
-                color: auth.isGuest.value ? const Color(0xFF2380c4) : Colors.red,
+          Obx(
+            () => ListTile(
+              leading: Icon(
+                auth.isGuest.value ? Icons.login : Icons.logout,
+                color: auth.isGuest.value
+                    ? const Color(0xFF2380c4)
+                    : Colors.red,
               ),
+              title: Text(
+                auth.isGuest.value ? 'Login' : 'Logout',
+                style: TextStyle(
+                  color: auth.isGuest.value
+                      ? const Color(0xFF2380c4)
+                      : Colors.red,
+                ),
+              ),
+              onTap: () {
+                Get.back();
+                if (auth.isGuest.value) {
+                  Get.offAll(() => LoginPage());
+                } else {
+                  showLogoutConfirmation();
+                }
+              },
             ),
-            onTap: () {
-              Get.back();
-              if (auth.isGuest.value) {
-                Get.offAll(() => LoginPage());
-              } else {
-                showLogoutConfirmation();
-              }
-            },
-          )),
+          ),
         ],
       ),
     );
@@ -387,7 +388,7 @@ class _ProductListPageState extends State<ProductListPage> {
         foregroundColor: Colors.white,
       ),
       drawer: _buildDrawer(),
-      
+
       body: Obx(() {
         // Show different pages based on selected index
         if (_selectedIndex.value == 1) return CartPage();
@@ -397,300 +398,346 @@ class _ProductListPageState extends State<ProductListPage> {
 
         // Default: Home page
         return Column(
-        children: [
-          // Welcome Banner
-          Container(
-            width: double.infinity,
-            color: const Color(0xFF2380c4),
-            padding: const EdgeInsets.all(16),
-            child: Obx(
-              () => Text(
-                'Selamat datang, ${auth.username.value}! 👋',
-                style: const TextStyle(color: Colors.white, fontSize: 18),
+          children: [
+            // Welcome Banner
+            Container(
+              width: double.infinity,
+              color: const Color(0xFF2380c4),
+              padding: const EdgeInsets.all(16),
+              child: Obx(
+                () => Text(
+                  'Selamat datang, ${auth.username.value}! 👋',
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                ),
               ),
             ),
-          ),
-          
-          // Search Bar
-          Container(
-            padding: const EdgeInsets.all(16),
-            child: TextField(
-              onChanged: (value) => product.setSearchQuery(value),
-              decoration: InputDecoration(
-                hintText: 'Cari produk...',
-                prefixIcon: const Icon(Icons.search, color: Color(0xFF2380c4)),
-                suffixIcon: Obx(() => product.searchQuery.value.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () => product.setSearchQuery(''),
-                    )
-                  : const SizedBox.shrink()),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFF2380c4)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFF2380c4), width: 2),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-          ),
-          
-          // Sort & Filter Row
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Obx(() => Text(
-                  '${product.filteredProducts.length} Produk',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+
+            // Search Bar
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                onChanged: (value) => product.setSearchQuery(value),
+                decoration: InputDecoration(
+                  hintText: 'Cari produk...',
+                  prefixIcon: const Icon(
+                    Icons.search,
                     color: Color(0xFF2380c4),
                   ),
-                )),
-                PopupMenuButton<String>(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFF2380c4)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.sort, size: 18, color: Color(0xFF2380c4)),
-                        const SizedBox(width: 4),
-                        Obx(() => Text(
-                          product.selectedSort.value,
-                          style: const TextStyle(fontSize: 12, color: Color(0xFF2380c4)),
-                        )),
-                      ],
+                  suffixIcon: Obx(
+                    () => product.searchQuery.value.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () => product.setSearchQuery(''),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFF2380c4)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(
+                      color: Color(0xFF2380c4),
+                      width: 2,
                     ),
                   ),
-                  onSelected: (value) => product.setSort(value),
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(value: 'Nama A-Z', child: Text('Nama A-Z')),
-                    const PopupMenuItem(value: 'Nama Z-A', child: Text('Nama Z-A')),
-                    const PopupMenuItem(value: 'Harga Terendah', child: Text('Harga Terendah')),
-                    const PopupMenuItem(value: 'Harga Tertinggi', child: Text('Harga Tertinggi')),
-                    const PopupMenuItem(value: 'Rating Tertinggi', child: Text('Rating Tertinggi')),
-                  ],
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
-              ],
+              ),
             ),
-          ),
-          
-          Expanded(
-            child: Obx(() {
-              // Loading state dengan styling
-              if (product.isLoading.value && product.products.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      CircularProgressIndicator(
+
+            // Sort & Filter Row
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Obx(
+                    () => Text(
+                      '${product.filteredProducts.length} Produk',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                         color: Color(0xFF2380c4),
-                        strokeWidth: 3,
                       ),
-                      SizedBox(height: 24),
-                      Text(
-                        'Loading products...',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey,
-                        ),
+                    ),
+                  ),
+                  PopupMenuButton<String>(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: const Color(0xFF2380c4)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.sort,
+                            size: 18,
+                            color: Color(0xFF2380c4),
+                          ),
+                          const SizedBox(width: 4),
+                          Obx(
+                            () => Text(
+                              product.selectedSort.value,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF2380c4),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onSelected: (value) => product.setSort(value),
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'Nama A-Z',
+                        child: Text('Nama A-Z'),
+                      ),
+                      const PopupMenuItem(
+                        value: 'Nama Z-A',
+                        child: Text('Nama Z-A'),
+                      ),
+                      const PopupMenuItem(
+                        value: 'Harga Terendah',
+                        child: Text('Harga Terendah'),
+                      ),
+                      const PopupMenuItem(
+                        value: 'Harga Tertinggi',
+                        child: Text('Harga Tertinggi'),
+                      ),
+                      const PopupMenuItem(
+                        value: 'Rating Tertinggi',
+                        child: Text('Rating Tertinggi'),
                       ),
                     ],
                   ),
-                );
-              }
+                ],
+              ),
+            ),
 
-              // Empty state
-              if (product.filteredProducts.isEmpty) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+            Expanded(
+              child: Obx(() {
+                // Loading state dengan styling
+                if (product.isLoading.value && product.products.isEmpty) {
+                  return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_off,
-                          size: 100,
-                          color: Colors.grey.shade300,
+                      children: const [
+                        CircularProgressIndicator(
+                          color: Color(0xFF2380c4),
+                          strokeWidth: 3,
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24),
                         Text(
-                          product.searchQuery.value.isNotEmpty 
-                            ? 'Produk tidak ditemukan' 
-                            : 'No products available',
+                          'Loading products...',
                           style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          product.searchQuery.value.isNotEmpty
-                            ? 'Coba kata kunci lain'
-                            : 'Check your internet connection.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                );
-              }
+                  );
+                }
 
-              // Products list with scroll controller and pull-to-refresh
-              return RefreshIndicator(
-                onRefresh: () => product.refreshProducts(),
-                color: const Color(0xFF2380c4),
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: product.filteredProducts.length,
-                  itemBuilder: (context, idx) {
-                    final p = product.filteredProducts[idx];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
+                // Empty state
+                if (product.filteredProducts.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.search_off,
+                            size: 100,
+                            color: Colors.grey.shade300,
+                          ),
+                          const SizedBox(height: 24),
+                          Text(
+                            product.searchQuery.value.isNotEmpty
+                                ? 'Produk tidak ditemukan'
+                                : 'No products available',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            product.searchQuery.value.isNotEmpty
+                                ? 'Coba kata kunci lain'
+                                : 'Check your internet connection.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
                       ),
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: InkWell(
-                        onTap: () => openDetail(p),
-                        borderRadius: BorderRadius.circular(12),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Product Image
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  p.imageUrl,
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      width: 80,
-                                      height: 80,
-                                      color: Colors.grey[300],
-                                      child: const Icon(Icons.image_not_supported),
-                                    );
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              // Product Info
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      p.name,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF2380c4),
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    // Category chip
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                      color: const Color(0xFF2380c4).withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Text(
-                                      p.category,
-                                      style: const TextStyle(
-                                        fontSize: 11,
-                                        color: Color(0xFF2380c4),
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
+                    ),
+                  );
+                }
+
+                // Products list with scroll controller and pull-to-refresh
+                return RefreshIndicator(
+                  onRefresh: () => product.refreshProducts(),
+                  color: const Color(0xFF2380c4),
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount: product.filteredProducts.length,
+                    itemBuilder: (context, idx) {
+                      final p = product.filteredProducts[idx];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: InkWell(
+                          onTap: () => openDetail(p),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Product Image
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    p.imageUrl,
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        width: 80,
+                                        height: 80,
+                                        color: Colors.grey[300],
+                                        child: const Icon(
+                                          Icons.image_not_supported,
+                                        ),
+                                      );
+                                    },
                                   ),
-                                  const SizedBox(height: 8),
-                                  // Rating
-                                  Row(
+                                ),
+                                const SizedBox(width: 12),
+                                // Product Info
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      const Icon(
-                                        Icons.star,
-                                        size: 16,
-                                        color: Colors.amber,
-                                      ),
-                                      const SizedBox(width: 4),
                                       Text(
-                                        p.rating.toStringAsFixed(1),
+                                        p.name,
                                         style: const TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF2380c4),
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      // Category chip
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: const Color(
+                                            0xFF2380c4,
+                                          ).withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(
+                                            6,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          p.category,
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            color: Color(0xFF2380c4),
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      // Rating
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.star,
+                                            size: 16,
+                                            color: Colors.amber,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            p.rating.toStringAsFixed(1),
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        p.price,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF2380c4),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    p.price,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF2380c4),
-                                    ),
+                                ),
+                                // Add to cart button
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.add_shopping_cart,
+                                    color: Color(0xFF2380c4),
                                   ),
-                                ],
-                              ),
+                                  onPressed: () async {
+                                    // Check if guest user
+                                    if (auth.isGuest.value) {
+                                      _showLoginRequiredDialog(
+                                        1,
+                                      ); // 1 = Keranjang
+                                      return;
+                                    }
+                                    await cart.addToCart(p);
+                                  },
+                                ),
+                              ],
                             ),
-                            // Add to cart button
-                            IconButton(
-                              icon: const Icon(
-                                Icons.add_shopping_cart,
-                                color: Color(0xFF2380c4),
-                              ),
-                              onPressed: () async {
-                                // Check if guest user
-                                if (auth.isGuest.value) {
-                                  _showLoginRequiredDialog(1); // 1 = Keranjang
-                                  return;
-                                }
-                                await cart.addToCart(p);
-                              },
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              );
-            }),
-          ),
-        ],
-      );
+                      );
+                    },
+                  ),
+                );
+              }),
+            ),
+          ],
+        );
       }),
-      
+
       // Floating Action Button for scroll to top
       floatingActionButton: Obx(
         () => AnimatedScale(
@@ -704,35 +751,31 @@ class _ProductListPageState extends State<ProductListPage> {
           ),
         ),
       ),
-      bottomNavigationBar: Obx(() => BottomNavigationBar(
-        currentIndex: _selectedIndex.value,
-        onTap: _onBottomNavTap,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF2380c4),
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Keranjang',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.inventory_2),
-            label: 'Pesanan Saya',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Riwayat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Akun',
-          ),
-        ],
-      )),
+      bottomNavigationBar: Obx(
+        () => BottomNavigationBar(
+          currentIndex: _selectedIndex.value,
+          onTap: _onBottomNavTap,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: const Color(0xFF2380c4),
+          unselectedItemColor: Colors.grey,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart),
+              label: 'Keranjang',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.inventory_2),
+              label: 'Pesanan Saya',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: 'Riwayat',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Akun'),
+          ],
+        ),
+      ),
     );
   }
 }

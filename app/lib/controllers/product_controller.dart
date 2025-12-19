@@ -10,7 +10,7 @@ class ProductController extends GetxController {
   var filteredProducts = <Product>[].obs;
   var isLoading = false.obs;
   var isOffline = false.obs;
-  
+
   // Search & Filter
   var searchQuery = ''.obs;
   var selectedCategory = 'Semua'.obs;
@@ -20,7 +20,7 @@ class ProductController extends GetxController {
   final ApiService api = ApiService();
   Box<Product>? _offlineBox;
   Timer? _autoRefreshTimer;
-  
+
   Box<Product> get offlineBox {
     if (_offlineBox == null) {
       throw Exception('OfflineBox belum diinisialisasi');
@@ -33,20 +33,20 @@ class ProductController extends GetxController {
     super.onInit();
     _initializeAndLoad();
   }
-  
+
   Future<void> _initializeAndLoad() async {
     try {
       // Buka box HIVE terlebih dahulu
       _offlineBox = await Hive.openBox<Product>('products');
       print('✅ OfflineBox initialized');
-      
+
       // 🔥 FORCE CLEAR cache lama (untuk update harga)
       await _offlineBox!.clear();
       print('🗑️ Old cache cleared - forcing fresh data from API');
 
       // Load products setelah box siap
       await loadProducts();
-      
+
       // Auto refresh setiap 30 detik (opsional - bisa dinonaktifkan jika tidak perlu)
       _autoRefreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
         if (!isLoading.value) {
@@ -58,7 +58,7 @@ class ProductController extends GetxController {
       print('❌ Error initializing ProductController: $e');
     }
   }
-  
+
   @override
   void onClose() {
     _autoRefreshTimer?.cancel();
@@ -87,7 +87,7 @@ class ProductController extends GetxController {
       await offlineBox.addAll(data);
 
       isOffline.value = false;
-      
+
       // Apply filter after loading
       applyFilter();
     } catch (e) {
@@ -108,7 +108,7 @@ class ProductController extends GetxController {
 
     isLoading.value = false;
   }
-  
+
   /// =====================================================================
   ///  REFRESH PRODUCTS (untuk pull-to-refresh)
   /// =====================================================================
@@ -125,14 +125,19 @@ class ProductController extends GetxController {
 
     // Filter by search query
     if (searchQuery.value.isNotEmpty) {
-      result = result.where((p) => 
-        p.name.toLowerCase().contains(searchQuery.value.toLowerCase())
-      ).toList();
+      result = result
+          .where(
+            (p) =>
+                p.name.toLowerCase().contains(searchQuery.value.toLowerCase()),
+          )
+          .toList();
     }
 
     // Filter by category
     if (selectedCategory.value != 'Semua') {
-      result = result.where((p) => p.category == selectedCategory.value).toList();
+      result = result
+          .where((p) => p.category == selectedCategory.value)
+          .toList();
     }
 
     // Sort
