@@ -410,14 +410,12 @@ class CheckoutPage extends StatelessWidget {
           ),
           clipBehavior: Clip.antiAlias,
           child: Obx(() {
-            final center = locationController.userLocation.value ??
+            final center =
+                locationController.userLocation.value ??
                 const LatLng(-6.2088, 106.8456); // Jakarta default
             return FlutterMap(
               mapController: locationController.mapController,
-              options: MapOptions(
-                initialCenter: center,
-                initialZoom: 14,
-              ),
+              options: MapOptions(initialCenter: center, initialZoom: 14),
               children: [
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -443,7 +441,7 @@ class CheckoutPage extends StatelessWidget {
                   await locationController.startUserLiveTracking();
                   if (locationController.userLocation.value != null) {
                     final loc = locationController.userLocation.value!;
-                    
+
                     Get.snackbar(
                       'Location Tracking Enabled',
                       'Tracking your live location on the map',
@@ -455,18 +453,22 @@ class CheckoutPage extends StatelessWidget {
                     );
                   }
                 },
-                icon: Obx(() => locationController.isLoading.value
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.my_location)),
-                label: Obx(() => Text(
-                  locationController.userLocation.value == null
-                      ? 'Get My Location (GPS/Network)'
-                      : 'Location Saved ✓',
-                )),
+                icon: Obx(
+                  () => locationController.isLoading.value
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.my_location),
+                ),
+                label: Obx(
+                  () => Text(
+                    locationController.userLocation.value == null
+                        ? 'Get My Location (GPS/Network)'
+                        : 'Location Saved ✓',
+                  ),
+                ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: locationController.userLocation.value == null
                       ? const Color(0xFF2380c4)
@@ -534,6 +536,27 @@ class CheckoutPage extends StatelessWidget {
             ),
           );
         }),
+        const SizedBox(height: 16),
+
+        // Address description field (optional detail)
+        TextFormField(
+          validator: checkoutController.validateAddress,
+          onChanged: checkoutController.updateAddress,
+          textInputAction: TextInputAction.done,
+          maxLines: 3,
+          decoration: InputDecoration(
+            labelText: 'Deskripsi Lokasi / Patokan *',
+            hintText:
+                'Contoh: Rumah warna hijau, dekat Indomaret, gang pertama kiri',
+            prefixIcon: const Icon(Icons.description_outlined),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            filled: true,
+            fillColor: Colors.white,
+            helperText:
+                'Berikan detail tambahan untuk memudahkan kurir menemukan lokasi Anda',
+            helperMaxLines: 2,
+          ),
+        ),
       ],
     );
   }

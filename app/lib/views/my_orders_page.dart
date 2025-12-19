@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart' as latlong; // ✅ Tambahkan alias
 import '../controllers/orders_controller.dart';
 import '../controllers/auth_controller.dart';
 import 'delivery_tracking_page.dart';
@@ -168,7 +169,7 @@ class MyOrdersPage extends StatelessWidget {
                       // Navigate to live tracking page
                       // Use delivery address coordinates (simulate random location)
                       final random = DateTime.now().millisecond / 1000;
-                      final deliveryLatLng = LatLng(
+                      final deliveryLatLng = latlong.LatLng(
                         -6.2088 + (random * 0.05), // Jakarta area
                         106.8456 + (random * 0.05),
                       );
@@ -603,7 +604,7 @@ class MyOrdersPage extends StatelessWidget {
                             onPressed: () {
                               // Navigate to live tracking page
                               final random = DateTime.now().millisecond / 1000;
-                              final deliveryLatLng = LatLng(
+                              final deliveryLatLng = latlong.LatLng(
                                 -6.2088 + (random * 0.05),
                                 106.8456 + (random * 0.05),
                               );

@@ -1,6 +1,7 @@
 // lib/services/api_services.dart
 import '../models/product.dart';
 import '../repositories/product_repository.dart';
+import 'package:dio/dio.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// API SERVICE - CUSTOM API + AUTO SYNC TO SUPABASE
