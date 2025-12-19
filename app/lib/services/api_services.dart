@@ -8,7 +8,8 @@ import 'package:dio/dio.dart';
 /// ═══════════════════════════════════════════════════════════════════════════
 class ApiService {
   // Custom API - Pilih sesuai platform
-  static const String _baseUrl = "http://10.0.2.2:3000/api"; // Android Emulator
+  static const String _baseUrl =
+      "https://fishllet-api-production.up.railway.app/api"; // Android Emulator
   // static const String _baseUrl = "http://localhost:3000/api"; // iOS/Web
   // static const String _baseUrl = "http://192.168.1.XXX:3000/api"; // Physical Device
 
