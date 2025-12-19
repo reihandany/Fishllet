@@ -1,6 +1,8 @@
 // lib/views/checkout_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import '../controllers/cart_controller.dart';
 import '../controllers/checkout_controller.dart';
 import '../controllers/location_controller.dart';
@@ -315,7 +317,7 @@ class CheckoutPage extends StatelessWidget {
     );
   }
 
-  /// Customer form (nama & alamat)
+  /// Customer form (nama & lokasi)
   Widget _buildCustomerForm() {
     return Column(
       children: [
@@ -335,21 +337,36 @@ class CheckoutPage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
 
-        // Address field
-        TextFormField(
-          validator: checkoutController.validateAddress,
-          onChanged: checkoutController.updateAddress,
-          maxLines: 3,
-          textInputAction: TextInputAction.done,
-          decoration: InputDecoration(
-            labelText: 'Delivery Address *',
-            hintText: 'Enter your complete address',
-            prefixIcon: const Icon(Icons.location_on_outlined),
-            alignLabelWithHint: true,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            filled: true,
-            fillColor: Colors.white,
+        // Map window to preview live location
+        Container(
+          height: 220,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
           ),
+          clipBehavior: Clip.antiAlias,
+          child: Obx(() {
+            final center = locationController.userLocation.value ??
+                const LatLng(-6.2088, 106.8456); // Jakarta default
+            return FlutterMap(
+              mapController: locationController.mapController,
+              options: MapOptions(
+                initialCenter: center,
+                initialZoom: 14,
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.fishllet.app',
+                  additionalOptions: const {
+                    'attribution': '© OpenStreetMap contributors',
+                  },
+                ),
+                // Use reactive list directly; outer Obx handles rebuild
+                MarkerLayer(markers: locationController.markers),
+              ],
+            );
+          }),
         ),
         const SizedBox(height: 12),
         
@@ -359,18 +376,21 @@ class CheckoutPage extends StatelessWidget {
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () async {
-                  await locationController.getUserLocation();
+                  await locationController.startUserLiveTracking();
                   if (locationController.userLocation.value != null) {
                     final loc = locationController.userLocation.value!;
-                    
+                    // Save coordinates as address string for order data
+                    checkoutController.updateAddress(
+                        'Lat: ${loc.latitude.toStringAsFixed(6)}, Long: ${loc.longitude.toStringAsFixed(6)}');
+
                     Get.snackbar(
-                      'Location Captured',
-                      'Lat: ${loc.latitude.toStringAsFixed(6)}, Long: ${loc.longitude.toStringAsFixed(6)}',
+                      'Location Tracking Enabled',
+                      'Tracking your live location on the map',
                       snackPosition: SnackPosition.BOTTOM,
                       backgroundColor: Colors.green,
                       colorText: Colors.white,
                       icon: const Icon(Icons.check_circle, color: Colors.white),
-                      duration: const Duration(seconds: 3),
+                      duration: const Duration(seconds: 2),
                     );
                   }
                 },
@@ -384,7 +404,7 @@ class CheckoutPage extends StatelessWidget {
                 label: Obx(() => Text(
                   locationController.userLocation.value == null
                       ? 'Get My Location (GPS/Network)'
-                      : 'Location Saved ✓',
+                      : 'Tracking Location ✓',
                 )),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: locationController.userLocation.value == null
