@@ -8,8 +8,6 @@ import '../controllers/checkout_controller.dart';
 import '../controllers/orders_controller.dart';
 
 import '../services/api_services.dart';
-import '../services/http_api_services.dart';
-import '../services/dio_api_services.dart';
 
 /// AppBindings - Dependency Injection utama aplikasi menggunakan GetX
 class AppBindings extends Bindings {
@@ -17,8 +15,7 @@ class AppBindings extends Bindings {
   void dependencies() {
     // ==================== SERVICES ====================
     Get.lazyPut<ApiService>(() => ApiService(), fenix: true);
-    Get.lazyPut<HttpApiService>(() => HttpApiService(), fenix: true);
-    Get.lazyPut<DioApiService>(() => DioApiService(), fenix: true);
+    // External TheMealDB services removed
 
     // ==================== CONTROLLERS ====================
 
