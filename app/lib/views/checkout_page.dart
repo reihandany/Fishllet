@@ -4,8 +4,10 @@ import 'package:get/get.dart';
 import '../controllers/cart_controller.dart';
 import '../controllers/checkout_controller.dart';
 import '../controllers/location_controller.dart';
+import '../controllers/auth_controller.dart';
 import 'product_list_page.dart';
 import 'payment_method_page.dart';
+import 'login_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// CHECKOUT PAGE
@@ -27,6 +29,7 @@ class CheckoutPage extends StatelessWidget {
   final CartController cartController = Get.find<CartController>();
   final CheckoutController checkoutController = Get.find<CheckoutController>();
   final LocationController locationController = Get.put(LocationController());
+  final AuthController authController = Get.find<AuthController>();
 
   // Form key untuk validation
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -37,6 +40,63 @@ class CheckoutPage extends StatelessWidget {
 
   /// Handle checkout submit
   Future<void> _handleCheckout() async {
+    // Check if guest user
+    if (authController.isGuest.value) {
+      Get.dialog(
+        AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: const [
+              Icon(Icons.lock, color: Colors.orange),
+              SizedBox(width: 12),
+              Text('Login Diperlukan'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Anda harus login terlebih dahulu untuk melakukan checkout.',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Silakan login atau register untuk melanjutkan transaksi Anda.',
+                style: TextStyle(fontSize: 14, color: Colors.black87),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Get.back(), child: const Text('Batal')),
+            ElevatedButton.icon(
+              onPressed: () {
+                Get.back(); // Close dialog
+                Get.offAll(() => LoginPage()); // Navigate to login
+              },
+              icon: const Icon(Icons.login, size: 20),
+              label: const Text('Login Sekarang'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2380c4),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
+      );
+      return;
+    }
+
     // Tutup keyboard
     FocusScope.of(Get.context!).unfocus();
 
@@ -90,7 +150,9 @@ class CheckoutPage extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Get.back(); // Close dialog
-                Get.offAll(() => const ProductListPage(initialIndex: 2)); // Navigate to Pesanan Saya tab (index 2)
+                Get.offAll(
+                  () => const ProductListPage(initialIndex: 2),
+                ); // Navigate to Pesanan Saya tab (index 2)
               },
               child: const Text(
                 'View Orders',
@@ -102,7 +164,9 @@ class CheckoutPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Get.back(); // Close dialog
-                Get.offAll(() => const ProductListPage(initialIndex: 0)); // Back to home tab
+                Get.offAll(
+                  () => const ProductListPage(initialIndex: 0),
+                ); // Back to home tab
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2380c4),
@@ -352,7 +416,7 @@ class CheckoutPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        
+
         // Get Location Button
         Row(
           children: [
@@ -362,7 +426,7 @@ class CheckoutPage extends StatelessWidget {
                   await locationController.getUserLocation();
                   if (locationController.userLocation.value != null) {
                     final loc = locationController.userLocation.value!;
-                    
+
                     Get.snackbar(
                       'Location Captured',
                       'Lat: ${loc.latitude.toStringAsFixed(6)}, Long: ${loc.longitude.toStringAsFixed(6)}',
@@ -374,18 +438,22 @@ class CheckoutPage extends StatelessWidget {
                     );
                   }
                 },
-                icon: Obx(() => locationController.isLoading.value
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.my_location)),
-                label: Obx(() => Text(
-                  locationController.userLocation.value == null
-                      ? 'Get My Location (GPS/Network)'
-                      : 'Location Saved ✓',
-                )),
+                icon: Obx(
+                  () => locationController.isLoading.value
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.my_location),
+                ),
+                label: Obx(
+                  () => Text(
+                    locationController.userLocation.value == null
+                        ? 'Get My Location (GPS/Network)'
+                        : 'Location Saved ✓',
+                  ),
+                ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: locationController.userLocation.value == null
                       ? const Color(0xFF2380c4)
@@ -405,15 +473,15 @@ class CheckoutPage extends StatelessWidget {
             ),
           ],
         ),
-        
+
         // Location info if available
         Obx(() {
           if (locationController.userLocation.value == null) {
             return const SizedBox.shrink();
           }
-          
+
           final loc = locationController.userLocation.value!;
-          
+
           return Container(
             margin: const EdgeInsets.only(top: 12),
             padding: const EdgeInsets.all(12),

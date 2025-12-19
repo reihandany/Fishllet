@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
@@ -17,17 +18,51 @@ class ProductController extends GetxController {
   var categories = <String>['Semua'].obs;
 
   final ApiService api = ApiService();
-  late Box<Product> offlineBox;
+  Box<Product>? _offlineBox;
+  Timer? _autoRefreshTimer;
+  
+  Box<Product> get offlineBox {
+    if (_offlineBox == null) {
+      throw Exception('OfflineBox belum diinisialisasi');
+    }
+    return _offlineBox!;
+  }
 
   @override
-  void onInit() async {
+  void onInit() {
     super.onInit();
+    _initializeAndLoad();
+  }
+  
+  Future<void> _initializeAndLoad() async {
+    try {
+      // Buka box HIVE terlebih dahulu
+      _offlineBox = await Hive.openBox<Product>('products');
+      print('✅ OfflineBox initialized');
+      
+      // 🔥 FORCE CLEAR cache lama (untuk update harga)
+      await _offlineBox!.clear();
+      print('🗑️ Old cache cleared - forcing fresh data from API');
 
-    // buka box HIVE
-    offlineBox = await Hive.openBox<Product>('products');
-
-    // load langsung tanpa harus klik tombol
-    loadProducts();
+      // Load products setelah box siap
+      await loadProducts();
+      
+      // Auto refresh setiap 30 detik (opsional - bisa dinonaktifkan jika tidak perlu)
+      _autoRefreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+        if (!isLoading.value) {
+          print('🔄 Auto-refreshing products...');
+          refreshProducts();
+        }
+      });
+    } catch (e) {
+      print('❌ Error initializing ProductController: $e');
+    }
+  }
+  
+  @override
+  void onClose() {
+    _autoRefreshTimer?.cancel();
+    super.onClose();
   }
 
   /// =====================================================================
@@ -72,6 +107,14 @@ class ProductController extends GetxController {
     }
 
     isLoading.value = false;
+  }
+  
+  /// =====================================================================
+  ///  REFRESH PRODUCTS (untuk pull-to-refresh)
+  /// =====================================================================
+  Future<void> refreshProducts() async {
+    print('🔄 Refreshing products...');
+    await loadProducts();
   }
 
   /// =====================================================================

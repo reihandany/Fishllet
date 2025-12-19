@@ -1,15 +1,18 @@
 // lib/views/payment_method_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../controllers/auth_controller.dart';
+import 'login_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// PAYMENT METHOD PAGE
 /// ═══════════════════════════════════════════════════════════════════════════
 ///
 /// Halaman untuk memilih metode pembayaran
+/// Block untuk guest user
 class PaymentMethodPage extends StatefulWidget {
   final double totalAmount;
-  
+
   const PaymentMethodPage({super.key, required this.totalAmount});
 
   @override
@@ -18,6 +21,7 @@ class PaymentMethodPage extends StatefulWidget {
 
 class _PaymentMethodPageState extends State<PaymentMethodPage> {
   String? selectedMethod;
+  final AuthController authController = Get.find<AuthController>();
 
   final List<Map<String, dynamic>> paymentMethods = [
     {
@@ -84,6 +88,56 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    // Check if guest user, show dialog dan redirect
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (authController.isGuest.value) {
+        Get.dialog(
+          AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: Row(
+              children: const [
+                Icon(Icons.payment, color: Colors.orange),
+                SizedBox(width: 12),
+                Text('Pembayaran Tidak Tersedia'),
+              ],
+            ),
+            content: const Text(
+              'Maaf, Anda harus login terlebih dahulu untuk melakukan pembayaran.\n\nSilakan login atau register untuk melanjutkan.',
+              style: TextStyle(fontSize: 15),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back(); // Close dialog
+                  Get.back(); // Back to previous page
+                },
+                child: const Text('Nanti'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Get.back(); // Close dialog
+                  Get.offAll(() => LoginPage()); // Navigate to login
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2380c4),
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Login Sekarang'),
+              ),
+            ],
+          ),
+          barrierDismissible: false,
+        );
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -121,17 +175,11 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               children: [
                 const Text(
                   'Total Pembayaran',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Rp ${widget.totalAmount.toStringAsFixed(0).replaceAllMapped(
-                    RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-                    (Match m) => '${m[1]}.',
-                  )}',
+                  'Rp ${widget.totalAmount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 32,
@@ -157,9 +205,9 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
-                      color: isSelected 
-                        ? const Color(0xFF2380c4) 
-                        : Colors.grey.shade300,
+                      color: isSelected
+                          ? const Color(0xFF2380c4)
+                          : Colors.grey.shade300,
                       width: isSelected ? 2 : 1,
                     ),
                   ),
@@ -178,7 +226,9 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: (method['color'] as Color).withOpacity(0.1),
+                              color: (method['color'] as Color).withOpacity(
+                                0.1,
+                              ),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Icon(
@@ -218,24 +268,24 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: isSelected 
-                                  ? const Color(0xFF2380c4) 
-                                  : Colors.grey,
+                                color: isSelected
+                                    ? const Color(0xFF2380c4)
+                                    : Colors.grey,
                                 width: 2,
                               ),
                             ),
                             child: isSelected
-                              ? Center(
-                                  child: Container(
-                                    width: 14,
-                                    height: 14,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xFF2380c4),
+                                ? Center(
+                                    child: Container(
+                                      width: 14,
+                                      height: 14,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color(0xFF2380c4),
+                                      ),
                                     ),
-                                  ),
-                                )
-                              : null,
+                                  )
+                                : null,
                           ),
                         ],
                       ),
@@ -275,10 +325,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   ),
                   child: const Text(
                     'Konfirmasi Pembayaran',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

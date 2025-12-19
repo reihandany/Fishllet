@@ -98,7 +98,8 @@ class LoginPage extends StatelessWidget {
 
       if (response.user != null) {
         // Ambil username dari metadata
-        final username = response.user!.userMetadata?['username'] ??
+        final username =
+            response.user!.userMetadata?['username'] ??
             response.user!.email?.split('@')[0] ??
             'User';
 
@@ -218,76 +219,102 @@ class LoginPage extends StatelessWidget {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.white, width: 2),
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 2,
+                        ),
                       ),
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.red, width: 2),
+                        borderSide: const BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
                       ),
                       focusedErrorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.red, width: 2),
+                        borderSide: const BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
                       ),
                       errorStyle: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                         fontSize: 12,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 16,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 32),
                   // Password input
-                  Obx(() => TextFormField(
-                    controller: _passwordController,
-                    validator: _validatePassword,
-                    obscureText: _obscurePassword.value,
-                    textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'Masukkan password Anda',
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword.value
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
+                  Obx(
+                    () => TextFormField(
+                      controller: _passwordController,
+                      validator: _validatePassword,
+                      obscureText: _obscurePassword.value,
+                      textInputAction: TextInputAction.done,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        hintText: 'Masukkan password Anda',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword.value
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
+                          onPressed: () {
+                            _obscurePassword.value = !_obscurePassword.value;
+                          },
                         ),
-                        onPressed: () {
-                          _obscurePassword.value = !_obscurePassword.value;
-                        },
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.white,
+                            width: 2,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.red,
+                            width: 2,
+                          ),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: Colors.red,
+                            width: 2,
+                          ),
+                        ),
+                        errorStyle: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 20,
+                          horizontal: 16,
+                        ),
                       ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.white, width: 2),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.red, width: 2),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Colors.red, width: 2),
-                      ),
-                      errorStyle: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                     ),
-                  )),
+                  ),
                   const SizedBox(height: 36),
                   // Tombol Login
                   Obx(() {
@@ -315,7 +342,9 @@ class LoginPage extends StatelessWidget {
                                     height: 20,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2380c4)),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Color(0xFF2380c4),
+                                      ),
                                     ),
                                   ),
                                   SizedBox(width: 12),
@@ -347,7 +376,9 @@ class LoginPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const RegisterScreen(),
+                          ),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -370,6 +401,69 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 16),
+
+                  // Divider dengan "atau"
+                  Row(
+                    children: const [
+                      Expanded(
+                        child: Divider(color: Colors.white60, thickness: 1),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          'atau',
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(color: Colors.white60, thickness: 1),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Tombol Login sebagai Guest
+                  SizedBox(
+                    height: 48,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        authController.loginAsGuest();
+                        Get.offAll(
+                          () => ProductListPage(),
+                          transition: Transition.fadeIn,
+                          duration: const Duration(milliseconds: 300),
+                        );
+                        Get.snackbar(
+                          'Guest Mode',
+                          'Anda masuk sebagai Guest. Fitur checkout & payment tidak tersedia.',
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.orange,
+                          colorText: Colors.white,
+                          icon: const Icon(Icons.info, color: Colors.white),
+                          duration: const Duration(seconds: 3),
+                        );
+                      },
+                      icon: const Icon(Icons.person_outline),
+                      label: const Text(
+                        'Lanjutkan sebagai Guest',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        side: const BorderSide(color: Colors.white, width: 2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+
                   const SizedBox(height: 16),
                   // Info demo
                   const Padding(

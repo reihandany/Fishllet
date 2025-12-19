@@ -17,6 +17,7 @@ import 'my_orders_page.dart';
 import 'history_page.dart';
 import 'account_page.dart';
 import 'map_page.dart';
+import 'login_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// PRODUCT LIST PAGE
@@ -101,7 +102,89 @@ class _ProductListPageState extends State<ProductListPage> {
 
   /// Navigate to bottom nav items
   void _onBottomNavTap(int index) {
+    // Check if guest user trying to access restricted pages
+    if (auth.isGuest.value && index != 0) {
+      // Guest trying to access Keranjang, Pesanan, Riwayat, or Akun
+      _showLoginRequiredDialog(index);
+      return;
+    }
+    
     _selectedIndex.value = index;
+  }
+
+  /// Show login required dialog for guest users
+  void _showLoginRequiredDialog(int attemptedIndex) {
+    String featureName = '';
+    switch (attemptedIndex) {
+      case 1:
+        featureName = 'Keranjang';
+        break;
+      case 2:
+        featureName = 'Pesanan Saya';
+        break;
+      case 3:
+        featureName = 'Riwayat';
+        break;
+      case 4:
+        featureName = 'Akun';
+        break;
+    }
+
+    Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: const [
+            Icon(Icons.lock, color: Colors.orange),
+            SizedBox(width: 12),
+            Text('Login Diperlukan'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Anda harus login terlebih dahulu untuk mengakses $featureName.',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Silakan login atau register untuk melanjutkan.',
+              style: TextStyle(fontSize: 14, color: Colors.black87),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Get.back(); // Close dialog
+              Get.offAll(() => LoginPage()); // Navigate to login
+            },
+            icon: const Icon(Icons.login, size: 20),
+            label: const Text('Login Sekarang'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF2380c4),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 12,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -206,7 +289,11 @@ class _ProductListPageState extends State<ProductListPage> {
             title: const Text('Profil Saya'),
             onTap: () {
               Get.back();
-              _selectedIndex.value = 4; // Navigate to Account
+              if (auth.isGuest.value) {
+                _showLoginRequiredDialog(4); // 4 = Akun
+              } else {
+                _selectedIndex.value = 4; // Navigate to Account
+              }
             },
           ),
           ListTile(
@@ -266,17 +353,26 @@ class _ProductListPageState extends State<ProductListPage> {
             },
           ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.logout, color: Colors.red),
-            title: const Text(
-              'Logout',
-              style: TextStyle(color: Colors.red),
+          Obx(() => ListTile(
+            leading: Icon(
+              auth.isGuest.value ? Icons.login : Icons.logout,
+              color: auth.isGuest.value ? const Color(0xFF2380c4) : Colors.red,
+            ),
+            title: Text(
+              auth.isGuest.value ? 'Login' : 'Logout',
+              style: TextStyle(
+                color: auth.isGuest.value ? const Color(0xFF2380c4) : Colors.red,
+              ),
             ),
             onTap: () {
               Get.back();
-              showLogoutConfirmation();
+              if (auth.isGuest.value) {
+                Get.offAll(() => LoginPage());
+              } else {
+                showLogoutConfirmation();
+              }
             },
-          ),
+          )),
         ],
       ),
     );
@@ -341,34 +437,6 @@ class _ProductListPageState extends State<ProductListPage> {
                 fillColor: Colors.white,
               ),
             ),
-          ),
-          
-          // Category Chips
-          Container(
-            height: 50,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            child: Obx(() => ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: product.categories.length,
-              itemBuilder: (context, index) {
-                final category = product.categories[index];
-                final isSelected = product.selectedCategory.value == category;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(category),
-                    selected: isSelected,
-                    onSelected: (selected) => product.setCategory(category),
-                    backgroundColor: Colors.grey[200],
-                    selectedColor: const Color(0xFF2380c4),
-                    labelStyle: TextStyle(
-                      color: isSelected ? Colors.white : Colors.black,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
-                );
-              },
-            )),
           ),
           
           // Sort & Filter Row
@@ -483,71 +551,74 @@ class _ProductListPageState extends State<ProductListPage> {
                 );
               }
 
-              // Products list with scroll controller
-              return ListView.builder(
-                controller: _scrollController,
-                itemCount: product.filteredProducts.length,
-                itemBuilder: (context, idx) {
-                  final p = product.filteredProducts[idx];
-                  return Card(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: InkWell(
-                      onTap: () => openDetail(p),
-                      borderRadius: BorderRadius.circular(12),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Product Image
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                p.imageUrl,
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    width: 80,
-                                    height: 80,
-                                    color: Colors.grey[300],
-                                    child: const Icon(Icons.image_not_supported),
-                                  );
-                                },
+              // Products list with scroll controller and pull-to-refresh
+              return RefreshIndicator(
+                onRefresh: () => product.refreshProducts(),
+                color: const Color(0xFF2380c4),
+                child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: product.filteredProducts.length,
+                  itemBuilder: (context, idx) {
+                    final p = product.filteredProducts[idx];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: InkWell(
+                        onTap: () => openDetail(p),
+                        borderRadius: BorderRadius.circular(12),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Product Image
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  p.imageUrl,
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: 80,
+                                      height: 80,
+                                      color: Colors.grey[300],
+                                      child: const Icon(Icons.image_not_supported),
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            // Product Info
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    p.name,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF2380c4),
+                              const SizedBox(width: 12),
+                              // Product Info
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      p.name,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF2380c4),
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  // Category chip
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
+                                    const SizedBox(height: 4),
+                                    // Category chip
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
                                       color: const Color(0xFF2380c4).withOpacity(0.1),
                                       borderRadius: BorderRadius.circular(6),
                                     ),
@@ -598,6 +669,11 @@ class _ProductListPageState extends State<ProductListPage> {
                                 color: Color(0xFF2380c4),
                               ),
                               onPressed: () async {
+                                // Check if guest user
+                                if (auth.isGuest.value) {
+                                  _showLoginRequiredDialog(1); // 1 = Keranjang
+                                  return;
+                                }
                                 await cart.addToCart(p);
                               },
                             ),
@@ -607,6 +683,7 @@ class _ProductListPageState extends State<ProductListPage> {
                     ),
                   );
                 },
+              ),
               );
             }),
           ),

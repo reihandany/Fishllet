@@ -29,6 +29,9 @@ class AuthController extends GetxController {
   /// Password visibility toggle (untuk show/hide password)
   var isPasswordVisible = false.obs;
 
+  /// Guest mode flag (true = login sebagai guest, false = login normal)
+  var isGuest = false.obs;
+
   // ─────────────────────────────────────────────────────────────────────────
   // METHODS
   // ─────────────────────────────────────────────────────────────────────────
@@ -38,6 +41,17 @@ class AuthController extends GetxController {
   void login(String user) {
     username.value = user;
     isLoggedIn.value = true;
+    isGuest.value = false;
+  }
+
+  /// Login sebagai Guest
+  /// - Set username = 'Guest'
+  /// - Set isLoggedIn = true
+  /// - Set isGuest = true
+  void loginAsGuest() {
+    username.value = 'Guest';
+    isLoggedIn.value = true;
+    isGuest.value = true;
   }
 
   /// Logout user
@@ -54,6 +68,7 @@ class AuthController extends GetxController {
       // Reset state
       username.value = '';
       isLoggedIn.value = false;
+      isGuest.value = false;
       isLoading.value = false;
 
       // Navigate ke login page

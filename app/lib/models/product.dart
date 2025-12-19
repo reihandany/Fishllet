@@ -44,23 +44,55 @@ class Product {
   });
 
   factory Product.fromJsonList(Map<String, dynamic> json) {
+    // Format price dari API
+    String formattedPrice = 'Rp 45.000';
+    double numPrice = 45000;
+    if (json['price'] != null) {
+      final price = json['price'];
+      numPrice = price is int ? price.toDouble() : (price is double ? price : 45000.0);
+      // Format angka dengan pemisah ribuan
+      final priceStr = numPrice.toStringAsFixed(0).replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (Match m) => '${m[1]}.',
+      );
+      formattedPrice = 'Rp $priceStr';
+    }
+    
     return Product(
-      id: json['idMeal'] ?? '',
+      id: json['idMeal'] ?? json['id']?.toString() ?? '',
       name: json['strMeal'] ?? 'Tanpa nama',
       imageUrl: json['strMealThumb'] ?? '',
       category: json['strCategory'] ?? 'Ikan Segar',
       rating: 4.0 + (json['idMeal'].hashCode % 10) / 10, // Random rating 4.0-4.9
+      price: formattedPrice,
+      numericPrice: numPrice,
     );
   }
 
   factory Product.fromJsonDetail(Map<String, dynamic> json) {
+    // Format price dari API
+    String formattedPrice = 'Rp 45.000';
+    double numPrice = 45000;
+    if (json['price'] != null) {
+      final price = json['price'];
+      numPrice = price is int ? price.toDouble() : (price is double ? price : 45000.0);
+      // Format angka dengan pemisah ribuan
+      final priceStr = numPrice.toStringAsFixed(0).replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (Match m) => '${m[1]}.',
+      );
+      formattedPrice = 'Rp $priceStr';
+    }
+    
     return Product(
-      id: json['idMeal'] ?? '',
+      id: json['idMeal'] ?? json['id']?.toString() ?? '',
       name: json['strMeal'] ?? 'Tanpa nama',
       imageUrl: json['strMealThumb'] ?? '',
       description: json['strInstructions'] ?? 'Deskripsi tidak tersedia.',
       category: json['strCategory'] ?? 'Ikan Segar',
       rating: 4.0 + (json['idMeal'].hashCode % 10) / 10,
+      price: formattedPrice,
+      numericPrice: numPrice,
     );
   }
 

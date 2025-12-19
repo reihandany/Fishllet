@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../controllers/orders_controller.dart';
+import '../controllers/auth_controller.dart';
+import 'login_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// HISTORY PAGE (COMPLETED ORDERS)
@@ -13,6 +15,7 @@ class HistoryPage extends StatelessWidget {
   HistoryPage({super.key});
 
   final OrdersController ordersController = Get.find<OrdersController>();
+  final AuthController authController = Get.find<AuthController>();
 
   String _formatDate(DateTime date) {
     return DateFormat('dd MMM yyyy, HH:mm').format(date);
@@ -202,6 +205,105 @@ class HistoryPage extends StatelessWidget {
         foregroundColor: Colors.white,
       ),
       body: Obx(() {
+        // Check if guest user
+        if (authController.isGuest.value) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Icon
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.history,
+                      size: 80,
+                      color: Colors.orange,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  // Title
+                  const Text(
+                    'Riwayat Tidak Ada',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  // Description
+                  const Text(
+                    'Harap Login atau Register Akun',
+                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
+                  // Login button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Get.offAll(() => LoginPage());
+                      },
+                      icon: const Icon(Icons.login, size: 20),
+                      label: const Text(
+                        'Login / Register',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2380c4),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Info text
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.orange.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: const [
+                        Icon(Icons.info, color: Colors.orange, size: 20),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Anda masuk sebagai Guest. Login untuk melihat riwayat pesanan Anda.',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
         if (ordersController.isLoading.value) {
           return Center(
             child: Column(
@@ -226,11 +328,7 @@ class HistoryPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.history,
-                  size: 100,
-                  color: Colors.grey.shade300,
-                ),
+                Icon(Icons.history, size: 100, color: Colors.grey.shade300),
                 const SizedBox(height: 24),
                 const Text(
                   'Belum ada riwayat',
@@ -244,10 +342,7 @@ class HistoryPage extends StatelessWidget {
                 Text(
                   'Pesanan yang telah selesai\nakan muncul di sini',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 ),
               ],
             ),

@@ -7,7 +7,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
-import 'controllers/product_controller.dart';
 import 'controllers/theme_controller.dart';
 import 'controllers/checkout_controller.dart';
 import 'services/fcm_service.dart';
@@ -77,13 +76,8 @@ void main() async {
     AppBindings().dependencies();
     debugPrint('✅ AppBindings initialized successfully');
 
-    // ⭐ NEW: load products on startup (tanpa tombol apapun)
-    try {
-      await Get.find<ProductController>().loadProducts();
-      debugPrint('✅ Products loaded on startup');
-    } catch (e) {
-      debugPrint('❌ Error loading products on startup: $e');
-    }
+    // Products akan auto-load dari ProductController.onInit()
+    // Tidak perlu manual load di sini lagi
   } catch (e, stackTrace) {
     debugPrint('❌ Error initializing AppBindings: $e');
     debugPrint('Stack trace: $stackTrace');

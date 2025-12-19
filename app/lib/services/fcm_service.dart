@@ -106,7 +106,7 @@ class FCMService {
     debugPrint('📬 Background message received:');
     debugPrint('Title: ${message.notification?.title}');
     debugPrint('Body: ${message.notification?.body}');
-    
+
     // Tampilkan local notification dengan heads-up style
     if (message.notification != null) {
       await _showLocalNotification(
@@ -139,7 +139,7 @@ class FCMService {
     );
 
     await _localNotifications.initialize(initSettings);
-    
+
     // Create notification channel dengan importance HIGH untuk heads-up notification
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'fcm_channel_id',
@@ -149,11 +149,13 @@ class FCMService {
       enableVibration: true,
       playSound: true,
     );
-    
+
     await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(channel);
-    
+
     debugPrint('✅ Local notifications initialized');
   }
 

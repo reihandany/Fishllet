@@ -2,8 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/cart_controller.dart';
+import '../controllers/auth_controller.dart';
 import '../models/product.dart';
 import 'checkout_page.dart';
+import 'login_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// CART PAGE
@@ -18,11 +20,13 @@ import 'checkout_page.dart';
 /// - Loading state untuk validasi stock
 /// - Empty state untuk cart kosong
 /// - Animasi smooth saat add/remove items
+/// - Block checkout untuk guest user
 class CartPage extends StatelessWidget {
   CartPage({super.key});
 
   // GetX CartController
   final CartController cartController = Get.find<CartController>();
+  final AuthController authController = Get.find<AuthController>();
 
   // ─────────────────────────────────────────────────────────────────────────
   // NAVIGATION
@@ -30,6 +34,63 @@ class CartPage extends StatelessWidget {
 
   /// Navigate ke CheckoutPage
   Future<void> _navigateToCheckout() async {
+    // Check if guest user
+    if (authController.isGuest.value) {
+      Get.dialog(
+        AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: const [
+              Icon(Icons.lock, color: Colors.orange),
+              SizedBox(width: 12),
+              Text('Login Diperlukan'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Anda harus login terlebih dahulu untuk melakukan checkout.',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Silakan login atau register untuk melanjutkan transaksi Anda.',
+                style: TextStyle(fontSize: 14, color: Colors.black87),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Get.back(), child: const Text('Batal')),
+            ElevatedButton.icon(
+              onPressed: () {
+                Get.back(); // Close dialog
+                Get.offAll(() => LoginPage()); // Navigate to login
+              },
+              icon: const Icon(Icons.login, size: 20),
+              label: const Text('Login Sekarang'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2380c4),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
+      );
+      return;
+    }
+
     // Validate stock dulu (simulasi async operation)
     cartController.isLoading.value = true;
 
