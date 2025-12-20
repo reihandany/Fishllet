@@ -96,9 +96,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register'),
-        backgroundColor: const Color(0xFF2380c4),
+        backgroundColor: const Color(0xFF1F70B2),
       ),
-      backgroundColor: const Color(0xFF2380c4),
+      backgroundColor: const Color(0xFF1F70B2),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -228,7 +228,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onPressed: _isLoading ? null : _handleRegister,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF2380c4),
+                      foregroundColor: const Color(0xFF1F70B2),
                       disabledBackgroundColor: Colors.white70,
                       disabledForegroundColor: Colors.grey,
                       shape: RoundedRectangleBorder(
@@ -245,7 +245,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 height: 20,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2380c4)),
+                                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1F70B2)),
                                 ),
                               ),
                               SizedBox(width: 12),

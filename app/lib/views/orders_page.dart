@@ -43,7 +43,7 @@ class OrdersPage extends StatelessWidget {
       case 'pending':
         return Colors.orange;
       case 'processing':
-        return Colors.blue;
+        return Color(0xFF1F70B2);
       case 'shipped':
         return Colors.purple;
       case 'delivered':
@@ -100,7 +100,7 @@ class OrdersPage extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF2380c4),
+                      color: Color(0xFF1F70B2),
                     ),
                   ),
                   IconButton(
@@ -190,7 +190,7 @@ class OrdersPage extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF2380c4),
+                      color: Color(0xFF1F70B2),
                     ),
                   ),
                 ],
@@ -228,7 +228,7 @@ class OrdersPage extends StatelessWidget {
                         icon: const Icon(Icons.check),
                         label: const Text('Process'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2380c4),
+                          backgroundColor: const Color(0xFF1F70B2),
                           foregroundColor: Colors.white,
                         ),
                       ),
@@ -308,14 +308,14 @@ class OrdersPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
-                  Icon(Icons.sort, color: Color(0xFF2380c4), size: 24),
+                  Icon(Icons.sort, color: Color(0xFF1F70B2), size: 24),
                   SizedBox(width: 12),
                   Text(
                     'Sort Orders By',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF2380c4),
+                      color: Color(0xFF1F70B2),
                     ),
                   ),
                 ],
@@ -348,24 +348,24 @@ class OrdersPage extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: isSelected
-                ? const Color(0xFF2380c4).withOpacity(0.1)
+                ? const Color(0xFF1F70B2).withOpacity(0.1)
                 : Colors.grey.shade100,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
             icon,
-            color: isSelected ? const Color(0xFF2380c4) : Colors.grey.shade700,
+            color: isSelected ? const Color(0xFF1F70B2) : Colors.grey.shade700,
           ),
         ),
         title: Text(
           label,
           style: TextStyle(
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            color: isSelected ? const Color(0xFF2380c4) : Colors.black,
+            color: isSelected ? const Color(0xFF1F70B2) : Colors.black,
           ),
         ),
         trailing: isSelected
-            ? const Icon(Icons.check_circle, color: Color(0xFF2380c4))
+            ? const Icon(Icons.check_circle, color: Color(0xFF1F70B2))
             : null,
         onTap: () {
           ordersController.changeSortBy(value);
@@ -374,7 +374,7 @@ class OrdersPage extends StatelessWidget {
             'Sort Applied',
             'Orders sorted by: $label',
             snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: const Color(0xFF2380c4),
+            backgroundColor: const Color(0xFF1F70B2),
             colorText: Colors.white,
             icon: Icon(icon, color: Colors.white),
             duration: const Duration(seconds: 2),
@@ -434,7 +434,7 @@ class OrdersPage extends StatelessWidget {
           }),
         ],
       ),
-      backgroundColor: const Color(0xFF2380c4),
+      backgroundColor: const Color(0xFF1F70B2),
       foregroundColor: Colors.white,
       actions: [
         // Sort button
@@ -453,7 +453,7 @@ class OrdersPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
-          CircularProgressIndicator(color: Color(0xFF2380c4), strokeWidth: 3),
+          CircularProgressIndicator(color: Color(0xFF1F70B2), strokeWidth: 3),
           SizedBox(height: 24),
           Text(
             'Loading orders...',
@@ -553,7 +553,7 @@ class OrdersPage extends StatelessWidget {
                     icon: const Icon(Icons.shopping_bag_outlined),
                     label: const Text('Start Shopping'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2380c4),
+                      backgroundColor: const Color(0xFF1F70B2),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 32,
@@ -579,7 +579,7 @@ class OrdersPage extends StatelessWidget {
       onRefresh: () async {
         await ordersController.loadOrders();
       },
-      color: const Color(0xFF2380c4),
+      color: const Color(0xFF1F70B2),
       child: Obx(() {
         final orders = ordersController.sortedOrders;
 
@@ -621,7 +621,7 @@ class OrdersPage extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF2380c4),
+                      color: Color(0xFF1F70B2),
                     ),
                   ),
                   Container(
@@ -710,7 +710,7 @@ class OrdersPage extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF2380c4),
+                      color: Color(0xFF1F70B2),
                     ),
                   ),
                 ],
@@ -726,7 +726,7 @@ class OrdersPage extends StatelessWidget {
                     icon: const Icon(Icons.visibility, size: 16),
                     label: const Text('View Details'),
                     style: TextButton.styleFrom(
-                      foregroundColor: const Color(0xFF2380c4),
+                      foregroundColor: const Color(0xFF1F70B2),
                     ),
                   ),
                 ],

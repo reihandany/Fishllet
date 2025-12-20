@@ -58,6 +58,9 @@ dependencies:
   firebase_core: ^2.32.0
   firebase_messaging: ^14.7.9
   flutter_local_notifications: ^17.2.3
+  google_fonts: ^6.3.3
+  shimmer: ^3.0.0
+  badges: ^3.1.2
 
 dev_dependencies:
   flutter_test:
@@ -116,3 +119,4 @@ flutter:
 
   assets:
     - .env
+    - assets/images/Fishllet Logo Design-01.png

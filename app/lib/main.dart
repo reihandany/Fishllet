@@ -6,11 +6,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'firebase_options.dart';
 import 'controllers/theme_controller.dart';
 import 'controllers/checkout_controller.dart';
 import 'services/fcm_service.dart';
 import 'utils/app__bindings.dart';
+import 'views/splash_screen.dart';
 import 'views/login_page.dart';
 import 'views/product_list_page.dart';
 import 'views/checkout_page.dart';
@@ -114,27 +116,69 @@ class MyApp extends StatelessWidget {
             ? ThemeMode.dark
             : ThemeMode.light,
         theme: ThemeData(
-          primarySwatch: Colors.blue,
           useMaterial3: true,
           brightness: Brightness.light,
+          textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
           colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
+            seedColor: const Color(0xFF3B8FCC),
             brightness: Brightness.light,
+            primary: const Color(0xFF3B8FCC),
+            secondary: const Color(0xFF5AA5D6),
+          ),
+          appBarTheme: AppBarTheme(
+            elevation: 0,
+            centerTitle: true,
+            titleTextStyle: GoogleFonts.poppins(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
           ),
         ),
         darkTheme: ThemeData(
-          primarySwatch: Colors.blue,
           useMaterial3: true,
           brightness: Brightness.dark,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            brightness: Brightness.dark,
+          scaffoldBackgroundColor: const Color(0xFF121212),
+          textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme).apply(
+            bodyColor: const Color(0xFFE0E0E0),
+            displayColor: const Color(0xFFE0E0E0),
+          ),
+          colorScheme: const ColorScheme.dark(
+            primary: Color(0xFF3B8FCC),
+            secondary: Color(0xFF5AA5D6),
+            surface: Color(0xFF1E1E1E),
+            onSurface: Color(0xFFE0E0E0),
+            onPrimary: Colors.white,
+            onSecondary: Colors.white,
+          ),
+          cardTheme: const CardThemeData(
+            color: Color(0xFF252525),
+            elevation: 2,
+          ),
+          dividerColor: const Color(0xFF3D3D3D),
+          listTileTheme: const ListTileThemeData(
+            iconColor: Color(0xFF5AA5D6),
+            textColor: Color(0xFFE0E0E0),
+          ),
+          iconTheme: const IconThemeData(
+            color: Color(0xFFB0B0B0),
+          ),
+          appBarTheme: AppBarTheme(
+            elevation: 0,
+            centerTitle: true,
+            backgroundColor: const Color(0xFF1E1E1E),
+            titleTextStyle: GoogleFonts.poppins(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
           ),
         ),
-        // Set initial route
-        initialRoute: '/login',
+        // Set initial route ke splash screen
+        initialRoute: '/splash',
         // Define named routes
         getPages: [
+          GetPage(name: '/splash', page: () => const SplashScreen()),
           GetPage(name: '/login', page: () => LoginPage()),
           GetPage(name: '/products', page: () => const ProductListPage()),
           GetPage(

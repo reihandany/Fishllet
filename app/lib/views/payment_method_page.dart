@@ -42,7 +42,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       'id': 'dana',
       'name': 'DANA',
       'icon': Icons.account_balance_wallet,
-      'color': Colors.blue,
+      'color': Color(0xFF1F70B2),
       'description': 'Bayar dengan DANA',
     },
     {
@@ -63,7 +63,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       'id': 'credit_card',
       'name': 'Kartu Kredit/Debit',
       'icon': Icons.credit_card,
-      'color': Colors.indigo,
+      'color': Color(0xFF1F70B2),
       'description': 'Bayar dengan kartu',
     },
   ];
@@ -124,7 +124,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                   Get.offAll(() => LoginPage()); // Navigate to login
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2380c4),
+                  backgroundColor: const Color(0xFF1F70B2),
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('Login Sekarang'),
@@ -142,7 +142,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pilih Metode Pembayaran'),
-        backgroundColor: const Color(0xFF2380c4),
+        backgroundColor: const Color(0xFF1F70B2),
         foregroundColor: Colors.white,
       ),
       body: Column(
@@ -155,8 +155,8 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF2380c4),
-                  const Color(0xFF2380c4).withOpacity(0.8),
+                  const Color(0xFF1F70B2),
+                  const Color(0xFF1F70B2).withOpacity(0.8),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -164,7 +164,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF2380c4).withOpacity(0.3),
+                  color: const Color(0xFF1F70B2).withOpacity(0.3),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -206,7 +206,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
                       color: isSelected
-                          ? const Color(0xFF2380c4)
+                          ? const Color(0xFF1F70B2)
                           : Colors.grey.shade300,
                       width: isSelected ? 2 : 1,
                     ),
@@ -269,7 +269,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                               shape: BoxShape.circle,
                               border: Border.all(
                                 color: isSelected
-                                    ? const Color(0xFF2380c4)
+                                    ? const Color(0xFF1F70B2)
                                     : Colors.grey,
                                 width: 2,
                               ),
@@ -281,7 +281,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                                       height: 14,
                                       decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: Color(0xFF2380c4),
+                                        color: Color(0xFF1F70B2),
                                       ),
                                     ),
                                   )
@@ -315,7 +315,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 child: ElevatedButton(
                   onPressed: _processPayment,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2380c4),
+                    backgroundColor: const Color(0xFF1F70B2),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(

@@ -39,7 +39,7 @@ class ProductDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(product.name),
-        backgroundColor: const Color(0xFF2380c4),
+        backgroundColor: const Color(0xFF1F70B2),
         foregroundColor: Colors.white,
         // GetX automatic back button (no need to override)
       ),
@@ -67,7 +67,7 @@ class ProductDetailPage extends StatelessWidget {
                       color: Colors.grey.shade200,
                       child: Center(
                         child: CircularProgressIndicator(
-                          color: const Color(0xFF2380c4),
+                          color: const Color(0xFF1F70B2),
                           strokeWidth: 3,
                           value: loadingProgress.expectedTotalBytes != null
                               ? loadingProgress.cumulativeBytesLoaded /
@@ -110,7 +110,7 @@ class ProductDetailPage extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2380c4),
+                color: Color(0xFF1F70B2),
               ),
             ),
             const SizedBox(height: 12),
@@ -119,7 +119,7 @@ class ProductDetailPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFF2380c4).withOpacity(0.1),
+                color: const Color(0xFF1F70B2).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
@@ -127,7 +127,7 @@ class ProductDetailPage extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF2380c4),
+                  color: Color(0xFF1F70B2),
                 ),
               ),
             ),
@@ -169,7 +169,7 @@ class ProductDetailPage extends StatelessWidget {
                       : const Icon(Icons.add_shopping_cart),
                   label: Text(isLoading ? 'Adding...' : 'Add to Cart'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2380c4),
+                    backgroundColor: const Color(0xFF1F70B2),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

@@ -19,8 +19,8 @@ class AppBindings extends Bindings {
 
     // ==================== CONTROLLERS ====================
 
-    // Auth Controller
-    Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
+    // Auth Controller - MUST be eager loaded for persistent login
+    Get.put<AuthController>(AuthController(), permanent: true);
 
     // Product Controller → eager load
     Get.put<ProductController>(ProductController(), permanent: true);

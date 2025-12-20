@@ -58,7 +58,7 @@ class DeliveryTrackingPage extends StatelessWidget {
             ),
           ],
         ),
-        backgroundColor: const Color(0xFF2380c4),
+        backgroundColor: const Color(0xFF1F70B2),
         foregroundColor: Colors.white,
         actions: [
           // Toggle tracking button
@@ -175,7 +175,7 @@ class DeliveryTrackingPage extends StatelessWidget {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF2380c4),
+                                color: const Color(0xFF1F70B2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Obx(
@@ -191,7 +191,7 @@ class DeliveryTrackingPage extends StatelessWidget {
                             ),
                             const Icon(
                               Icons.delivery_dining,
-                              color: Color(0xFF2380c4),
+                              color: Color(0xFF1F70B2),
                               size: 45,
                               shadows: [
                                 Shadow(blurRadius: 4, color: Colors.black26),
@@ -209,7 +209,7 @@ class DeliveryTrackingPage extends StatelessWidget {
                     polylines: [
                       Polyline(
                         points: [courierPos, customerPos],
-                        color: const Color(0xFF2380c4),
+                        color: const Color(0xFF1F70B2),
                         strokeWidth: 3,
                         isDotted: true,
                       ),
@@ -294,7 +294,7 @@ class DeliveryTrackingPage extends StatelessWidget {
                               icon: Icons.straighten,
                               label: 'Jarak',
                               value: deliveryController.distanceText.value,
-                              color: const Color(0xFF2380c4),
+                              color: const Color(0xFF1F70B2),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -327,7 +327,7 @@ class DeliveryTrackingPage extends StatelessWidget {
                                 const Icon(
                                   Icons.location_on,
                                   size: 16,
-                                  color: Color(0xFF2380c4),
+                                  color: Color(0xFF1F70B2),
                                 ),
                                 const SizedBox(width: 8),
                                 const Text(
@@ -371,7 +371,7 @@ class DeliveryTrackingPage extends StatelessWidget {
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           children: const [
-                            CircularProgressIndicator(color: Color(0xFF2380c4)),
+                            CircularProgressIndicator(color: Color(0xFF1F70B2)),
                             SizedBox(height: 12),
                             Text(
                               'Menunggu lokasi kurir...',
@@ -457,7 +457,7 @@ class DeliveryTrackingPage extends StatelessWidget {
                 );
               }
             },
-            backgroundColor: const Color(0xFF2380c4),
+            backgroundColor: const Color(0xFF1F70B2),
             child: const Icon(Icons.delivery_dining, color: Colors.white),
           ),
           const SizedBox(height: 10),
@@ -499,7 +499,7 @@ class DeliveryTrackingPage extends StatelessWidget {
               }
             },
             backgroundColor: Colors.white,
-            child: const Icon(Icons.zoom_out_map, color: Color(0xFF2380c4)),
+            child: const Icon(Icons.zoom_out_map, color: Color(0xFF1F70B2)),
           ),
 
           const SizedBox(height: 10),
@@ -582,8 +582,8 @@ class DeliveryTrackingPage extends StatelessWidget {
   Color _getStatusColor(String status) {
     if (status.contains('Hampir Sampai')) return Colors.green;
     if (status.contains('Dekat')) return Colors.orange;
-    if (status.contains('Terkirim')) return Colors.blue;
-    return const Color(0xFF2380c4);
+    if (status.contains('Terkirim')) return Color(0xFF1F70B2);
+    return const Color(0xFF1F70B2);
   }
 
   IconData _getStatusIcon(String status) {
