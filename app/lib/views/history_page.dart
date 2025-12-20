@@ -56,7 +56,9 @@ class HistoryPage extends StatelessWidget {
           return Container(
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkCard : Colors.white,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
             ),
             padding: const EdgeInsets.all(24),
             child: SingleChildScrollView(
@@ -115,7 +117,11 @@ class HistoryPage extends StatelessWidget {
                   const SizedBox(height: 24),
                   Text(
                     'Items',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.text(context)),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.text(context),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   ...((order['items'] as List).map((item) {
@@ -127,7 +133,10 @@ class HistoryPage extends StatelessWidget {
                           Expanded(
                             child: Text(
                               '${item['name']} × ${item['quantity']}',
-                              style: TextStyle(fontSize: 14, color: AppColors.text(context)),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppColors.text(context),
+                              ),
                             ),
                           ),
                           Text(
@@ -150,7 +159,11 @@ class HistoryPage extends StatelessWidget {
                     children: [
                       Text(
                         'Total Amount',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.text(context)),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.text(context),
+                        ),
                       ),
                       Text(
                         _formatPrice(order['totalPrice']),
@@ -183,7 +196,11 @@ class HistoryPage extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 20, color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600),
+        Icon(
+          icon,
+          size: 20,
+          color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600,
+        ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -191,7 +208,12 @@ class HistoryPage extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: TextStyle(fontSize: 12, color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : Colors.grey.shade600,
+                ),
               ),
               const SizedBox(height: 2),
               Text(
@@ -214,6 +236,7 @@ class HistoryPage extends StatelessWidget {
     final isDark = AppColors.isDark(context);
     return Scaffold(
       appBar: AppStyles.buildGradientAppBar(
+        context: context,
         title: const Text(
           'Riwayat Pesanan',
           style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
@@ -256,7 +279,10 @@ class HistoryPage extends StatelessWidget {
                   // Description
                   Text(
                     'Harap Login atau Register Akun',
-                    style: TextStyle(fontSize: 16, color: AppColors.textSecondary(context)),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textSecondary(context),
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
@@ -326,7 +352,10 @@ class HistoryPage extends StatelessWidget {
               children: [
                 const CircularProgressIndicator(color: Color(0xFF1F70B2)),
                 const SizedBox(height: 24),
-                Text('Loading history...', style: TextStyle(color: AppColors.textSecondary(context))),
+                Text(
+                  'Loading history...',
+                  style: TextStyle(color: AppColors.textSecondary(context)),
+                ),
               ],
             ),
           );
@@ -343,7 +372,11 @@ class HistoryPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.history, size: 100, color: isDark ? Colors.grey.shade600 : Colors.grey.shade300),
+                Icon(
+                  Icons.history,
+                  size: 100,
+                  color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
+                ),
                 const SizedBox(height: 24),
                 Text(
                   'Belum ada riwayat',
@@ -357,7 +390,10 @@ class HistoryPage extends StatelessWidget {
                 Text(
                   'Pesanan yang telah selesai\nakan muncul di sini',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade500 : Colors.grey.shade600),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                  ),
                 ),
               ],
             ),
@@ -404,7 +440,9 @@ class HistoryPage extends StatelessWidget {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: _getStatusColor(status).withOpacity(isDark ? 0.2 : 0.1),
+                              color: _getStatusColor(
+                                status,
+                              ).withOpacity(isDark ? 0.2 : 0.1),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: _getStatusColor(status),
@@ -439,14 +477,18 @@ class HistoryPage extends StatelessWidget {
                           Icon(
                             Icons.calendar_today,
                             size: 14,
-                            color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : Colors.grey.shade600,
                           ),
                           const SizedBox(width: 6),
                           Text(
                             _formatDate(order['orderDate']),
                             style: TextStyle(
                               fontSize: 13,
-                              color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade700,
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : Colors.grey.shade700,
                             ),
                           ),
                         ],
@@ -457,14 +499,18 @@ class HistoryPage extends StatelessWidget {
                           Icon(
                             Icons.shopping_bag_outlined,
                             size: 14,
-                            color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : Colors.grey.shade600,
                           ),
                           const SizedBox(width: 6),
                           Text(
                             '${items.length} item${items.length != 1 ? 's' : ''}',
                             style: TextStyle(
                               fontSize: 13,
-                              color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade700,
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : Colors.grey.shade700,
                             ),
                           ),
                         ],

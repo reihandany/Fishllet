@@ -155,326 +155,388 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppColors.isDark(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppGradients.primaryGradient,
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? AppGradients.darkGradient
+              : AppGradients.primaryGradient,
         ),
         child: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Logo Fishllet - full width proporsional sampai tepi kanan-kiri
-                Padding(
-                  padding: const EdgeInsets.only(top: 20, bottom: 20),
-                  child: AspectRatio(
-                    // Rasio mendekati ukuran logo asli agar proporsional
-                    aspectRatio: 340 / 160,
-                    child: Image.asset(
-                      'assets/images/Fishllet Logo Design-01.png',
-                      fit: BoxFit.fitWidth,
-                      width: double.infinity,
-                      alignment: Alignment.center,
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Logo Fishllet - full width proporsional sampai tepi kanan-kiri
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, bottom: 20),
+                    child: AspectRatio(
+                      // Rasio mendekati ukuran logo asli agar proporsional
+                      aspectRatio: 340 / 160,
+                      child: Image.asset(
+                        'assets/images/Fishllet Logo Design-01.png',
+                        fit: BoxFit.fitWidth,
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                      ),
                     ),
                   ),
-                ),
-                // Konten form diberi padding horizontal agar rapi
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const SizedBox(height: 20),
-                        // Email input
-                        TextFormField(
-                    controller: _emailController,
-                    validator: _validateEmail,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      hintText: 'Masukkan email Anda',
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                          width: 2,
-                        ),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Colors.red,
-                          width: 2,
-                        ),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Colors.red,
-                          width: 2,
-                        ),
-                      ),
-                      errorStyle: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 20,
-                        horizontal: 16,
-                      ),
-                    ),
-                        ),
-                        const SizedBox(height: 32),
-                        // Password input
-                        Obx(
-                          () => TextFormField(
-                      controller: _passwordController,
-                      validator: _validatePassword,
-                      obscureText: _obscurePassword.value,
-                      textInputAction: TextInputAction.done,
-                      decoration: InputDecoration(
-                        hintText: 'Masukkan password Anda',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword.value
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
+                  // Konten form diberi padding horizontal agar rapi
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const SizedBox(height: 20),
+                          // Email input
+                          TextFormField(
+                            controller: _emailController,
+                            validator: _validateEmail,
+                            textInputAction: TextInputAction.next,
+                            style: TextStyle(
+                              color: isDark ? Colors.white : Colors.black87,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'Masukkan email Anda',
+                              hintStyle: TextStyle(
+                                color: isDark ? Colors.white54 : Colors.grey,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                                color: isDark ? Colors.white70 : Colors.grey,
+                              ),
+                              filled: true,
+                              fillColor: isDark
+                                  ? const Color(0xFF2A4A6F)
+                                  : Colors.white,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: isDark
+                                    ? const BorderSide(
+                                        color: Color(0xFF4A6FA5),
+                                        width: 1,
+                                      )
+                                    : BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: isDark
+                                      ? const Color(0xFF64B5F6)
+                                      : Colors.white,
+                                  width: 2,
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(
+                                  color: Colors.red,
+                                  width: 2,
+                                ),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(
+                                  color: Colors.red,
+                                  width: 2,
+                                ),
+                              ),
+                              errorStyle: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 16,
+                              ),
+                            ),
                           ),
-                          onPressed: () {
-                            _obscurePassword.value = !_obscurePassword.value;
-                          },
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: Colors.white,
-                            width: 2,
+                          const SizedBox(height: 32),
+                          // Password input
+                          Obx(
+                            () => TextFormField(
+                              controller: _passwordController,
+                              validator: _validatePassword,
+                              obscureText: _obscurePassword.value,
+                              textInputAction: TextInputAction.done,
+                              style: TextStyle(
+                                color: isDark ? Colors.white : Colors.black87,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'Masukkan password Anda',
+                                hintStyle: TextStyle(
+                                  color: isDark ? Colors.white54 : Colors.grey,
+                                ),
+                                prefixIcon: Icon(
+                                  Icons.lock_outline,
+                                  color: isDark ? Colors.white70 : Colors.grey,
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword.value
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    _obscurePassword.value =
+                                        !_obscurePassword.value;
+                                  },
+                                ),
+                                filled: true,
+                                fillColor: isDark
+                                    ? const Color(0xFF2A4A6F)
+                                    : Colors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: isDark
+                                      ? const BorderSide(
+                                          color: Color(0xFF4A6FA5),
+                                          width: 1,
+                                        )
+                                      : BorderSide.none,
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: isDark
+                                        ? const Color(0xFF64B5F6)
+                                        : Colors.white,
+                                    width: 2,
+                                  ),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                    width: 2,
+                                  ),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                    color: Colors.red,
+                                    width: 2,
+                                  ),
+                                ),
+                                errorStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 20,
+                                  horizontal: 16,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: Colors.red,
-                            width: 2,
-                          ),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: Colors.red,
-                            width: 2,
-                          ),
-                        ),
-                        errorStyle: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 16,
-                        ),
-                      ),
-                          ),
-                        ),
-                        const SizedBox(height: 36),
-                        // Tombol Login
-                        Obx(() {
-                    final isLoading = authController.isLoading.value;
-                    return SizedBox(
-                      height: 56,
-                      child: ElevatedButton(
-                        onPressed: isLoading ? null : _handleLogin,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF3B8FCC),
-                          disabledBackgroundColor: Colors.white70,
-                          disabledForegroundColor: Colors.grey,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: isLoading ? 0 : 2,
-                        ),
-                        child: isLoading
-                            ? const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        Color(0xFF3B8FCC),
+                          const SizedBox(height: 36),
+                          // Tombol Login
+                          Obx(() {
+                            final isLoading = authController.isLoading.value;
+                            return SizedBox(
+                              height: 56,
+                              child: OutlinedButton(
+                                onPressed: isLoading ? null : _handleLogin,
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
+                                  disabledForegroundColor: Colors.white60,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: isLoading
+                                    ? const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                    Colors.white,
+                                                  ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 12),
+                                          Text(
+                                            'Logging in...',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : const Text(
+                                        'Login',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.5,
+                                        ),
                                       ),
-                                    ),
+                              ),
+                            );
+                          }),
+                          const SizedBox(height: 16),
+                          // Tombol Register di bawah login
+                          SizedBox(
+                            height: 48,
+                            child: OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const RegisterScreen(),
                                   ),
-                                  SizedBox(width: 12),
-                                  Text(
-                                    'Logging in...',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : const Text(
-                                'Login',
+                                );
+                              },
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
+                                'Register',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                      ),
-                    );
-                        }),
-                        const SizedBox(height: 16),
-                        // Tombol Register di bawah login
-                        SizedBox(
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const RegisterScreen(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: AppColors.primary,
-                        disabledBackgroundColor: Colors.white70,
-                        disabledForegroundColor: Colors.grey,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 2,
-                      ),
-                      child: const Text(
-                        'Register',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Divider dengan "atau"
-                        Row(
-                          children: const [
-                            Expanded(
-                              child: Divider(color: Colors.white60, thickness: 1),
                             ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: Text(
-                                'atau',
-                                style: TextStyle(color: Colors.white70, fontSize: 14),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Divider dengan "atau"
+                          Row(
+                            children: const [
+                              Expanded(
+                                child: Divider(
+                                  color: Colors.white60,
+                                  thickness: 1,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  'atau',
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  color: Colors.white60,
+                                  thickness: 1,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Tombol Login sebagai Guest
+                          SizedBox(
+                            height: 48,
+                            child: OutlinedButton.icon(
+                              onPressed: () async {
+                                await authController.loginAsGuest();
+                                Get.offAll(
+                                  () => ProductListPage(),
+                                  transition: Transition.fadeIn,
+                                  duration: const Duration(milliseconds: 300),
+                                );
+                                Get.snackbar(
+                                  'Guest Mode',
+                                  'Anda masuk sebagai Guest. Fitur checkout & payment tidak tersedia.',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: Colors.orange,
+                                  colorText: Colors.white,
+                                  icon: const Icon(
+                                    Icons.info,
+                                    color: Colors.white,
+                                  ),
+                                  duration: const Duration(seconds: 3),
+                                );
+                              },
+                              icon: const Icon(Icons.person_outline),
+                              label: const Text(
+                                'Lanjutkan sebagai Guest',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                               ),
                             ),
-                            Expanded(
-                              child: Divider(color: Colors.white60, thickness: 1),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        // Tombol Login sebagai Guest
-                        SizedBox(
-                          height: 48,
-                          child: OutlinedButton.icon(
-                      onPressed: () async {
-                        await authController.loginAsGuest();
-                        Get.offAll(
-                          () => ProductListPage(),
-                          transition: Transition.fadeIn,
-                          duration: const Duration(milliseconds: 300),
-                        );
-                        Get.snackbar(
-                          'Guest Mode',
-                          'Anda masuk sebagai Guest. Fitur checkout & payment tidak tersedia.',
-                          snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: Colors.orange,
-                          colorText: Colors.white,
-                          icon: const Icon(Icons.info, color: Colors.white),
-                          duration: const Duration(seconds: 3),
-                        );
-                      },
-                      icon: const Icon(Icons.person_outline),
-                      label: const Text(
-                        'Lanjutkan sebagai Guest',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.white, width: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
                           ),
-                        ),
 
-                        const SizedBox(height: 16),
-                        // Info demo
-                        const Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                          child: Text(
-                            'Email harus valid, Password minimal 6 karakter',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white60,
-                              fontStyle: FontStyle.italic,
+                          const SizedBox(height: 16),
+                          // Info demo
+                          const Padding(
+                            padding: EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              'Email harus valid, Password minimal 6 karakter',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white60,
+                                fontStyle: FontStyle.italic,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
           ),
         ),
       ),

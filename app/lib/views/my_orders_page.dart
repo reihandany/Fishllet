@@ -60,7 +60,9 @@ class MyOrdersPage extends StatelessWidget {
           return Container(
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkCard : Colors.white,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
             ),
             padding: const EdgeInsets.all(24),
             child: SingleChildScrollView(
@@ -119,7 +121,11 @@ class MyOrdersPage extends StatelessWidget {
                   const SizedBox(height: 24),
                   Text(
                     'Items',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.text(context)),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.text(context),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   ...((order['items'] as List).map((item) {
@@ -131,113 +137,122 @@ class MyOrdersPage extends StatelessWidget {
                           Expanded(
                             child: Text(
                               '${item['name']} × ${item['quantity']}',
-                              style: TextStyle(fontSize: 14, color: AppColors.text(context)),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppColors.text(context),
+                              ),
                             ),
                           ),
                           Text(
-                        _formatPrice(item['price'] * item['quantity']),
+                            _formatPrice(item['price'] * item['quantity']),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.text(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList()),
+                  const SizedBox(height: 16),
+                  Divider(color: AppColors.divider(context)),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Total Amount',
                         style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                           color: AppColors.text(context),
+                        ),
+                      ),
+                      Text(
+                        _formatPrice(order['totalPrice']),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
                         ),
                       ),
                     ],
                   ),
-                );
-              }).toList()),
-              const SizedBox(height: 16),
-              Divider(color: AppColors.divider(context)),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Total Amount',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.text(context)),
-                  ),
-                  Text(
-                    _formatPrice(order['totalPrice']),
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
+                  if (order['status'].toLowerCase() == 'pending') ...[
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          Get.back(); // Close bottom sheet
+                          // Show confirmation dialog
+                          Get.dialog(
+                            AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              title: Row(
+                                children: const [
+                                  Icon(Icons.warning, color: Colors.orange),
+                                  SizedBox(width: 12),
+                                  Text('Cancel Order'),
+                                ],
+                              ),
+                              content: Text(
+                                'Are you sure you want to cancel order #${order['orderId']}?',
+                                style: const TextStyle(fontSize: 15),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Get.back(),
+                                  child: const Text('No'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Get.back(); // Close dialog
+                                    ordersController.cancelOrder(
+                                      order['orderId'],
+                                    );
+                                    Get.snackbar(
+                                      'Order Cancelled',
+                                      'Order #${order['orderId']} has been cancelled',
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: Colors.orange,
+                                      colorText: Colors.white,
+                                      icon: const Icon(
+                                        Icons.cancel,
+                                        color: Colors.white,
+                                      ),
+                                      duration: const Duration(seconds: 2),
+                                      margin: const EdgeInsets.all(16),
+                                      borderRadius: 12,
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                  child: const Text('Yes, Cancel'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.cancel),
+                        label: const Text('Cancel Order'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.red,
+                          side: const BorderSide(color: Colors.red, width: 2),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
-              if (order['status'].toLowerCase() == 'pending') ...[
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      Get.back(); // Close bottom sheet
-                      // Show confirmation dialog
-                      Get.dialog(
-                        AlertDialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          title: Row(
-                            children: const [
-                              Icon(Icons.warning, color: Colors.orange),
-                              SizedBox(width: 12),
-                              Text('Cancel Order'),
-                            ],
-                          ),
-                          content: Text(
-                            'Are you sure you want to cancel order #${order['orderId']}?',
-                            style: const TextStyle(fontSize: 15),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Get.back(),
-                              child: const Text('No'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Get.back(); // Close dialog
-                                ordersController.cancelOrder(order['orderId']);
-                                Get.snackbar(
-                                  'Order Cancelled',
-                                  'Order #${order['orderId']} has been cancelled',
-                                  snackPosition: SnackPosition.BOTTOM,
-                                  backgroundColor: Colors.orange,
-                                  colorText: Colors.white,
-                                  icon: const Icon(
-                                    Icons.cancel,
-                                    color: Colors.white,
-                                  ),
-                                  duration: const Duration(seconds: 2),
-                                  margin: const EdgeInsets.all(16),
-                                  borderRadius: 12,
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
-                              ),
-                              child: const Text('Yes, Cancel'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.cancel),
-                    label: const Text('Cancel Order'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.red,
-                      side: const BorderSide(color: Colors.red, width: 2),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      );
+            ),
+          );
         },
       ),
       isScrollControlled: true,
@@ -255,7 +270,11 @@ class MyOrdersPage extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 20, color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600),
+        Icon(
+          icon,
+          size: 20,
+          color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600,
+        ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -263,7 +282,12 @@ class MyOrdersPage extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: TextStyle(fontSize: 12, color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : Colors.grey.shade600,
+                ),
               ),
               const SizedBox(height: 2),
               Text(
@@ -286,7 +310,11 @@ class MyOrdersPage extends StatelessWidget {
     final isDark = AppColors.isDark(context);
     return Scaffold(
       appBar: AppStyles.buildGradientAppBar(
-        title: const Text('Pesanan Saya', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        context: context,
+        title: const Text(
+          'Pesanan Saya',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
       ),
       body: Obx(() {
         // Check if guest user
@@ -325,7 +353,10 @@ class MyOrdersPage extends StatelessWidget {
                   // Description
                   Text(
                     'Harap Login atau Register Akun',
-                    style: TextStyle(fontSize: 16, color: AppColors.textSecondary(context)),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.textSecondary(context),
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
@@ -395,7 +426,10 @@ class MyOrdersPage extends StatelessWidget {
               children: [
                 const CircularProgressIndicator(color: AppColors.primary),
                 const SizedBox(height: 24),
-                Text('Loading orders...', style: TextStyle(color: AppColors.textSecondary(context))),
+                Text(
+                  'Loading orders...',
+                  style: TextStyle(color: AppColors.textSecondary(context)),
+                ),
               ],
             ),
           );
@@ -432,7 +466,10 @@ class MyOrdersPage extends StatelessWidget {
                 Text(
                   'Pesanan Anda yang sedang diproses\nakan muncul di sini',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade500 : Colors.grey.shade600),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                  ),
                 ),
               ],
             ),
@@ -488,7 +525,9 @@ class MyOrdersPage extends StatelessWidget {
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: _getStatusColor(status).withOpacity(0.3),
+                                  color: _getStatusColor(
+                                    status,
+                                  ).withOpacity(0.3),
                                   blurRadius: 4,
                                   offset: const Offset(0, 2),
                                 ),
@@ -522,14 +561,18 @@ class MyOrdersPage extends StatelessWidget {
                           Icon(
                             Icons.calendar_today,
                             size: 14,
-                            color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : Colors.grey.shade600,
                           ),
                           const SizedBox(width: 6),
                           Text(
                             _formatDate(order['orderDate']),
                             style: TextStyle(
                               fontSize: 13,
-                              color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade700,
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : Colors.grey.shade700,
                             ),
                           ),
                         ],
@@ -540,14 +583,18 @@ class MyOrdersPage extends StatelessWidget {
                           Icon(
                             Icons.shopping_bag_outlined,
                             size: 14,
-                            color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : Colors.grey.shade600,
                           ),
                           const SizedBox(width: 6),
                           Text(
                             '${items.length} item${items.length != 1 ? 's' : ''}',
                             style: TextStyle(
                               fontSize: 13,
-                              color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade700,
+                              color: isDark
+                                  ? AppColors.darkTextSecondary
+                                  : Colors.grey.shade700,
                             ),
                           ),
                         ],

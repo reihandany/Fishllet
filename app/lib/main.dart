@@ -138,35 +138,34 @@ class MyApp extends StatelessWidget {
         darkTheme: ThemeData(
           useMaterial3: true,
           brightness: Brightness.dark,
-          scaffoldBackgroundColor: const Color(0xFF121212),
-          textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme).apply(
-            bodyColor: const Color(0xFFE0E0E0),
-            displayColor: const Color(0xFFE0E0E0),
-          ),
+          scaffoldBackgroundColor: const Color(0xFF0D1B2A),
+          textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme)
+              .apply(
+                bodyColor: const Color(0xFFE0E0E0),
+                displayColor: const Color(0xFFE0E0E0),
+              ),
           colorScheme: const ColorScheme.dark(
             primary: Color(0xFF3B8FCC),
             secondary: Color(0xFF5AA5D6),
-            surface: Color(0xFF1E1E1E),
+            surface: Color(0xFF1B263B),
             onSurface: Color(0xFFE0E0E0),
             onPrimary: Colors.white,
             onSecondary: Colors.white,
           ),
           cardTheme: const CardThemeData(
-            color: Color(0xFF252525),
+            color: Color(0xFF243447),
             elevation: 2,
           ),
-          dividerColor: const Color(0xFF3D3D3D),
+          dividerColor: const Color(0xFF3B4A5A),
           listTileTheme: const ListTileThemeData(
             iconColor: Color(0xFF5AA5D6),
             textColor: Color(0xFFE0E0E0),
           ),
-          iconTheme: const IconThemeData(
-            color: Color(0xFFB0B0B0),
-          ),
+          iconTheme: const IconThemeData(color: Color(0xFFB0B0B0)),
           appBarTheme: AppBarTheme(
             elevation: 0,
             centerTitle: true,
-            backgroundColor: const Color(0xFF1E1E1E),
+            backgroundColor: const Color(0xFF1B263B),
             titleTextStyle: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.w600,

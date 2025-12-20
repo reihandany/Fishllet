@@ -21,6 +21,7 @@ import 'login_page.dart';
 /// - Empty state untuk cart kosong
 /// - Animasi smooth saat add/remove items
 import '../config/app_theme.dart';
+
 /// - Block checkout untuk guest user
 class CartPage extends StatelessWidget {
   CartPage({super.key});
@@ -123,7 +124,7 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: Obx(() {
         // Reactive - rebuild saat cart berubah
 
@@ -156,13 +157,17 @@ class CartPage extends StatelessWidget {
   // ═════════════════════════════════════════════════════════════════════════
 
   /// AppBar
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppStyles.buildGradientAppBar(
+      context: context,
       title: Obx(() {
         // Reactive - update total items di title
         return Text(
           'Cart (${cartController.totalItems} items)',
-          style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
         );
       }),
       actions: [
@@ -215,7 +220,9 @@ class CartPage extends StatelessWidget {
                       child: Icon(
                         Icons.shopping_cart_outlined,
                         size: 120,
-                        color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
+                        color: isDark
+                            ? Colors.grey.shade600
+                            : Colors.grey.shade300,
                       ),
                     );
                   },
@@ -234,7 +241,9 @@ class CartPage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                          color: isDark
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade700,
                         ),
                       ),
                     );
@@ -254,7 +263,9 @@ class CartPage extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
-                          color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
+                          color: isDark
+                              ? Colors.grey.shade500
+                              : Colors.grey.shade500,
                           height: 1.5,
                         ),
                       ),
@@ -376,13 +387,14 @@ class CartPage extends StatelessWidget {
   Widget _buildCartItem(Product product) {
     return Builder(
       builder: (context) {
-        final isDark = AppColors.isDark(context);
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           elevation: 4,
           color: AppColors.card(context),
           shadowColor: AppColors.primary.withOpacity(0.2),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -448,7 +460,6 @@ class CartPage extends StatelessWidget {
     final priceStr = product.price.replaceAll(RegExp(r'[^0-9]'), '');
     final price = double.tryParse(priceStr) ?? 0.0;
     final subtotal = price * product.quantity;
-    final isDark = AppColors.isDark(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -456,7 +467,11 @@ class CartPage extends StatelessWidget {
         // Product name
         Text(
           product.name,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.text(context)),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppColors.text(context),
+          ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
@@ -465,7 +480,10 @@ class CartPage extends StatelessWidget {
         // Price per item
         Text(
           '${product.price} / item',
-          style: TextStyle(fontSize: 14, color: AppColors.textSecondary(context)),
+          style: TextStyle(
+            fontSize: 14,
+            color: AppColors.textSecondary(context),
+          ),
         ),
         const SizedBox(height: 4),
 
@@ -488,7 +506,7 @@ class CartPage extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isDark 
+          colors: isDark
               ? [AppColors.darkCardElevated, AppColors.darkCard]
               : [Colors.grey.shade50, Colors.grey.shade100],
         ),
@@ -511,7 +529,7 @@ class CartPage extends StatelessWidget {
               size: 20,
             ),
             onPressed: () => cartController.decreaseQuantity(product),
-            color: product.quantity > 1 
+            color: product.quantity > 1
                 ? (isDark ? AppColors.darkText : Colors.black87)
                 : Colors.red,
             padding: const EdgeInsets.all(8),
@@ -523,7 +541,11 @@ class CartPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Text(
               '${product.quantity}',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.text(context)),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.text(context),
+              ),
             ),
           ),
 
@@ -550,7 +572,9 @@ class CartPage extends StatelessWidget {
             color: isDark ? AppColors.darkSurface : Colors.white,
             boxShadow: [
               BoxShadow(
-                color: isDark ? Colors.black38 : AppColors.primary.withOpacity(0.15),
+                color: isDark
+                    ? Colors.black38
+                    : AppColors.primary.withOpacity(0.15),
                 blurRadius: 20,
                 offset: const Offset(0, -5),
               ),
@@ -568,7 +592,11 @@ class CartPage extends StatelessWidget {
                     children: [
                       Text(
                         'Total Price:',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textSecondary(context)),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary(context),
+                        ),
                       ),
                       Text(
                         cartController.formattedTotalPrice,

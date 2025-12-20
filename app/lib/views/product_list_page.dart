@@ -244,9 +244,17 @@ class _ProductListPageState extends State<ProductListPage> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              DrawerHeader(
-                decoration: const BoxDecoration(
-                  gradient: AppGradients.primaryGradient,
+              // Custom Header - mengganti DrawerHeader untuk kontrol penuh
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top + 16,
+                  left: 16,
+                  right: 16,
+                  bottom: 16,
+                ),
+                decoration: BoxDecoration(
+                  gradient: AppGradients.getGradient(context),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,100 +290,126 @@ class _ProductListPageState extends State<ProductListPage> {
                       ),
                     ),
                   ],
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.person, color: isDark ? AppColors.secondary : AppColors.primary),
-            title: Text('Profil Saya', style: TextStyle(color: AppColors.text(context))),
-            onTap: () {
-              Get.back();
-              if (auth.isGuest.value) {
-                _showLoginRequiredDialog(4); // 4 = Akun
-              } else {
-                _selectedIndex.value = 4; // Navigate to Account
-              }
-            },
-          ),
-          // View Map menu item removed (no longer used)
-          ListTile(
-            leading: Obx(
-              () => Icon(
-                themeController.isDark.value
-                    ? Icons.light_mode
-                    : Icons.dark_mode,
-                color: isDark ? AppColors.secondary : AppColors.primary,
-              ),
-            ),
-            title: Obx(
-              () => Text(
-                themeController.isDark.value ? 'Light Mode' : 'Dark Mode',
-                style: TextStyle(color: AppColors.text(context)),
-              ),
-            ),
-            onTap: () {
-              themeController.toggleTheme();
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.settings, color: isDark ? AppColors.secondary : AppColors.primary),
-            title: Text('Pengaturan', style: TextStyle(color: AppColors.text(context))),
-            onTap: () {
-              Get.back();
-              Get.snackbar(
-                'Coming Soon',
-                'Settings feature will be available soon',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: AppColors.primary,
-                colorText: Colors.white,
-                margin: const EdgeInsets.all(16),
-                borderRadius: 12,
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.help, color: isDark ? AppColors.secondary : AppColors.primary),
-            title: Text('Bantuan', style: TextStyle(color: AppColors.text(context))),
-            onTap: () {
-              Get.back();
-              Get.snackbar(
-                'Bantuan',
-                'Hubungi customer service untuk bantuan',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: AppColors.primary,
-                colorText: Colors.white,
-                margin: const EdgeInsets.all(16),
-                borderRadius: 12,
-              );
-            },
-          ),
-          Divider(color: AppColors.divider(context)),
-          Obx(
-            () => ListTile(
-              leading: Icon(
-                auth.isGuest.value ? Icons.login : Icons.logout,
-                color: auth.isGuest.value
-                    ? (isDark ? AppColors.secondary : AppColors.primary)
-                    : Colors.red,
-              ),
-              title: Text(
-                auth.isGuest.value ? 'Login' : 'Logout',
-                style: TextStyle(
-                  color: auth.isGuest.value
-                      ? (isDark ? AppColors.secondary : AppColors.primary)
-                      : Colors.red,
                 ),
               ),
-              onTap: () {
-                Get.back();
-                if (auth.isGuest.value) {
-                  Get.offAll(() => LoginPage());
-                } else {
-                  showLogoutConfirmation();
-                }
-              },
-            ),
-          ),
-        ],
+              // Divider halus di bawah header
+              Divider(
+                height: 1,
+                thickness: 0.5,
+                color: isDark
+                    ? Colors.white.withOpacity(0.1)
+                    : Colors.grey.shade300,
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.person,
+                  color: isDark ? AppColors.secondary : AppColors.primary,
+                ),
+                title: Text(
+                  'Profil Saya',
+                  style: TextStyle(color: AppColors.text(context)),
+                ),
+                onTap: () {
+                  Get.back();
+                  if (auth.isGuest.value) {
+                    _showLoginRequiredDialog(4); // 4 = Akun
+                  } else {
+                    _selectedIndex.value = 4; // Navigate to Account
+                  }
+                },
+              ),
+              // View Map menu item removed (no longer used)
+              ListTile(
+                leading: Obx(
+                  () => Icon(
+                    themeController.isDark.value
+                        ? Icons.light_mode
+                        : Icons.dark_mode,
+                    color: isDark ? AppColors.secondary : AppColors.primary,
+                  ),
+                ),
+                title: Obx(
+                  () => Text(
+                    themeController.isDark.value ? 'Light Mode' : 'Dark Mode',
+                    style: TextStyle(color: AppColors.text(context)),
+                  ),
+                ),
+                onTap: () {
+                  themeController.toggleTheme();
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.settings,
+                  color: isDark ? AppColors.secondary : AppColors.primary,
+                ),
+                title: Text(
+                  'Pengaturan',
+                  style: TextStyle(color: AppColors.text(context)),
+                ),
+                onTap: () {
+                  Get.back();
+                  Get.snackbar(
+                    'Coming Soon',
+                    'Settings feature will be available soon',
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: AppColors.primary,
+                    colorText: Colors.white,
+                    margin: const EdgeInsets.all(16),
+                    borderRadius: 12,
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.help,
+                  color: isDark ? AppColors.secondary : AppColors.primary,
+                ),
+                title: Text(
+                  'Bantuan',
+                  style: TextStyle(color: AppColors.text(context)),
+                ),
+                onTap: () {
+                  Get.back();
+                  Get.snackbar(
+                    'Bantuan',
+                    'Hubungi customer service untuk bantuan',
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: AppColors.primary,
+                    colorText: Colors.white,
+                    margin: const EdgeInsets.all(16),
+                    borderRadius: 12,
+                  );
+                },
+              ),
+              Divider(color: AppColors.divider(context)),
+              Obx(
+                () => ListTile(
+                  leading: Icon(
+                    auth.isGuest.value ? Icons.login : Icons.logout,
+                    color: auth.isGuest.value
+                        ? (isDark ? AppColors.secondary : AppColors.primary)
+                        : Colors.red,
+                  ),
+                  title: Text(
+                    auth.isGuest.value ? 'Login' : 'Logout',
+                    style: TextStyle(
+                      color: auth.isGuest.value
+                          ? (isDark ? AppColors.secondary : AppColors.primary)
+                          : Colors.red,
+                    ),
+                  ),
+                  onTap: () {
+                    Get.back();
+                    if (auth.isGuest.value) {
+                      Get.offAll(() => LoginPage());
+                    } else {
+                      showLogoutConfirmation();
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -386,6 +420,7 @@ class _ProductListPageState extends State<ProductListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppStyles.buildGradientAppBar(
+        context: context,
         height: 25,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -406,127 +441,142 @@ class _ProductListPageState extends State<ProductListPage> {
         // Show different pages based on selected index
         // Guest users can only see Home page (index 0)
         if (_selectedIndex.value == 1 && !auth.isGuest.value) return CartPage();
-        if (_selectedIndex.value == 2 && !auth.isGuest.value) return MyOrdersPage();
-        if (_selectedIndex.value == 3 && !auth.isGuest.value) return HistoryPage();
-        if (_selectedIndex.value == 4 && !auth.isGuest.value) return AccountPage();
+        if (_selectedIndex.value == 2 && !auth.isGuest.value)
+          return MyOrdersPage();
+        if (_selectedIndex.value == 3 && !auth.isGuest.value)
+          return HistoryPage();
+        if (_selectedIndex.value == 4 && !auth.isGuest.value)
+          return AccountPage();
 
         // Default: Home page (for index 0 or if guest tries to access other pages)
         return Column(
           children: [
             // Welcome Banner with Gradient
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppColors.primary, AppColors.secondary],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              padding: const EdgeInsets.all(20),
-              child: Obx(
-                () => Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.waving_hand,
-                        color: Colors.amber,
-                        size: 28,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Selamat datang!',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white70,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
+            Builder(
+              builder: (context) {
+                return Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: AppGradients.getGradient(context),
+                  ),
+                  padding: const EdgeInsets.all(20),
+                  child: Obx(
+                    () => Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          Text(
-                            auth.username.value,
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.5,
-                            ),
+                          child: const Icon(
+                            Icons.waving_hand,
+                            color: Colors.amber,
+                            size: 28,
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Selamat datang!',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white70,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                auth.username.value,
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
 
             // Search Bar with Modern Design
-            Container(
-              padding: const EdgeInsets.all(16),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withOpacity(0.1),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: TextField(
-                  onChanged: (value) => product.setSearchQuery(value),
-                  decoration: InputDecoration(
-                    hintText: 'Cari produk...',
-                    hintStyle: TextStyle(
-                      color: Colors.grey[400],
-                      fontSize: 15,
-                    ),
-                    prefixIcon: Icon(
-                      Icons.search_rounded,
-                      color: AppColors.primary,
-                      size: 28,
-                    ),
-                    suffixIcon: Obx(
-                      () => product.searchQuery.value.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(
-                                Icons.clear_rounded,
-                                color: Colors.grey,
-                              ),
-                              onPressed: () => product.setSearchQuery(''),
-                            )
-                          : const SizedBox.shrink(),
-                    ),
-                    border: OutlineInputBorder(
+            Builder(
+              builder: (context) {
+                final isDark = AppColors.isDark(context);
+                return Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Container(
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide.none,
+                      boxShadow: [
+                        BoxShadow(
+                          color: isDark
+                              ? Colors.black.withOpacity(0.3)
+                              : AppColors.primary.withOpacity(0.1),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: AppColors.primary,
-                        width: 2,
+                    child: TextField(
+                      onChanged: (value) => product.setSearchQuery(value),
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Cari produk...',
+                        hintStyle: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 15,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search_rounded,
+                          color: AppColors.primary,
+                          size: 28,
+                        ),
+                        suffixIcon: Obx(
+                          () => product.searchQuery.value.isNotEmpty
+                              ? IconButton(
+                                  icon: const Icon(
+                                    Icons.clear_rounded,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: () => product.setSearchQuery(''),
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: const BorderSide(
+                            color: AppColors.primary,
+                            width: 2,
+                          ),
+                        ),
+                        filled: true,
+                        fillColor: isDark
+                            ? const Color(0xFF1B3A5F)
+                            : Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 16,
+                        ),
                       ),
                     ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 16,
-                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
 
             // Sort & Filter Row with Modern Design
@@ -578,10 +628,7 @@ class _ProductListPageState extends State<ProductListPage> {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.primary,
-                          width: 2,
-                        ),
+                        border: Border.all(color: AppColors.primary, width: 2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -767,221 +814,260 @@ class _ProductListPageState extends State<ProductListPage> {
                 return RefreshIndicator(
                   onRefresh: () => product.refreshProducts(),
                   color: AppColors.primary,
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.all(16),
-                    itemCount: product.filteredProducts.length,
-                    itemBuilder: (context, idx) {
-                      final p = product.filteredProducts[idx];
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.white,
-                              Colors.grey.shade50,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withOpacity(0.1),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
+                  child: Builder(
+                    builder: (context) {
+                      final isDark = AppColors.isDark(context);
+                      return ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.all(16),
+                        itemCount: product.filteredProducts.length,
+                        itemBuilder: (context, idx) {
+                          final p = product.filteredProducts[idx];
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              gradient: LinearGradient(
+                                colors: isDark
+                                    ? [
+                                        const Color(0xFF1B3A5F),
+                                        const Color(0xFF243B55),
+                                      ]
+                                    : [Colors.white, Colors.grey.shade50],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: isDark
+                                      ? Colors.black.withOpacity(0.3)
+                                      : AppColors.primary.withOpacity(0.1),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () => openDetail(p),
-                            borderRadius: BorderRadius.circular(16),
-                            child: Padding(
-                              padding: const EdgeInsets.all(14),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Product Image dengan border gradient
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      gradient: const LinearGradient(
-                                        colors: [AppColors.primary, AppColors.secondary],
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.all(2),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Image.network(
-                                        p.imageUrl,
-                                        width: 96,
-                                        height: 96,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Container(
-                                            width: 96,
-                                            height: 96,
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  Colors.grey.shade200,
-                                                  Colors.grey.shade300,
-                                                ],
-                                              ),
-                                            ),
-                                            child: const Icon(
-                                              Icons.set_meal_rounded,
-                                              size: 40,
-                                              color: Colors.grey,
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 14),
-                                  // Product Info
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          p.name,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700,
-                                            color: const Color(0xFF3B8FCC),
-                                            height: 1.2,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () => openDetail(p),
+                                borderRadius: BorderRadius.circular(16),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(14),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Product Image dengan border gradient
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
                                           ),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 6),
-                                        // Category chip dengan gradient
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                            vertical: 5,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                const Color(0xFF3B8FCC).withOpacity(0.15),
-                                                const Color(0xFF5AA5D6).withOpacity(0.15),
-                                              ],
-                                            ),
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(
-                                                Icons.category_rounded,
-                                                size: 12,
-                                                color: Color(0xFF3B8FCC),
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                p.category,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 11,
-                                                  color: const Color(0xFF3B8FCC),
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              AppColors.primary,
+                                              AppColors.secondary,
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(height: 8),
-                                        // Rating dengan star icon
-                                        Row(
+                                        padding: const EdgeInsets.all(2),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          child: Image.network(
+                                            p.imageUrl,
+                                            width: 96,
+                                            height: 96,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                                  return Container(
+                                                    width: 96,
+                                                    height: 96,
+                                                    decoration: BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                        colors: [
+                                                          Colors.grey.shade200,
+                                                          Colors.grey.shade300,
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons.set_meal_rounded,
+                                                      size: 40,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  );
+                                                },
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 14),
+                                      // Product Info
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            ...List.generate(
-                                              5,
-                                              (index) => Icon(
-                                                index < p.rating.floor()
-                                                    ? Icons.star_rounded
-                                                    : Icons.star_outline_rounded,
-                                                size: 16,
-                                                color: Colors.amber.shade600,
+                                            Text(
+                                              p.name,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700,
+                                                color: const Color(0xFF3B8FCC),
+                                                height: 1.2,
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            const SizedBox(height: 6),
+                                            // Category chip dengan gradient
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 5,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    const Color(
+                                                      0xFF3B8FCC,
+                                                    ).withOpacity(0.15),
+                                                    const Color(
+                                                      0xFF5AA5D6,
+                                                    ).withOpacity(0.15),
+                                                  ],
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Icon(
+                                                    Icons.category_rounded,
+                                                    size: 12,
+                                                    color: Color(0xFF3B8FCC),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    p.category,
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 11,
+                                                      color: const Color(
+                                                        0xFF3B8FCC,
+                                                      ),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              p.rating.toStringAsFixed(1),
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.grey.shade700,
+                                            const SizedBox(height: 8),
+                                            // Rating dengan star icon
+                                            Row(
+                                              children: [
+                                                ...List.generate(
+                                                  5,
+                                                  (index) => Icon(
+                                                    index < p.rating.floor()
+                                                        ? Icons.star_rounded
+                                                        : Icons
+                                                              .star_outline_rounded,
+                                                    size: 16,
+                                                    color:
+                                                        Colors.amber.shade600,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  p.rating.toStringAsFixed(1),
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.grey.shade700,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 6),
+                                            // Price dengan gradient text
+                                            ShaderMask(
+                                              shaderCallback: (bounds) =>
+                                                  const LinearGradient(
+                                                    colors: [
+                                                      AppColors.primary,
+                                                      AppColors.secondary,
+                                                    ],
+                                                  ).createShader(bounds),
+                                              child: Text(
+                                                p.price,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w800,
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 6),
-                                        // Price dengan gradient text
-                                        ShaderMask(
-                                          shaderCallback: (bounds) =>
-                                              const LinearGradient(
-                                            colors: [AppColors.primary, AppColors.secondary],
-                                          ).createShader(bounds),
-                                          child: Text(
-                                            p.price,
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w800,
-                                              color: Colors.white,
+                                      ),
+                                      // Add to cart button dengan gradient
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              AppColors.primary,
+                                              AppColors.secondary,
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: AppColors.primary
+                                                  .withOpacity(0.3),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              if (auth.isGuest.value) {
+                                                _showLoginRequiredDialog(1);
+                                                return;
+                                              }
+                                              await cart.addToCart(p);
+                                            },
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: Icon(
+                                                Icons.add_shopping_cart_rounded,
+                                                color: Colors.white,
+                                                size: 22,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  // Add to cart button dengan gradient
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                        colors: [AppColors.primary, AppColors.secondary],
                                       ),
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: AppColors.primary
-                                              .withOpacity(0.3),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        onTap: () async {
-                                          if (auth.isGuest.value) {
-                                            _showLoginRequiredDialog(1);
-                                            return;
-                                          }
-                                          await cart.addToCart(p);
-                                        },
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(10),
-                                          child: Icon(
-                                            Icons.add_shopping_cart_rounded,
-                                            color: Colors.white,
-                                            size: 22,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       );
                     },
                   ),
@@ -1028,10 +1114,12 @@ class _ProductListPageState extends State<ProductListPage> {
       bottomNavigationBar: Obx(
         () => Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface(context),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: AppColors.isDark(context)
+                    ? AppColors.primary.withOpacity(0.1)
+                    : Colors.black.withOpacity(0.1),
                 blurRadius: 8,
                 offset: const Offset(0, -2),
               ),

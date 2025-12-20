@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../repositories/profile_repository.dart';
+import '../config/app_theme.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -15,7 +16,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _isLoading = false;
   final ProfileRepository _profiles = ProfileRepository();
 
@@ -93,193 +95,414 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppColors.isDark(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register'),
-        backgroundColor: const Color(0xFF1F70B2),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: AppGradients.getGradient(context),
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
       ),
-      backgroundColor: const Color(0xFF1F70B2),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                const Icon(Icons.person_add_alt_1, size: 80, color: Colors.white),
-                const SizedBox(height: 16),
-                const Text(
-                  'Buat Akun Baru',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? AppGradients.darkGradient
+              : AppGradients.primaryGradient,
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.person_add_alt_1,
+                    size: 80,
                     color: Colors.white,
                   ),
-                ),
-                const SizedBox(height: 32),
-                // Username field
-                TextFormField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    labelText: 'Username',
-                    hintText: 'Masukkan username Anda',
-                    prefixIcon: const Icon(Icons.person_outline),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Buat Akun Baru',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Username tidak boleh kosong';
-                    }
-                    if (value.length < 3) {
-                      return 'Username minimal 3 karakter';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                // Email field
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'Masukkan email Anda',
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+                  const SizedBox(height: 32),
+                  // Username field
+                  TextFormField(
+                    controller: _usernameController,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
                     ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email tidak boleh kosong';
-                    }
-                    if (!GetUtils.isEmail(value)) {
-                      return 'Format email tidak valid';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                // Password field
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    hintText: 'Masukkan password Anda',
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password tidak boleh kosong';
-                    }
-                    if (value.length < 6) {
-                      return 'Password minimal 6 karakter';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                // Confirm Password field
-                TextFormField(
-                  controller: _confirmPasswordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Re-enter Password',
-                    hintText: 'Masukkan ulang password Anda',
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Konfirmasi password tidak boleh kosong';
-                    }
-                    if (value != _passwordController.text) {
-                      return 'Password tidak cocok';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 32),
-                // Register button
-                SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _handleRegister,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF1F70B2),
-                      disabledBackgroundColor: Colors.white70,
-                      disabledForegroundColor: Colors.grey,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                      hintText: 'Masukkan username Anda',
+                      labelStyle: TextStyle(
+                        color: isDark ? Colors.white70 : null,
                       ),
-                      elevation: _isLoading ? 0 : 2,
+                      hintStyle: TextStyle(
+                        color: isDark ? Colors.white54 : Colors.grey,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.person_outline,
+                        color: isDark ? Colors.white70 : Colors.grey,
+                      ),
+                      filled: true,
+                      fillColor: isDark
+                          ? const Color(0xFF2A4A6F)
+                          : Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: isDark
+                            ? const BorderSide(
+                                color: Color(0xFF4A6FA5),
+                                width: 1,
+                              )
+                            : BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: isDark
+                              ? const Color(0xFF64B5F6)
+                              : Colors.white,
+                          width: 2,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                      ),
+                      errorStyle: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
                     ),
-                    child: _isLoading
-                        ? const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1F70B2)),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Username tidak boleh kosong';
+                      }
+                      if (value.length < 3) {
+                        return 'Username minimal 3 karakter';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  // Email field
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      hintText: 'Masukkan email Anda',
+                      labelStyle: TextStyle(
+                        color: isDark ? Colors.white70 : null,
+                      ),
+                      hintStyle: TextStyle(
+                        color: isDark ? Colors.white54 : Colors.grey,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: isDark ? Colors.white70 : Colors.grey,
+                      ),
+                      filled: true,
+                      fillColor: isDark
+                          ? const Color(0xFF2A4A6F)
+                          : Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: isDark
+                            ? const BorderSide(
+                                color: Color(0xFF4A6FA5),
+                                width: 1,
+                              )
+                            : BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: isDark
+                              ? const Color(0xFF64B5F6)
+                              : Colors.white,
+                          width: 2,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                      ),
+                      errorStyle: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Email tidak boleh kosong';
+                      }
+                      if (!GetUtils.isEmail(value)) {
+                        return 'Format email tidak valid';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  // Password field
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      hintText: 'Masukkan password Anda',
+                      labelStyle: TextStyle(
+                        color: isDark ? Colors.white70 : null,
+                      ),
+                      hintStyle: TextStyle(
+                        color: isDark ? Colors.white54 : Colors.grey,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.lock_outline,
+                        color: isDark ? Colors.white70 : Colors.grey,
+                      ),
+                      filled: true,
+                      fillColor: isDark
+                          ? const Color(0xFF2A4A6F)
+                          : Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: isDark
+                            ? const BorderSide(
+                                color: Color(0xFF4A6FA5),
+                                width: 1,
+                              )
+                            : BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: isDark
+                              ? const Color(0xFF64B5F6)
+                              : Colors.white,
+                          width: 2,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                      ),
+                      errorStyle: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Password tidak boleh kosong';
+                      }
+                      if (value.length < 6) {
+                        return 'Password minimal 6 karakter';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  // Confirm Password field
+                  TextFormField(
+                    controller: _confirmPasswordController,
+                    obscureText: true,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Re-enter Password',
+                      hintText: 'Masukkan ulang password Anda',
+                      labelStyle: TextStyle(
+                        color: isDark ? Colors.white70 : null,
+                      ),
+                      hintStyle: TextStyle(
+                        color: isDark ? Colors.white54 : Colors.grey,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.lock_outline,
+                        color: isDark ? Colors.white70 : Colors.grey,
+                      ),
+                      filled: true,
+                      fillColor: isDark
+                          ? const Color(0xFF2A4A6F)
+                          : Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: isDark
+                            ? const BorderSide(
+                                color: Color(0xFF4A6FA5),
+                                width: 1,
+                              )
+                            : BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: isDark
+                              ? const Color(0xFF64B5F6)
+                              : Colors.white,
+                          width: 2,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: Colors.red,
+                          width: 2,
+                        ),
+                      ),
+                      errorStyle: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Konfirmasi password tidak boleh kosong';
+                      }
+                      if (value != _passwordController.text) {
+                        return 'Password tidak cocok';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 32),
+                  // Register button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: OutlinedButton(
+                      onPressed: _isLoading ? null : _handleRegister,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        side: const BorderSide(color: Colors.white, width: 2),
+                        disabledForegroundColor: Colors.white60,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: _isLoading
+                          ? const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 12),
-                              Text(
-                                'Registering...',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                                SizedBox(width: 12),
+                                Text(
+                                  'Registering...',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
+                              ],
+                            )
+                          : const Text(
+                              'Register',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.5,
                               ),
-                            ],
-                          )
-                        : const Text(
-                            'Register',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
                             ),
-                          ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                // Info
-                const Text(
-                  'Pastikan password minimal 6 karakter',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white60,
-                    fontStyle: FontStyle.italic,
+                  const SizedBox(height: 16),
+                  // Info
+                  const Text(
+                    'Pastikan password minimal 6 karakter',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white60,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

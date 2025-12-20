@@ -1,13 +1,13 @@
 // lib/views/checkout_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../config/app_theme.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../controllers/cart_controller.dart';
 import '../controllers/checkout_controller.dart';
 import '../controllers/location_controller.dart';
 import '../controllers/auth_controller.dart';
-import '../config/app_theme.dart';
 import 'product_list_page.dart';
 import 'payment_method_page.dart';
 import 'login_page.dart';
@@ -50,11 +50,12 @@ class CheckoutPage extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
+          backgroundColor: AppColors.primary,
           title: Row(
             children: const [
-              Icon(Icons.lock, color: Colors.orange),
+              Icon(Icons.lock, color: Colors.white),
               SizedBox(width: 12),
-              Text('Login Diperlukan'),
+              Text('Login Diperlukan', style: TextStyle(color: Colors.white)),
             ],
           ),
           content: Column(
@@ -63,17 +64,24 @@ class CheckoutPage extends StatelessWidget {
             children: const [
               Text(
                 'Anda harus login terlebih dahulu untuk melakukan checkout.',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
               ),
               SizedBox(height: 16),
               Text(
                 'Silakan login atau register untuk melanjutkan transaksi Anda.',
-                style: TextStyle(fontSize: 14, color: Colors.black87),
+                style: TextStyle(fontSize: 14, color: Colors.white70),
               ),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Get.back(), child: const Text('Batal')),
+            TextButton(
+              onPressed: () => Get.back(),
+              child: const Text('Batal', style: TextStyle(color: Colors.white)),
+            ),
             ElevatedButton.icon(
               onPressed: () {
                 Get.back(); // Close dialog
@@ -82,8 +90,8 @@ class CheckoutPage extends StatelessWidget {
               icon: const Icon(Icons.login, size: 20),
               label: const Text('Login Sekarang'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
+                backgroundColor: Colors.white,
+                foregroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 12,
@@ -191,7 +199,7 @@ class CheckoutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: Obx(() {
         // Show loading saat submit
         if (checkoutController.isLoading.value) {
@@ -209,8 +217,9 @@ class CheckoutPage extends StatelessWidget {
   // ═════════════════════════════════════════════════════════════════════════
 
   /// AppBar
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppStyles.buildGradientAppBar(
+      context: context,
       title: const Text(
         'Checkout',
         style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
@@ -246,41 +255,45 @@ class CheckoutPage extends StatelessWidget {
 
   /// Checkout form
   Widget _buildCheckoutForm() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Order Summary Section
-            _buildSectionTitle('Order Summary'),
-            const SizedBox(height: 12),
-            _buildOrderSummary(),
-            const SizedBox(height: 24),
+    return Builder(
+      builder: (context) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Order Summary Section
+                _buildSectionTitle('Order Summary'),
+                const SizedBox(height: 12),
+                _buildOrderSummary(context),
+                const SizedBox(height: 24),
 
-            // Customer Information Section
-            _buildSectionTitle('Customer Information'),
-            const SizedBox(height: 12),
-            _buildCustomerForm(),
-            const SizedBox(height: 24),
+                // Customer Information Section
+                _buildSectionTitle('Customer Information'),
+                const SizedBox(height: 12),
+                _buildCustomerForm(context),
+                const SizedBox(height: 24),
 
-            // Payment Method Section
-            _buildSectionTitle('Payment Method'),
-            const SizedBox(height: 12),
-            _buildPaymentMethod(),
-            const SizedBox(height: 32),
+                // Payment Method Section
+                _buildSectionTitle('Payment Method'),
+                const SizedBox(height: 12),
+                _buildPaymentMethod(context),
+                const SizedBox(height: 32),
 
-            // Total Price
-            _buildTotalPrice(),
-            const SizedBox(height: 24),
+                // Total Price
+                _buildTotalPrice(context),
+                const SizedBox(height: 24),
 
-            // Place Order Button
-            _buildPlaceOrderButton(),
-            const SizedBox(height: 16),
-          ],
-        ),
-      ),
+                // Place Order Button
+                _buildPlaceOrderButton(),
+                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -297,15 +310,20 @@ class CheckoutPage extends StatelessWidget {
   }
 
   /// Order summary (list produk)
-  Widget _buildOrderSummary() {
+  Widget _buildOrderSummary(BuildContext context) {
+    final isDark = AppColors.isDark(context);
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1B3A5F) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(
+          color: isDark ? const Color(0xFF2A4A6F) : Colors.grey.shade300,
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.08),
+            color: isDark
+                ? Colors.black26
+                : AppColors.primary.withOpacity(0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -361,23 +379,27 @@ class CheckoutPage extends StatelessWidget {
               ),
               title: Text(
                 product.name,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
+                  color: isDark ? Colors.white : Colors.black87,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               subtitle: Text(
                 '${product.price} × ${product.quantity}',
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                style: TextStyle(
+                  color: isDark ? Colors.white70 : Colors.grey.shade600,
+                  fontSize: 13,
+                ),
               ),
               trailing: Text(
                 'Rp ${subtotal.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
-                  color: AppColors.primary,
+                  color: isDark ? const Color(0xFF64B5F6) : AppColors.primary,
                 ),
               ),
             );
@@ -388,7 +410,8 @@ class CheckoutPage extends StatelessWidget {
   }
 
   /// Customer form (nama & lokasi)
-  Widget _buildCustomerForm() {
+  Widget _buildCustomerForm(BuildContext context) {
+    final isDark = AppColors.isDark(context);
     return Column(
       children: [
         // Name field
@@ -396,13 +419,32 @@ class CheckoutPage extends StatelessWidget {
           validator: checkoutController.validateName,
           onChanged: checkoutController.updateName,
           textInputAction: TextInputAction.next,
+          style: TextStyle(color: isDark ? Colors.white : Colors.black87),
           decoration: InputDecoration(
             labelText: 'Full Name *',
             hintText: 'Enter your full name',
-            prefixIcon: const Icon(Icons.person_outline),
+            labelStyle: TextStyle(color: isDark ? Colors.white70 : null),
+            hintStyle: TextStyle(color: isDark ? Colors.white54 : null),
+            prefixIcon: Icon(
+              Icons.person_outline,
+              color: isDark ? Colors.white70 : null,
+            ),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: isDark ? const Color(0xFF2A4A6F) : Colors.grey.shade400,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: isDark ? const Color(0xFF64B5F6) : AppColors.primary,
+                width: 2,
+              ),
+            ),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: isDark ? const Color(0xFF2A4A6F) : Colors.white,
           ),
         ),
         const SizedBox(height: 16),
@@ -453,8 +495,6 @@ class CheckoutPage extends StatelessWidget {
                 onPressed: () async {
                   await locationController.startUserLiveTracking();
                   if (locationController.userLocation.value != null) {
-                    final loc = locationController.userLocation.value!;
-
                     Get.snackbar(
                       'Location Tracking Enabled',
                       'Tracking your live location on the map',
@@ -557,17 +597,37 @@ class CheckoutPage extends StatelessWidget {
           onChanged: checkoutController.updateAddress,
           textInputAction: TextInputAction.done,
           maxLines: 3,
+          style: TextStyle(color: isDark ? Colors.white : Colors.black87),
           decoration: InputDecoration(
             labelText: 'Deskripsi Lokasi / Patokan *',
             hintText:
                 'Contoh: Rumah warna hijau, dekat Indomaret, gang pertama kiri',
-            prefixIcon: const Icon(Icons.description_outlined),
+            labelStyle: TextStyle(color: isDark ? Colors.white70 : null),
+            hintStyle: TextStyle(color: isDark ? Colors.white54 : null),
+            prefixIcon: Icon(
+              Icons.description_outlined,
+              color: isDark ? Colors.white70 : null,
+            ),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: isDark ? const Color(0xFF2A4A6F) : Colors.grey.shade400,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: isDark ? const Color(0xFF64B5F6) : AppColors.primary,
+                width: 2,
+              ),
+            ),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: isDark ? const Color(0xFF1B3A5F) : Colors.white,
             helperText:
                 'Berikan detail tambahan untuk memudahkan kurir menemukan lokasi Anda',
             helperMaxLines: 2,
+            helperStyle: TextStyle(color: isDark ? Colors.white54 : null),
           ),
         ),
       ],
@@ -575,7 +635,8 @@ class CheckoutPage extends StatelessWidget {
   }
 
   /// Payment method selector - Navigates to PaymentMethodPage
-  Widget _buildPaymentMethod() {
+  Widget _buildPaymentMethod(BuildContext context) {
+    final isDark = AppColors.isDark(context);
     return Obx(() {
       // Get icon for current payment method
       IconData getPaymentIcon(String method) {
@@ -654,12 +715,17 @@ class CheckoutPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300, width: 2),
+            border: Border.all(
+              color: isDark ? const Color(0xFF2A4A6F) : Colors.grey.shade300,
+              width: 2,
+            ),
             borderRadius: BorderRadius.circular(16),
-            color: Colors.white,
+            color: isDark ? const Color(0xFF1B3A5F) : Colors.white,
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.08),
+                color: isDark
+                    ? Colors.black26
+                    : AppColors.primary.withOpacity(0.08),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -671,16 +737,22 @@ class CheckoutPage extends StatelessWidget {
               Icon(
                 getPaymentIcon(checkoutController.paymentMethod.value),
                 size: 24,
-                color: AppColors.primary,
+                color: isDark ? const Color(0xFF64B5F6) : AppColors.primary,
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   getDisplayName(checkoutController.paymentMethod.value),
-                  style: const TextStyle(fontSize: 16),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
                 ),
               ),
-              const Icon(Icons.chevron_right, color: Colors.grey),
+              Icon(
+                Icons.chevron_right,
+                color: isDark ? Colors.white54 : Colors.grey,
+              ),
             ],
           ),
         ),
@@ -689,21 +761,21 @@ class CheckoutPage extends StatelessWidget {
   }
 
   /// Total price display
-  Widget _buildTotalPrice() {
+  Widget _buildTotalPrice(BuildContext context) {
+    final isDark = AppColors.isDark(context);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppColors.primary.withOpacity(0.1),
-            AppColors.secondary.withOpacity(0.05),
-          ],
+          colors: isDark
+              ? [const Color(0xFF1B3A5F), const Color(0xFF2A4A6F)]
+              : [
+                  AppColors.primary.withOpacity(0.1),
+                  AppColors.secondary.withOpacity(0.05),
+                ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.primary.withOpacity(0.3),
-          width: 2,
-        ),
+        border: Border.all(color: AppColors.primary.withOpacity(0.3), width: 2),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withOpacity(0.15),
@@ -715,19 +787,23 @@ class CheckoutPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
+          Text(
             'Total Amount:',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
           ),
           Obx(() {
             return Text(
               checkoutController.totalPrice == 0
                   ? 'Rp 0'
                   : 'Rp ${checkoutController.totalPrice.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: AppColors.primary,
+                color: isDark ? const Color(0xFF64B5F6) : AppColors.primary,
               ),
             );
           }),

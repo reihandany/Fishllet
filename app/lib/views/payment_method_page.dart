@@ -1,6 +1,7 @@
 // lib/views/payment_method_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../config/app_theme.dart';
 import '../controllers/auth_controller.dart';
 import 'login_page.dart';
 
@@ -139,10 +140,16 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppColors.isDark(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pilih Metode Pembayaran'),
-        backgroundColor: const Color(0xFF1F70B2),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: AppGradients.getGradient(context),
+          ),
+        ),
+        backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
       ),
       body: Column(
@@ -202,11 +209,14 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
                   elevation: isSelected ? 4 : 1,
+                  color: isDark ? const Color(0xFF1B3A5F) : Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
                       color: isSelected
                           ? const Color(0xFF1F70B2)
+                          : isDark
+                          ? const Color(0xFF2A4A6F)
                           : Colors.grey.shade300,
                       width: isSelected ? 2 : 1,
                     ),
@@ -245,9 +255,12 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                               children: [
                                 Text(
                                   method['name'],
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
+                                    color: isDark
+                                        ? Colors.white
+                                        : Colors.black87,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -255,7 +268,9 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                                   method['description'],
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: Colors.grey.shade600,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : Colors.grey.shade600,
                                   ),
                                 ),
                               ],
@@ -270,6 +285,8 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                               border: Border.all(
                                 color: isSelected
                                     ? const Color(0xFF1F70B2)
+                                    : isDark
+                                    ? Colors.white54
                                     : Colors.grey,
                                 width: 2,
                               ),
@@ -300,10 +317,10 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? const Color(0xFF1B263B) : Colors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.shade300,
+                  color: isDark ? Colors.black26 : Colors.grey.shade300,
                   blurRadius: 10,
                   offset: const Offset(0, -2),
                 ),
