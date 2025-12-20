@@ -48,7 +48,7 @@ class _MapPageState extends State<MapPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Location'),
-        backgroundColor: const Color(0xFF2380c4),
+        backgroundColor: const Color(0xFF1F70B2),
         foregroundColor: Colors.white,
         actions: [
           // Refresh location button
@@ -114,7 +114,7 @@ class _MapPageState extends State<MapPage> {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF2380c4),
+                                color: const Color(0xFF1F70B2),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Text(
@@ -128,7 +128,7 @@ class _MapPageState extends State<MapPage> {
                             ),
                             const Icon(
                               Icons.location_on,
-                              color: Color(0xFF2380c4),
+                              color: Color(0xFF1F70B2),
                               size: 45,
                               shadows: [
                                 Shadow(blurRadius: 4, color: Colors.black26),
@@ -164,14 +164,14 @@ class _MapPageState extends State<MapPage> {
                 'Location Updated',
                 'Your current location has been updated',
                 snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: const Color(0xFF2380c4),
+                backgroundColor: const Color(0xFF1F70B2),
                 colorText: Colors.white,
                 icon: const Icon(Icons.check_circle, color: Colors.white),
                 duration: const Duration(seconds: 2),
               );
             }
           },
-          backgroundColor: const Color(0xFF2380c4),
+          backgroundColor: const Color(0xFF1F70B2),
           icon: const Icon(Icons.my_location, color: Colors.white),
           label: const Text(
             'Get My Location',

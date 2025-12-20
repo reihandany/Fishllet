@@ -104,7 +104,7 @@ class CartController extends GetxController {
         'Quantity Updated',
         '${product.name} quantity increased to ${cart[existingIndex].quantity}',
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: const Color(0xFF2380c4),
+        backgroundColor: const Color(0xFF1F70B2),
         colorText: Colors.white,
         icon: const Icon(Icons.add_circle, color: Colors.white),
         duration: const Duration(seconds: 2),

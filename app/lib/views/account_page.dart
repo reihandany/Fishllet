@@ -1,8 +1,10 @@
 // lib/views/account_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/theme_controller.dart';
+import '../config/app_theme.dart';
 import 'login_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -63,10 +65,15 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Akun Saya'),
-        backgroundColor: const Color(0xFF2380c4),
-        foregroundColor: Colors.white,
+      appBar: AppStyles.buildGradientAppBar(
+        title: Text(
+          'Akun Saya',
+          style: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
       ),
       body: Obx(() {
         // Jika guest, tampilkan halaman khusus guest
@@ -82,102 +89,107 @@ class AccountPage extends StatelessWidget {
 
   // Guest View - Halaman khusus untuk guest
   Widget _buildGuestView() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Icon
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.orange.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.person_off,
-                size: 80,
-                color: Colors.orange,
-              ),
-            ),
-            const SizedBox(height: 32),
-
-            // Title
-            const Text(
-              'Profil Tidak Tersedia',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF2380c4),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-
-            // Message
-            const Text(
-              'Anda harus login atau register terlebih dahulu untuk mengakses profil dan fitur lengkap lainnya.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-                height: 1.5,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-
-            // Login Button
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  Get.offAll(() => LoginPage());
-                },
-                icon: const Icon(Icons.login),
-                label: const Text(
-                  'Login / Register',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2380c4),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+    return Builder(
+      builder: (context) {
+        final isDark = AppColors.isDark(context);
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Icon
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withOpacity(isDark ? 0.2 : 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.person_off,
+                    size: 80,
+                    color: Colors.orange,
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 16),
+                const SizedBox(height: 32),
 
-            // Info text
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.orange.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.orange.withOpacity(0.3),
-                  width: 1,
+                // Title
+                Text(
+                  'Profil Tidak Tersedia',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? AppColors.darkText : const Color(0xFF2380c4),
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-              child: Row(
-                children: const [
-                  Icon(Icons.info, color: Colors.orange, size: 20),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Anda masuk sebagai Guest. Fitur checkout & payment tidak tersedia.',
-                      style: TextStyle(fontSize: 13, color: Colors.black87),
+                const SizedBox(height: 16),
+
+                // Message
+                Text(
+                  'Anda harus login atau register terlebih dahulu untuk mengakses profil dan fitur lengkap lainnya.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textSecondary(context),
+                    height: 1.5,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+
+                // Login Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Get.offAll(() => LoginPage());
+                    },
+                    icon: const Icon(Icons.login),
+                    label: const Text(
+                      'Login / Register',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2380c4),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 16),
+
+                // Info text
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withOpacity(isDark ? 0.15 : 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.orange.withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.info, color: Colors.orange, size: 20),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Anda masuk sebagai Guest. Fitur checkout & payment tidak tersedia.',
+                          style: TextStyle(fontSize: 13, color: AppColors.text(context)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -186,16 +198,12 @@ class AccountPage extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // Profile Header
+          // Profile Header dengan warna konsisten
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF2380c4), Color(0xFF2380c4).withOpacity(0.8)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+            decoration: const BoxDecoration(
+              gradient: AppGradients.primaryGradient,
             ),
             child: Column(
               children: [
@@ -216,10 +224,10 @@ class AccountPage extends StatelessWidget {
                           : 'U';
                       return Text(
                         initial,
-                        style: const TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF2380c4),
+                          color: const Color(0xFF3B8FCC),
                         ),
                       );
                     }),
@@ -230,7 +238,7 @@ class AccountPage extends StatelessWidget {
                 Obx(
                   () => Text(
                     authController.username.value,
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -251,7 +259,7 @@ class AccountPage extends StatelessWidget {
               () => Switch(
                 value: themeController.isDark.value,
                 onChanged: (value) => themeController.toggleTheme(),
-                activeThumbColor: const Color(0xFF2380c4),
+                activeThumbColor: const Color(0xFF3B8FCC),
               ),
             ),
           ),
@@ -263,7 +271,7 @@ class AccountPage extends StatelessWidget {
               onChanged: (value) {
                 // TODO: Implement notifications toggle
               },
-              activeThumbColor: const Color(0xFF2380c4),
+              activeThumbColor: const Color(0xFF3B8FCC),
             ),
           ),
           const Divider(),
@@ -388,19 +396,23 @@ class AccountPage extends StatelessWidget {
   }
 
   Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF2380c4),
+    return Builder(
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              title,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.isDark(context) ? AppColors.secondary : const Color(0xFF3B8FCC),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -410,18 +422,30 @@ class AccountPage extends StatelessWidget {
     Widget? trailing,
     VoidCallback? onTap,
   }) {
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: const Color(0xFF2380c4).withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(icon, color: const Color(0xFF2380c4)),
-      ),
-      title: Text(title),
-      trailing: trailing ?? const Icon(Icons.chevron_right, color: Colors.grey),
-      onTap: onTap,
+    return Builder(
+      builder: (context) {
+        final isDark = AppColors.isDark(context);
+        return ListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF3B8FCC).withOpacity(isDark ? 0.2 : 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: isDark ? AppColors.secondary : const Color(0xFF3B8FCC)),
+          ),
+          title: Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color: AppColors.text(context),
+            ),
+          ),
+          trailing: trailing ?? Icon(Icons.chevron_right, color: isDark ? AppColors.darkTextSecondary : Colors.grey),
+          onTap: onTap,
+        );
+      },
     );
   }
 }

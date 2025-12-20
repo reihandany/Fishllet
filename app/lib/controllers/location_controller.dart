@@ -289,7 +289,7 @@ class LocationController extends GetxController {
           height: 40,
           child: const Icon(
             Icons.delivery_dining,
-            color: Colors.blue,
+            color: Color(0xFF1F70B2),
             size: 40,
           ),
         ),

@@ -78,7 +78,7 @@ class LocationTrackingPage extends StatelessWidget {
         'Live Tracking',
         style: TextStyle(fontWeight: FontWeight.w600),
       ),
-      backgroundColor: const Color(0xFF2380c4),
+      backgroundColor: const Color(0xFF1F70B2),
       foregroundColor: Colors.white,
       actions: [
         // Refresh button
@@ -98,7 +98,7 @@ class LocationTrackingPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
-          CircularProgressIndicator(color: Color(0xFF2380c4)),
+          CircularProgressIndicator(color: Color(0xFF1F70B2)),
           SizedBox(height: 16),
           Text(
             'Getting location...',
@@ -143,7 +143,7 @@ class LocationTrackingPage extends StatelessWidget {
               if (locationController.polylinePoints.isNotEmpty)
                 Polyline(
                   points: locationController.polylinePoints,
-                  color: const Color(0xFF2380c4),
+                  color: const Color(0xFF1F70B2),
                   strokeWidth: 4,
                   isDotted: true,
                 ),
@@ -225,8 +225,8 @@ class LocationTrackingPage extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              const Color(0xFF2380c4),
-              const Color(0xFF2380c4).withOpacity(0.8),
+              const Color(0xFF1F70B2),
+              const Color(0xFF1F70B2).withOpacity(0.8),
             ],
           ),
           borderRadius: BorderRadius.circular(16),
@@ -378,7 +378,7 @@ class LocationTrackingPage extends StatelessWidget {
           heroTag: 'fitBounds',
           onPressed: () => locationController.fitMapBounds(),
           backgroundColor: Colors.white,
-          child: const Icon(Icons.fit_screen, color: Color(0xFF2380c4)),
+          child: const Icon(Icons.fit_screen, color: Color(0xFF1F70B2)),
         ),
         const SizedBox(height: 8),
 
@@ -387,7 +387,7 @@ class LocationTrackingPage extends StatelessWidget {
           heroTag: 'centerCourier',
           onPressed: () => locationController.centerOnCourier(),
           backgroundColor: Colors.white,
-          child: const Icon(Icons.delivery_dining, color: Colors.blue),
+          child: const Icon(Icons.delivery_dining, color: Color(0xFF1F70B2)),
         ),
         const SizedBox(height: 8),
 

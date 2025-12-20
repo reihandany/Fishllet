@@ -76,7 +76,7 @@ class _AddProductPageState extends State<AddProductPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Product'),
-        backgroundColor: const Color(0xFF2380c4),
+        backgroundColor: const Color(0xFF1F70B2),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -132,7 +132,7 @@ class _AddProductPageState extends State<AddProductPage> {
                 child: ElevatedButton(
                   onPressed: _isSubmitting ? null : _submit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2380c4),
+                    backgroundColor: const Color(0xFF1F70B2),
                     foregroundColor: Colors.white,
                   ),
                   child: _isSubmitting

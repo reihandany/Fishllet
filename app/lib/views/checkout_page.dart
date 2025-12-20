@@ -7,6 +7,7 @@ import '../controllers/cart_controller.dart';
 import '../controllers/checkout_controller.dart';
 import '../controllers/location_controller.dart';
 import '../controllers/auth_controller.dart';
+import '../config/app_theme.dart';
 import 'product_list_page.dart';
 import 'payment_method_page.dart';
 import 'login_page.dart';
@@ -81,7 +82,7 @@ class CheckoutPage extends StatelessWidget {
               icon: const Icon(Icons.login, size: 20),
               label: const Text('Login Sekarang'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2380c4),
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -171,7 +172,7 @@ class CheckoutPage extends StatelessWidget {
                 ); // Back to home tab
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2380c4),
+                backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
               ),
               child: const Text('Continue Shopping'),
@@ -209,13 +210,11 @@ class CheckoutPage extends StatelessWidget {
 
   /// AppBar
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(
+    return AppStyles.buildGradientAppBar(
       title: const Text(
         'Checkout',
-        style: TextStyle(fontWeight: FontWeight.w600),
+        style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
       ),
-      backgroundColor: const Color(0xFF2380c4),
-      foregroundColor: Colors.white,
     );
   }
 
@@ -225,7 +224,7 @@ class CheckoutPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
-          CircularProgressIndicator(color: Color(0xFF2380c4), strokeWidth: 3),
+          CircularProgressIndicator(color: AppColors.primary, strokeWidth: 3),
           SizedBox(height: 24),
           Text(
             'Processing your order...',
@@ -292,7 +291,7 @@ class CheckoutPage extends StatelessWidget {
       style: const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
-        color: Color(0xFF2380c4),
+        color: AppColors.primary,
       ),
     );
   }
@@ -301,9 +300,16 @@ class CheckoutPage extends StatelessWidget {
   Widget _buildOrderSummary() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade300),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Obx(() {
         final items = checkoutController.cartItems;
@@ -371,7 +377,7 @@ class CheckoutPage extends StatelessWidget {
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
-                  color: Color(0xFF2380c4),
+                  color: AppColors.primary,
                 ),
               ),
             );
@@ -394,7 +400,7 @@ class CheckoutPage extends StatelessWidget {
             labelText: 'Full Name *',
             hintText: 'Enter your full name',
             prefixIcon: const Icon(Icons.person_outline),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
             filled: true,
             fillColor: Colors.white,
           ),
@@ -405,8 +411,15 @@ class CheckoutPage extends StatelessWidget {
         Container(
           height: 220,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade300, width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.1),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           clipBehavior: Clip.antiAlias,
           child: Obx(() {
@@ -471,11 +484,11 @@ class CheckoutPage extends StatelessWidget {
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: locationController.userLocation.value == null
-                      ? const Color(0xFF2380c4)
+                      ? const Color(0xFF1F70B2)
                       : Colors.green,
                   side: BorderSide(
                     color: locationController.userLocation.value == null
-                        ? const Color(0xFF2380c4)
+                        ? const Color(0xFF1F70B2)
                         : Colors.green,
                     width: 1.5,
                   ),
@@ -549,7 +562,7 @@ class CheckoutPage extends StatelessWidget {
             hintText:
                 'Contoh: Rumah warna hijau, dekat Indomaret, gang pertama kiri',
             prefixIcon: const Icon(Icons.description_outlined),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
             filled: true,
             fillColor: Colors.white,
             helperText:
@@ -629,7 +642,7 @@ class CheckoutPage extends StatelessWidget {
               'Metode Pembayaran Dipilih',
               'Anda memilih: ${getDisplayName(result)}',
               snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: const Color(0xFF2380c4),
+              backgroundColor: AppColors.primary,
               colorText: Colors.white,
               icon: Icon(getPaymentIcon(result), color: Colors.white),
               duration: const Duration(seconds: 2),
@@ -638,12 +651,19 @@ class CheckoutPage extends StatelessWidget {
             );
           }
         },
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade400),
-            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300, width: 2),
+            borderRadius: BorderRadius.circular(16),
             color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Row(
@@ -651,7 +671,7 @@ class CheckoutPage extends StatelessWidget {
               Icon(
                 getPaymentIcon(checkoutController.paymentMethod.value),
                 size: 24,
-                color: const Color(0xFF2380c4),
+                color: AppColors.primary,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -671,14 +691,26 @@ class CheckoutPage extends StatelessWidget {
   /// Total price display
   Widget _buildTotalPrice() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF2380c4).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primary.withOpacity(0.1),
+            AppColors.secondary.withOpacity(0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFF2380c4).withOpacity(0.3),
+          color: AppColors.primary.withOpacity(0.3),
           width: 2,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.15),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -695,7 +727,7 @@ class CheckoutPage extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2380c4),
+                color: AppColors.primary,
               ),
             );
           }),
@@ -709,22 +741,38 @@ class CheckoutPage extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: 56,
-      child: ElevatedButton(
-        onPressed: _handleCheckout,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF2380c4),
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppColors.primary, AppColors.secondary],
           ),
-          elevation: 3,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.4),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-        child: const Text(
-          'Place Order',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
+        child: ElevatedButton(
+          onPressed: _handleCheckout,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            foregroundColor: Colors.white,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            elevation: 0,
+          ),
+          child: const Text(
+            'Place Order',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
           ),
         ),
       ),

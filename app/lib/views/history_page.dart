@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../controllers/orders_controller.dart';
 import '../controllers/auth_controller.dart';
+import '../config/app_theme.dart';
 import 'login_page.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -49,128 +50,140 @@ class HistoryPage extends StatelessWidget {
 
   void _showOrderDetail(Map<String, dynamic> order) {
     Get.bottomSheet(
-      Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.all(24),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      Builder(
+        builder: (context) {
+          final isDark = AppColors.isDark(context);
+          return Container(
+            decoration: BoxDecoration(
+              color: isDark ? AppColors.darkCard : Colors.white,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            padding: const EdgeInsets.all(24),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    'Order #${order['orderId']}',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2380c4),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Get.back(),
-                    icon: const Icon(Icons.close),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Divider(),
-              const SizedBox(height: 16),
-              _buildDetailRow(
-                Icons.calendar_today,
-                'Date',
-                _formatDate(order['orderDate']),
-              ),
-              const SizedBox(height: 12),
-              _buildDetailRow(
-                Icons.info_outline,
-                'Status',
-                order['status'],
-                valueColor: _getStatusColor(order['status']),
-              ),
-              const SizedBox(height: 12),
-              _buildDetailRow(
-                Icons.person_outline,
-                'Customer',
-                order['customerName'],
-              ),
-              const SizedBox(height: 12),
-              _buildDetailRow(
-                Icons.location_on_outlined,
-                'Address',
-                order['deliveryAddress'],
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'Items',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              ...((order['items'] as List).map((item) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Text(
-                          '${item['name']} × ${item['quantity']}',
-                          style: const TextStyle(fontSize: 14),
+                      Text(
+                        'Order #${order['orderId']}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1F70B2),
                         ),
                       ),
+                      IconButton(
+                        onPressed: () => Get.back(),
+                        icon: Icon(Icons.close, color: AppColors.text(context)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Divider(color: AppColors.divider(context)),
+                  const SizedBox(height: 16),
+                  _buildDetailRow(
+                    context,
+                    Icons.calendar_today,
+                    'Date',
+                    _formatDate(order['orderDate']),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildDetailRow(
+                    context,
+                    Icons.info_outline,
+                    'Status',
+                    order['status'],
+                    valueColor: _getStatusColor(order['status']),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildDetailRow(
+                    context,
+                    Icons.person_outline,
+                    'Customer',
+                    order['customerName'],
+                  ),
+                  const SizedBox(height: 12),
+                  _buildDetailRow(
+                    context,
+                    Icons.location_on_outlined,
+                    'Address',
+                    order['deliveryAddress'],
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Items',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.text(context)),
+                  ),
+                  const SizedBox(height: 12),
+                  ...((order['items'] as List).map((item) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${item['name']} × ${item['quantity']}',
+                              style: TextStyle(fontSize: 14, color: AppColors.text(context)),
+                            ),
+                          ),
+                          Text(
+                            _formatPrice(item['price'] * item['quantity']),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.text(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList()),
+                  const SizedBox(height: 16),
+                  Divider(color: AppColors.divider(context)),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       Text(
-                        _formatPrice(item['price'] * item['quantity']),
+                        'Total Amount',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.text(context)),
+                      ),
+                      Text(
+                        _formatPrice(order['totalPrice']),
                         style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1F70B2),
                         ),
                       ),
                     ],
                   ),
-                );
-              }).toList()),
-              const SizedBox(height: 16),
-              const Divider(),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Total Amount',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    _formatPrice(order['totalPrice']),
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2380c4),
-                    ),
-                  ),
                 ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
       isScrollControlled: true,
     );
   }
 
   Widget _buildDetailRow(
+    BuildContext context,
     IconData icon,
     String label,
     String value, {
     Color? valueColor,
   }) {
+    final isDark = AppColors.isDark(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 20, color: Colors.grey.shade600),
+        Icon(icon, size: 20, color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -178,7 +191,7 @@ class HistoryPage extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                style: TextStyle(fontSize: 12, color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600),
               ),
               const SizedBox(height: 2),
               Text(
@@ -186,7 +199,7 @@ class HistoryPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: valueColor,
+                  color: valueColor ?? AppColors.text(context),
                 ),
               ),
             ],
@@ -198,11 +211,13 @@ class HistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = AppColors.isDark(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Riwayat Pesanan'),
-        backgroundColor: const Color(0xFF2380c4),
-        foregroundColor: Colors.white,
+      appBar: AppStyles.buildGradientAppBar(
+        title: const Text(
+          'Riwayat Pesanan',
+          style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white),
+        ),
       ),
       body: Obx(() {
         // Check if guest user
@@ -217,7 +232,7 @@ class HistoryPage extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withOpacity(0.1),
+                      color: Colors.orange.withOpacity(isDark ? 0.2 : 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -228,20 +243,20 @@ class HistoryPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   // Title
-                  const Text(
+                  Text(
                     'Riwayat Tidak Ada',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: AppColors.text(context),
                     ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
                   // Description
-                  const Text(
+                  Text(
                     'Harap Login atau Register Akun',
-                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                    style: TextStyle(fontSize: 16, color: AppColors.textSecondary(context)),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
@@ -261,7 +276,7 @@ class HistoryPage extends StatelessWidget {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2380c4),
+                        backgroundColor: const Color(0xFF1F70B2),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
@@ -275,7 +290,7 @@ class HistoryPage extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withOpacity(0.1),
+                      color: Colors.orange.withOpacity(isDark ? 0.15 : 0.1),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: Colors.orange.withOpacity(0.3),
@@ -283,15 +298,15 @@ class HistoryPage extends StatelessWidget {
                       ),
                     ),
                     child: Row(
-                      children: const [
-                        Icon(Icons.info, color: Colors.orange, size: 20),
-                        SizedBox(width: 12),
+                      children: [
+                        const Icon(Icons.info, color: Colors.orange, size: 20),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             'Anda masuk sebagai Guest. Login untuk melihat riwayat pesanan Anda.',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Colors.black87,
+                              color: AppColors.text(context),
                             ),
                           ),
                         ),
@@ -308,10 +323,10 @@ class HistoryPage extends StatelessWidget {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                CircularProgressIndicator(color: Color(0xFF2380c4)),
-                SizedBox(height: 24),
-                Text('Loading history...'),
+              children: [
+                const CircularProgressIndicator(color: Color(0xFF1F70B2)),
+                const SizedBox(height: 24),
+                Text('Loading history...', style: TextStyle(color: AppColors.textSecondary(context))),
               ],
             ),
           );
@@ -328,21 +343,21 @@ class HistoryPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.history, size: 100, color: Colors.grey.shade300),
+                Icon(Icons.history, size: 100, color: isDark ? Colors.grey.shade600 : Colors.grey.shade300),
                 const SizedBox(height: 24),
-                const Text(
+                Text(
                   'Belum ada riwayat',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey,
                   ),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   'Pesanan yang telah selesai\nakan muncul di sini',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                  style: TextStyle(fontSize: 14, color: isDark ? Colors.grey.shade500 : Colors.grey.shade600),
                 ),
               ],
             ),
@@ -360,6 +375,7 @@ class HistoryPage extends StatelessWidget {
             return Card(
               margin: const EdgeInsets.only(bottom: 16),
               elevation: 2,
+              color: AppColors.card(context),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -379,7 +395,7 @@ class HistoryPage extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF2380c4),
+                              color: Color(0xFF1F70B2),
                             ),
                           ),
                           Container(
@@ -388,7 +404,7 @@ class HistoryPage extends StatelessWidget {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: _getStatusColor(status).withOpacity(0.1),
+                              color: _getStatusColor(status).withOpacity(isDark ? 0.2 : 0.1),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: _getStatusColor(status),
@@ -423,14 +439,14 @@ class HistoryPage extends StatelessWidget {
                           Icon(
                             Icons.calendar_today,
                             size: 14,
-                            color: Colors.grey.shade600,
+                            color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600,
                           ),
                           const SizedBox(width: 6),
                           Text(
                             _formatDate(order['orderDate']),
                             style: TextStyle(
                               fontSize: 13,
-                              color: Colors.grey.shade700,
+                              color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade700,
                             ),
                           ),
                         ],
@@ -441,29 +457,30 @@ class HistoryPage extends StatelessWidget {
                           Icon(
                             Icons.shopping_bag_outlined,
                             size: 14,
-                            color: Colors.grey.shade600,
+                            color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade600,
                           ),
                           const SizedBox(width: 6),
                           Text(
                             '${items.length} item${items.length != 1 ? 's' : ''}',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Colors.grey.shade700,
+                              color: isDark ? AppColors.darkTextSecondary : Colors.grey.shade700,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 12),
-                      const Divider(),
+                      Divider(color: AppColors.divider(context)),
                       const SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             'Total:',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
+                              color: AppColors.text(context),
                             ),
                           ),
                           Text(
@@ -471,7 +488,7 @@ class HistoryPage extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF2380c4),
+                              color: Color(0xFF1F70B2),
                             ),
                           ),
                         ],

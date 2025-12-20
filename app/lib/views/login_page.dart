@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../controllers/auth_controller.dart';
 import 'product_list_page.dart';
 import 'register_page.dart';
+import '../config/app_theme.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// LOGIN PAGE
@@ -103,7 +104,7 @@ class LoginPage extends StatelessWidget {
             response.user!.email?.split('@')[0] ??
             'User';
 
-        authController.login(username);
+        await authController.login(username);
 
         Get.offAll(
           () => ProductListPage(),
@@ -155,58 +156,49 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF2380c4),
-      body: SafeArea(
+      backgroundColor: Colors.transparent,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppGradients.primaryGradient,
+        ),
+        child: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Logo
-                  const Icon(
-                    Icons.set_meal_rounded,
-                    size: 80,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(height: 16),
-                  // Judul
-                  const Text(
-                    'Fishllet',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 40,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.5,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Logo Fishllet - full width proporsional sampai tepi kanan-kiri
+                Padding(
+                  padding: const EdgeInsets.only(top: 20, bottom: 20),
+                  child: AspectRatio(
+                    // Rasio mendekati ukuran logo asli agar proporsional
+                    aspectRatio: 340 / 160,
+                    child: Image.asset(
+                      'assets/images/Fishllet Logo Design-01.png',
+                      fit: BoxFit.fitWidth,
+                      width: double.infinity,
+                      alignment: Alignment.center,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  // Subtitle
-                  const Text(
-                    'Fresh Seafood Marketplace',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white70,
-                      fontWeight: FontWeight.w300,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 48),
-                  // Email input
-                  TextFormField(
+                ),
+                // Konten form diberi padding horizontal agar rapi
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 20),
+                        // Email input
+                        TextFormField(
                     controller: _emailController,
                     validator: _validateEmail,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: 'Email',
                       hintText: 'Masukkan email Anda',
                       prefixIcon: const Icon(Icons.email_outlined),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -248,20 +240,18 @@ class LoginPage extends StatelessWidget {
                         horizontal: 16,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                  // Password input
-                  Obx(
-                    () => TextFormField(
+                        ),
+                        const SizedBox(height: 32),
+                        // Password input
+                        Obx(
+                          () => TextFormField(
                       controller: _passwordController,
                       validator: _validatePassword,
                       obscureText: _obscurePassword.value,
                       textInputAction: TextInputAction.done,
                       decoration: InputDecoration(
-                        labelText: 'Password',
                         hintText: 'Masukkan password Anda',
                         prefixIcon: const Icon(Icons.lock_outline),
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
                         suffixIcon: IconButton(
                           icon: Icon(
                             _obscurePassword.value
@@ -313,11 +303,11 @@ class LoginPage extends StatelessWidget {
                           horizontal: 16,
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 36),
-                  // Tombol Login
-                  Obx(() {
+                          ),
+                        ),
+                        const SizedBox(height: 36),
+                        // Tombol Login
+                        Obx(() {
                     final isLoading = authController.isLoading.value;
                     return SizedBox(
                       height: 56,
@@ -325,7 +315,7 @@ class LoginPage extends StatelessWidget {
                         onPressed: isLoading ? null : _handleLogin,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF2380c4),
+                          foregroundColor: const Color(0xFF3B8FCC),
                           disabledBackgroundColor: Colors.white70,
                           disabledForegroundColor: Colors.grey,
                           shape: RoundedRectangleBorder(
@@ -343,7 +333,7 @@ class LoginPage extends StatelessWidget {
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
                                       valueColor: AlwaysStoppedAnimation<Color>(
-                                        Color(0xFF2380c4),
+                                        Color(0xFF3B8FCC),
                                       ),
                                     ),
                                   ),
@@ -367,10 +357,10 @@ class LoginPage extends StatelessWidget {
                               ),
                       ),
                     );
-                  }),
-                  const SizedBox(height: 16),
-                  // Tombol Register di bawah login
-                  SizedBox(
+                        }),
+                        const SizedBox(height: 16),
+                        // Tombol Register di bawah login
+                        SizedBox(
                     height: 48,
                     child: ElevatedButton(
                       onPressed: () {
@@ -383,7 +373,7 @@ class LoginPage extends StatelessWidget {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        foregroundColor: const Color(0xFF2380c4),
+                        foregroundColor: AppColors.primary,
                         disabledBackgroundColor: Colors.white70,
                         disabledForegroundColor: Colors.grey,
                         shape: RoundedRectangleBorder(
@@ -400,36 +390,36 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Divider dengan "atau"
-                  Row(
-                    children: const [
-                      Expanded(
-                        child: Divider(color: Colors.white60, thickness: 1),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          'atau',
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
                         ),
-                      ),
-                      Expanded(
-                        child: Divider(color: Colors.white60, thickness: 1),
-                      ),
-                    ],
-                  ),
+                        const SizedBox(height: 16),
 
-                  const SizedBox(height: 16),
+                        // Divider dengan "atau"
+                        Row(
+                          children: const [
+                            Expanded(
+                              child: Divider(color: Colors.white60, thickness: 1),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                'atau',
+                                style: TextStyle(color: Colors.white70, fontSize: 14),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(color: Colors.white60, thickness: 1),
+                            ),
+                          ],
+                        ),
 
-                  // Tombol Login sebagai Guest
-                  SizedBox(
-                    height: 48,
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        authController.loginAsGuest();
+                        const SizedBox(height: 16),
+
+                        // Tombol Login sebagai Guest
+                        SizedBox(
+                          height: 48,
+                          child: OutlinedButton.icon(
+                      onPressed: () async {
+                        await authController.loginAsGuest();
                         Get.offAll(
                           () => ProductListPage(),
                           transition: Transition.fadeIn,
@@ -461,26 +451,30 @@ class LoginPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                    ),
-                  ),
+                          ),
+                        ),
 
-                  const SizedBox(height: 16),
-                  // Info demo
-                  const Padding(
-                    padding: EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      'Email harus valid, Password minimal 6 karakter',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white60,
-                        fontStyle: FontStyle.italic,
-                      ),
+                        const SizedBox(height: 16),
+                        // Info demo
+                        const Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            'Email harus valid, Password minimal 6 karakter',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white60,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
           ),
         ),
       ),

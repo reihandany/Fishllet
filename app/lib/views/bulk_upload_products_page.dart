@@ -126,7 +126,7 @@ class _BulkUploadProductsPageState extends State<BulkUploadProductsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bulk Upload Products'),
-        backgroundColor: const Color(0xFF2380c4),
+        backgroundColor: const Color(0xFF1F70B2),
         actions: [
           if (_uploadQueue.isNotEmpty && !_isUploading)
             IconButton(
@@ -141,7 +141,7 @@ class _BulkUploadProductsPageState extends State<BulkUploadProductsPage> {
           // Instructions
           Container(
             padding: const EdgeInsets.all(16),
-            color: Colors.blue[50],
+            color: const Color(0xFF1F70B2).withOpacity(0.1),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -182,7 +182,7 @@ class _BulkUploadProductsPageState extends State<BulkUploadProductsPage> {
                           icon: const Icon(Icons.folder_open),
                           label: const Text('Pilih Gambar'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2380c4),
+                            backgroundColor: const Color(0xFF1F70B2),
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           ),
@@ -211,7 +211,7 @@ class _BulkUploadProductsPageState extends State<BulkUploadProductsPage> {
                           break;
                         case 'uploading':
                           icon = Icons.cloud_upload;
-                          color = Colors.blue;
+                          color = Color(0xFF1F70B2);
                           break;
                         default:
                           icon = Icons.pending;
@@ -242,7 +242,7 @@ class _BulkUploadProductsPageState extends State<BulkUploadProductsPage> {
               onPressed: _pickAndUploadImages,
               icon: const Icon(Icons.add_photo_alternate),
               label: const Text('Pilih Gambar'),
-              backgroundColor: const Color(0xFF2380c4),
+              backgroundColor: const Color(0xFF1F70B2),
             )
           : null,
     );

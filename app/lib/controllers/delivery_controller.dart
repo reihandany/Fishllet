@@ -172,7 +172,7 @@ class DeliveryController extends GetxController {
       'Tracking Started',
       'Live delivery tracking is now active',
       snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: const Color(0xFF2380c4),
+      backgroundColor: const Color(0xFF1F70B2),
       colorText: Get.theme.colorScheme.onPrimary,
       icon: const Icon(Icons.gps_fixed, color: Colors.white),
       duration: const Duration(seconds: 2),
